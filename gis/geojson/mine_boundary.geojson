@@ -1,0 +1,56 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "name": "MOIL Balaghat Concession Boundary",
+    "concession_id": "MINE_BALAGHAT_01",
+    "area_sq_km": 14.85,
+    "state": "Madhya Pradesh",
+    "mineral": "Manganese Ore"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "BOUNDARY_BALAGHAT",
+      "properties": {
+        "name": "Balaghat Mine Lease Perimeter",
+        "lease_validity": "2045-12-31",
+        "operator": "MOIL Limited (Public Sector Undertaking)",
+        "stroke": "#f59e0b",
+        "stroke-width": 3,
+        "fill": "#f59e0b",
+        "fill-opacity": 0.08
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.171,
+              21.821
+            ],
+            [
+              80.198,
+              21.821
+            ],
+            [
+              80.201,
+              21.805
+            ],
+            [
+              80.185,
+              21.801
+            ],
+            [
+              80.169,
+              21.808
+            ],
+            [
+              80.171,
+              21.821
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

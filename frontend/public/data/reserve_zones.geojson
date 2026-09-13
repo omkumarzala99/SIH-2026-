@@ -1,0 +1,189 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "mine_id": "MINE_BALAGHAT_01",
+    "model_version": "Reserve_ML_v1.0"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "RES_ZONE_NORTH_A",
+      "properties": {
+        "zone_id": "ZONE_NORTH_A",
+        "name": "North High-Grade Manganese Reef",
+        "classification": "HIGH",
+        "reserve_probability": 0.89,
+        "estimated_tonnage": 485000,
+        "avg_mn_grade_pct": 44.2,
+        "avg_fe_grade_pct": 5.8,
+        "confidence": 0.86,
+        "primary_formation": "Sausar Group Gondite",
+        "ndvi_mean": 0.15,
+        "fill": "#22c55e",
+        "fill-opacity": 0.45
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.1825,
+              21.8155
+            ],
+            [
+              80.1915,
+              21.8155
+            ],
+            [
+              80.191,
+              21.819
+            ],
+            [
+              80.182,
+              21.8185
+            ],
+            [
+              80.1825,
+              21.8155
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "RES_ZONE_CENTRAL_B",
+      "properties": {
+        "zone_id": "ZONE_CENTRAL_B",
+        "name": "Central Thick Ore Bed",
+        "classification": "HIGH",
+        "reserve_probability": 0.84,
+        "estimated_tonnage": 620000,
+        "avg_mn_grade_pct": 41.6,
+        "avg_fe_grade_pct": 6.9,
+        "confidence": 0.83,
+        "primary_formation": "Mansar Schist",
+        "ndvi_mean": 0.17,
+        "fill": "#22c55e",
+        "fill-opacity": 0.45
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.1805,
+              21.8105
+            ],
+            [
+              80.1895,
+              21.8105
+            ],
+            [
+              80.189,
+              21.814
+            ],
+            [
+              80.18,
+              21.814
+            ],
+            [
+              80.1805,
+              21.8105
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "RES_ZONE_SOUTH_C",
+      "properties": {
+        "zone_id": "ZONE_SOUTH_C",
+        "name": "South Marginal Siliceous Lode",
+        "classification": "MEDIUM",
+        "reserve_probability": 0.62,
+        "estimated_tonnage": 295000,
+        "avg_mn_grade_pct": 32.4,
+        "avg_fe_grade_pct": 9.2,
+        "confidence": 0.77,
+        "primary_formation": "Chorbaoli Quartzite",
+        "ndvi_mean": 0.24,
+        "fill": "#eab308",
+        "fill-opacity": 0.45
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.1765,
+              21.8045
+            ],
+            [
+              80.1865,
+              21.8045
+            ],
+            [
+              80.186,
+              21.8085
+            ],
+            [
+              80.176,
+              21.8085
+            ],
+            [
+              80.1765,
+              21.8045
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "RES_ZONE_EAST_D",
+      "properties": {
+        "zone_id": "ZONE_EAST_D",
+        "name": "East Low-Grade Exploration Zone",
+        "classification": "LOW",
+        "reserve_probability": 0.31,
+        "estimated_tonnage": 85000,
+        "avg_mn_grade_pct": 21.5,
+        "avg_fe_grade_pct": 11.4,
+        "confidence": 0.71,
+        "primary_formation": "Tirodi Biotite Gneiss",
+        "ndvi_mean": 0.39,
+        "fill": "#ef4444",
+        "fill-opacity": 0.45
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.1915,
+              21.8115
+            ],
+            [
+              80.1985,
+              21.8115
+            ],
+            [
+              80.198,
+              21.8155
+            ],
+            [
+              80.191,
+              21.8155
+            ],
+            [
+              80.1915,
+              21.8115
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}
