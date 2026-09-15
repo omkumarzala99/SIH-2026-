@@ -33,3 +33,10 @@ class RecommendationGenerationRequest(BaseModel):
     rainfall_mm: float = 28.0
     blasting_delay_hours: float = 1.5
     shortfall_percentage: float = 16.0
+    # Optional production and risk context
+    planned_production: Optional[float] = None
+    predicted_production: Optional[float] = None
+    shortfall: Optional[float] = None
+    risk_score: Optional[float] = None
+    risk_tier: Optional[str] = None
+

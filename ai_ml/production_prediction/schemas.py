@@ -14,6 +14,16 @@ class ProductionPredictionRequest(BaseModel):
     blasting_delay_hours: float = Field(default=0.5, ge=0.0, le=12.0)
     active_excavator_count: int = Field(default=2, ge=0)
     active_dumper_count: int = Field(default=3, ge=0)
+    hauling_trips: Optional[float] = Field(default=None, ge=0.0)
+    equipment_efficiency_pct: Optional[float] = Field(default=None, ge=0.0, le=100.0)
+    active_equipment_count: Optional[float] = Field(default=None, ge=0.0)
+    soil_moisture_pct: Optional[float] = Field(default=None, ge=0.0, le=100.0)
+    flood_risk_score: Optional[float] = Field(default=None, ge=0.0)
+    ambient_temp_c: Optional[float] = Field(default=None)
+    humidity_pct: Optional[float] = Field(default=None, ge=0.0, le=100.0)
+    wind_speed_kmh: Optional[float] = Field(default=None, ge=0.0)
+    actual_lag_1d: Optional[float] = Field(default=None)
+    rolling_3d_shortfall: Optional[float] = Field(default=None)
 
 
 class ProductionPredictionResponse(BaseModel):

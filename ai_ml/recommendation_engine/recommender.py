@@ -13,11 +13,16 @@ from ai_ml.recommendation_engine.rules import evaluate_mitigation_rules
 
 def generate_recommendations(req: RecommendationGenerationRequest) -> List[RecommendationItem]:
     """Generates prescriptive recommendations based on current operational bottlenecks."""
+    shortfall_pct = req.shortfall_percentage
+    if req.planned_production is not None and req.predicted_production is not None:
+        shortfall = max(0.0, req.planned_production - req.predicted_production) if req.shortfall is None else req.shortfall
+        shortfall_pct = round((shortfall / req.planned_production * 100.0), 2) if req.planned_production > 0 else 0.0
+
     raw_rules = evaluate_mitigation_rules(
         downtime=req.downtime_hours,
         rainfall=req.rainfall_mm,
         blasting=req.blasting_delay_hours,
-        shortfall_pct=req.shortfall_percentage
+        shortfall_pct=shortfall_pct
     )
 
     now_str = datetime.now(timezone.utc).isoformat()

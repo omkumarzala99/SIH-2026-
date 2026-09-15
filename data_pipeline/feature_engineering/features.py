@@ -44,9 +44,9 @@ def build_production_features(merged_ops_df: pd.DataFrame) -> pd.DataFrame:
     """Builds time-lagged and constraint features for daily production forecasting."""
     df = merged_ops_df.sort_values(by=["zone_id", "date"]).copy()
     
-    # Lagged actual tonnages
+    # Lagged actual tonnages (strictly leakage-free, current day excluded)
     df["actual_lag_1d"] = df.groupby("zone_id")["actual_tonnage"].shift(1).fillna(df["actual_tonnage"].mean())
-    df["rolling_3d_shortfall"] = df.groupby("zone_id")["shortfall_tonnage"].transform(lambda x: x.rolling(3, min_periods=1).mean())
+    df["rolling_3d_shortfall"] = df.groupby("zone_id")["shortfall_tonnage"].transform(lambda x: x.shift(1).rolling(3, min_periods=1).mean()).fillna(0.0)
     
     # Operational stress index: combines equipment downtime, blasting delay, and rainfall
     df["weather_impact_factor"] = (df["rainfall_mm"] / 50.0).clip(0, 2.5)
