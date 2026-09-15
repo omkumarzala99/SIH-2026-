@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MOIL Mining Intelligence — GIS Prototype</title>
+  <meta name="description" content="GIS + Satellite visualization module for MOIL manganese mining operations. PS-26009 — Smart India Hackathon 2026.">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin="">
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+
+    <!-- ===== HEADER ===== -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="header-logo">M</div>
+        <div>
+          <div class="header-title">MOIL MINING INTELLIGENCE — GIS</div>
+          <div class="header-subtitle">PS-26009 · Manganese Reserve & Risk Visualization</div>
+        </div>
+      </div>
+      <div class="header-badges">
+        <span class="badge badge-demo">⚡ PROTOTYPE</span>
+        <span class="badge badge-status"><span class="badge-dot"></span> SIH 2026</span>
+      </div>
+    </header>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="main-content">
+
+      <!-- Mobile sidebar toggle -->
+      <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">☰</button>
+
+      <!-- ===== SIDEBAR ===== -->
+      <aside class="sidebar">
+
+        <!-- Navigation -->
+        <div class="sidebar-section">
+          <div class="section-header">
+            <span class="section-icon">🧭</span>
+            <span class="section-title">Navigation</span>
+          </div>
+          <div class="nav-controls">
+            <button class="nav-btn" data-preset="india">
+              <span class="nav-btn-icon">🇮🇳</span>
+              India Overview
+            </button>
+            <button class="nav-btn active" data-preset="region">
+              <span class="nav-btn-icon">📍</span>
+              MOIL Region
+            </button>
+            <button class="nav-btn" data-preset="maharashtra">
+              <span class="nav-btn-icon">🏔️</span>
+              Maharashtra Mines
+            </button>
+            <button class="nav-btn" data-preset="madhyaPradesh">
+              <span class="nav-btn-icon">⛏️</span>
+              Madhya Pradesh Mines
+            </button>
+          </div>
+        </div>
+
+        <!-- Layer Controls -->
+        <div class="sidebar-section">
+          <div class="section-header">
+            <span class="section-icon">🗂️</span>
+            <span class="section-title">Map Layers</span>
+          </div>
+          <div class="layer-list">
+            <label class="layer-item active">
+              <input type="checkbox" class="layer-checkbox" data-layer="mines" checked>
+              <div class="layer-color-indicator" style="background: #22d3ee;"></div>
+              <span class="layer-label">MOIL Mines</span>
+              <span class="layer-count" id="mine-count">—</span>
+            </label>
+            <label class="layer-item active">
+              <input type="checkbox" class="layer-checkbox" data-layer="boundaries" checked>
+              <div class="layer-color-indicator" style="background: #f59e0b;"></div>
+              <span class="layer-label">Mine Boundaries</span>
+              <span class="layer-count">4</span>
+            </label>
+            <label class="layer-item active">
+              <input type="checkbox" class="layer-checkbox" data-layer="miningZones" checked>
+              <div class="layer-color-indicator" style="background: #3b82f6;"></div>
+              <span class="layer-label">Mining Zones</span>
+              <span class="layer-count" id="zone-count">—</span>
+            </label>
+            <label class="layer-item active">
+              <input type="checkbox" class="layer-checkbox" data-layer="reserves" checked>
+              <div class="layer-color-indicator" style="background: #22c55e;"></div>
+              <span class="layer-label">Reserve Potential</span>
+              <span class="layer-count" id="reserve-count">—</span>
+            </label>
+            <label class="layer-item active">
+              <input type="checkbox" class="layer-checkbox" data-layer="risk" checked>
+              <div class="layer-color-indicator" style="background: #ef4444;"></div>
+              <span class="layer-label">Risk Zones</span>
+              <span class="layer-count" id="risk-count">—</span>
+            </label>
+            <label class="layer-item">
+              <input type="checkbox" class="layer-checkbox" data-layer="satellite">
+              <div class="layer-color-indicator" style="background: #8b5cf6;"></div>
+              <span class="layer-label">Satellite Indicators</span>
+              <span class="layer-count">DEMO</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Mine List -->
+        <div class="sidebar-section">
+          <div class="section-header">
+            <span class="section-icon">⛏️</span>
+            <span class="section-title">MOIL Mines</span>
+          </div>
+          <div class="mine-list" id="mine-list">
+            <!-- Populated dynamically by map.js -->
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="sidebar-section">
+          <div class="section-header">
+            <span class="section-icon">🎨</span>
+            <span class="section-title">Legend</span>
+          </div>
+          <div class="legend-grid">
+            <!-- Reserve Legend -->
+            <div class="legend-group">
+              <div class="legend-group-title">Reserve</div>
+              <div class="legend-items">
+                <div class="legend-item">
+                  <div class="legend-color" style="background: #22c55e;"></div>
+                  <span class="legend-text">HIGH (≥0.7)</span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-color" style="background: #eab308;"></div>
+                  <span class="legend-text">MEDIUM (0.4–0.7)</span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-color" style="background: #ef4444;"></div>
+                  <span class="legend-text">LOW (<0.4)</span>
+                </div>
+              </div>
+            </div>
+            <!-- Risk Legend -->
+            <div class="legend-group">
+              <div class="legend-group-title">Risk</div>
+              <div class="legend-items">
+                <div class="legend-item">
+                  <div class="legend-color" style="background: #ef4444;"></div>
+                  <span class="legend-text">HIGH (≥0.7)</span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-color" style="background: #f59e0b;"></div>
+                  <span class="legend-text">MEDIUM (0.4–0.7)</span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-color" style="background: #22c55e;"></div>
+                  <span class="legend-text">LOW (<0.4)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Mine Type Legend -->
+          <div class="legend-group" style="margin-top: 8px;">
+            <div class="legend-group-title">Mine Type</div>
+            <div class="legend-items">
+              <div class="legend-item">
+                <div class="legend-color" style="background: rgba(34,211,238,0.3); border-color: #22d3ee; border-radius: 50%;"></div>
+                <span class="legend-text">Underground</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-color" style="background: rgba(245,158,11,0.3); border-color: #f59e0b; border-radius: 2px;"></div>
+                <span class="legend-text">Opencast</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Data Disclaimer -->
+        <div class="sidebar-section" style="border-bottom: none;">
+          <div class="popup-demo-notice" style="margin: 0;">
+            ⚠ Prototype with demo data. Reserve/risk/satellite values are synthetic. Mine coordinates sourced from government documents.
+          </div>
+        </div>
+
+      </aside>
+
+      <!-- ===== MAP ===== -->
+      <div class="map-wrapper">
+        <!-- Loading overlay -->
+        <div class="loading-overlay" id="loading-overlay">
+          <div class="loading-spinner"></div>
+          <div class="loading-text">Loading GIS layers...</div>
+        </div>
+
+        <!-- The Map -->
+        <div id="map"></div>
+
+        <!-- Coordinate display -->
+        <div class="coord-display" id="coord-display">—</div>
+
+        <!-- Zoom indicator -->
+        <div class="zoom-indicator" id="zoom-indicator">Zoom: 7</div>
+
+        <!-- Info Panel -->
+        <div class="info-panel" id="info-panel">
+          <div class="info-panel-header">
+            <span class="info-panel-title" id="info-panel-title">Zone Details</span>
+            <button class="info-panel-close" id="info-panel-close">✕</button>
+          </div>
+          <div class="info-panel-body" id="info-panel-body">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+
+  <!-- Map Controller -->
+  <script src="map.js"></script>
+</body>
+</html>

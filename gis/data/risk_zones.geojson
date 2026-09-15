@@ -1,0 +1,199 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "name": "MOIL Mine Risk Zones",
+    "description": "Multi-factor risk zones for MOIL mining operations. Each zone has a composite risk score, risk level classification, and contributing risk factors.",
+    "data_type": "DEMO",
+    "model_version": "Risk_Engine_v1.0_DEMO",
+    "note": "All risk scores and factors are SYNTHETIC DEMO data for prototype visualization. They do NOT represent actual operational risk assessments. Replace with real risk engine outputs when available."
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "RISK_BAL_SOUTH",
+      "properties": {
+        "zone_id": "Z03",
+        "mine_id": "M01",
+        "mine_name": "Balaghat Mine",
+        "name": "South Expansion Zone C — Monsoon Risk",
+        "risk_level": "HIGH",
+        "risk_score": 0.82,
+        "risk_factors": [
+          "Heavy monsoon rainfall (>150mm/day)",
+          "Pit floor waterlogging",
+          "Blasting delay due to wet conditions",
+          "Slope stability concern"
+        ],
+        "mitigation_status": "MONITORING",
+        "data_type": "DEMO"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [80.174, 21.803],
+            [80.188, 21.803],
+            [80.1875, 21.8095],
+            [80.1735, 21.8095],
+            [80.174, 21.803]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "RISK_BAL_EAST",
+      "properties": {
+        "zone_id": "Z04",
+        "mine_id": "M01",
+        "mine_name": "Balaghat Mine",
+        "name": "East Exploration Block D — Geological Uncertainty",
+        "risk_level": "MEDIUM",
+        "risk_score": 0.55,
+        "risk_factors": [
+          "Limited borehole data",
+          "Uncertain ore continuity",
+          "Mixed host rock lithology"
+        ],
+        "mitigation_status": "ADDITIONAL_DRILLING_PLANNED",
+        "data_type": "DEMO"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [80.190, 21.810],
+            [80.200, 21.810],
+            [80.1995, 21.817],
+            [80.1895, 21.817],
+            [80.190, 21.810]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "RISK_BAL_WEST",
+      "properties": {
+        "zone_id": "Z05",
+        "mine_id": "M01",
+        "mine_name": "Balaghat Mine",
+        "name": "West Overburden Dump E — Stability Risk",
+        "risk_level": "MEDIUM",
+        "risk_score": 0.61,
+        "risk_factors": [
+          "Overburden dump height exceeds 30m",
+          "Monsoon saturation risk",
+          "Requires periodic geotechnical monitoring"
+        ],
+        "mitigation_status": "MONITORING",
+        "data_type": "DEMO"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [80.168, 21.807],
+            [80.179, 21.807],
+            [80.1785, 21.814],
+            [80.1675, 21.814],
+            [80.168, 21.807]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "RISK_KAN_MAIN",
+      "properties": {
+        "zone_id": "Z06",
+        "mine_id": "M05",
+        "mine_name": "Kandri Mine",
+        "name": "Kandri Main Level — Equipment Risk",
+        "risk_level": "LOW",
+        "risk_score": 0.28,
+        "risk_factors": [
+          "Scheduled HEMM maintenance window",
+          "Minor ventilation system upgrade pending"
+        ],
+        "mitigation_status": "SCHEDULED",
+        "data_type": "DEMO"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [79.256, 21.415],
+            [79.271, 21.415],
+            [79.270, 21.408],
+            [79.255, 21.408],
+            [79.256, 21.415]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "RISK_DON_PIT",
+      "properties": {
+        "zone_id": "Z08",
+        "mine_id": "M09",
+        "mine_name": "Dongri Buzurg Mine",
+        "name": "Dongri Open Pit A — Weather Risk",
+        "risk_level": "HIGH",
+        "risk_score": 0.78,
+        "risk_factors": [
+          "Open pit exposed to monsoon rainfall",
+          "Haul road slippery conditions",
+          "Dumper fleet reduced capacity",
+          "Surface water drainage overload"
+        ],
+        "mitigation_status": "ACTIVE_MITIGATION",
+        "data_type": "DEMO"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [79.679, 21.550],
+            [79.694, 21.550],
+            [79.693, 21.543],
+            [79.678, 21.543],
+            [79.679, 21.550]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "RISK_DON_SOUTH",
+      "properties": {
+        "zone_id": "Z09",
+        "mine_id": "M09",
+        "mine_name": "Dongri Buzurg Mine",
+        "name": "Dongri South Bench B — Combined Risk",
+        "risk_level": "MEDIUM",
+        "risk_score": 0.52,
+        "risk_factors": [
+          "Development bench — limited access roads",
+          "Equipment mobilization pending",
+          "Seasonal waterlogging in southern sector"
+        ],
+        "mitigation_status": "PLANNING",
+        "data_type": "DEMO"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [79.681, 21.544],
+            [79.695, 21.544],
+            [79.694, 21.538],
+            [79.680, 21.538],
+            [79.681, 21.544]
+          ]
+        ]
+      }
+    }
+  ]
+}
