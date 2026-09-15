@@ -1,0 +1,252 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "name": "MOIL Reserve Potential Zones",
+    "description": "AI/ML-classified manganese reserve potential polygons with probability scores, estimated tonnage, and ore grade attributes. Balaghat reserves derived from existing gis/geojson/reserve_zones.geojson.",
+    "data_type": "DEMO",
+    "model_version": "Reserve_ML_v1.0_DEMO",
+    "note": "All reserve scores, probabilities, tonnage estimates, and grade values are SYNTHETIC DEMO data for prototype visualization. They do NOT represent actual geological measurements or ML model outputs. Replace with real ML predictions when available."
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "RES_BAL_NORTH",
+      "properties": {
+        "zone_id": "Z01",
+        "mine_id": "M01",
+        "mine_name": "Balaghat Mine",
+        "name": "North High-Grade Manganese Reef",
+        "reserve_level": "HIGH",
+        "reserve_score": 0.89,
+        "estimated_tonnage_kt": 485,
+        "avg_mn_grade_pct": 44.2,
+        "avg_fe_grade_pct": 5.8,
+        "confidence": 0.86,
+        "primary_formation": "Sausar Group Gondite",
+        "data_type": "DEMO"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [80.1825, 21.8155],
+            [80.1915, 21.8155],
+            [80.191, 21.819],
+            [80.182, 21.8185],
+            [80.1825, 21.8155]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "RES_BAL_CENTRAL",
+      "properties": {
+        "zone_id": "Z02",
+        "mine_id": "M01",
+        "mine_name": "Balaghat Mine",
+        "name": "Central Thick Ore Bed",
+        "reserve_level": "HIGH",
+        "reserve_score": 0.84,
+        "estimated_tonnage_kt": 620,
+        "avg_mn_grade_pct": 41.6,
+        "avg_fe_grade_pct": 6.9,
+        "confidence": 0.83,
+        "primary_formation": "Mansar Schist",
+        "data_type": "DEMO"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [80.1805, 21.8105],
+            [80.1895, 21.8105],
+            [80.189, 21.814],
+            [80.18, 21.814],
+            [80.1805, 21.8105]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "RES_BAL_SOUTH",
+      "properties": {
+        "zone_id": "Z03",
+        "mine_id": "M01",
+        "mine_name": "Balaghat Mine",
+        "name": "South Marginal Siliceous Lode",
+        "reserve_level": "MEDIUM",
+        "reserve_score": 0.62,
+        "estimated_tonnage_kt": 295,
+        "avg_mn_grade_pct": 32.4,
+        "avg_fe_grade_pct": 9.2,
+        "confidence": 0.77,
+        "primary_formation": "Chorbaoli Quartzite",
+        "data_type": "DEMO"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [80.1765, 21.8045],
+            [80.1865, 21.8045],
+            [80.186, 21.8085],
+            [80.176, 21.8085],
+            [80.1765, 21.8045]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "RES_BAL_EAST",
+      "properties": {
+        "zone_id": "Z04",
+        "mine_id": "M01",
+        "mine_name": "Balaghat Mine",
+        "name": "East Low-Grade Exploration Zone",
+        "reserve_level": "LOW",
+        "reserve_score": 0.31,
+        "estimated_tonnage_kt": 85,
+        "avg_mn_grade_pct": 21.5,
+        "avg_fe_grade_pct": 11.4,
+        "confidence": 0.71,
+        "primary_formation": "Tirodi Biotite Gneiss",
+        "data_type": "DEMO"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [80.1915, 21.8115],
+            [80.1985, 21.8115],
+            [80.198, 21.8155],
+            [80.191, 21.8155],
+            [80.1915, 21.8115]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "RES_KAN_MAIN",
+      "properties": {
+        "zone_id": "Z06",
+        "mine_id": "M05",
+        "mine_name": "Kandri Mine",
+        "name": "Kandri Primary Ore Body",
+        "reserve_level": "HIGH",
+        "reserve_score": 0.82,
+        "estimated_tonnage_kt": 410,
+        "avg_mn_grade_pct": 40.8,
+        "avg_fe_grade_pct": 7.1,
+        "confidence": 0.80,
+        "primary_formation": "Sausar Group",
+        "data_type": "DEMO"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [79.258, 21.414],
+            [79.270, 21.414],
+            [79.269, 21.409],
+            [79.257, 21.409],
+            [79.258, 21.414]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "RES_KAN_SOUTH",
+      "properties": {
+        "zone_id": "Z07",
+        "mine_id": "M05",
+        "mine_name": "Kandri Mine",
+        "name": "Kandri Southern Extension",
+        "reserve_level": "MEDIUM",
+        "reserve_score": 0.58,
+        "estimated_tonnage_kt": 210,
+        "avg_mn_grade_pct": 33.2,
+        "avg_fe_grade_pct": 8.5,
+        "confidence": 0.74,
+        "primary_formation": "Sausar Group",
+        "data_type": "DEMO"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [79.260, 21.408],
+            [79.272, 21.408],
+            [79.271, 21.403],
+            [79.259, 21.403],
+            [79.260, 21.408]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "RES_DON_PIT",
+      "properties": {
+        "zone_id": "Z08",
+        "mine_id": "M09",
+        "mine_name": "Dongri Buzurg Mine",
+        "name": "Dongri Primary Open Pit Reserve",
+        "reserve_level": "HIGH",
+        "reserve_score": 0.87,
+        "estimated_tonnage_kt": 540,
+        "avg_mn_grade_pct": 42.5,
+        "avg_fe_grade_pct": 6.3,
+        "confidence": 0.85,
+        "primary_formation": "Sausar Group Gondite",
+        "data_type": "DEMO"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [79.681, 21.549],
+            [79.693, 21.549],
+            [79.692, 21.544],
+            [79.680, 21.544],
+            [79.681, 21.549]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "RES_DON_SOUTH",
+      "properties": {
+        "zone_id": "Z09",
+        "mine_id": "M09",
+        "mine_name": "Dongri Buzurg Mine",
+        "name": "Dongri South Marginal Zone",
+        "reserve_level": "LOW",
+        "reserve_score": 0.35,
+        "estimated_tonnage_kt": 120,
+        "avg_mn_grade_pct": 24.8,
+        "avg_fe_grade_pct": 10.7,
+        "confidence": 0.68,
+        "primary_formation": "Mansar Schist",
+        "data_type": "DEMO"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [79.683, 21.543],
+            [79.694, 21.543],
+            [79.693, 21.539],
+            [79.682, 21.539],
+            [79.683, 21.543]
+          ]
+        ]
+      }
+    }
+  ]
+}

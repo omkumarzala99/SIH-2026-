@@ -1,0 +1,132 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "name": "MOIL Mine Lease Boundaries",
+    "description": "Approximate concession lease perimeter polygons for major MOIL mines. These are representative boundaries for visualization only — not survey-grade lease boundaries.",
+    "data_type": "DEMO_APPROXIMATE",
+    "note": "Balaghat boundary is derived from existing gis/geojson/mine_boundary.geojson. Other boundaries are approximate representative polygons centered on known mine coordinates."
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "BOUNDARY_BALAGHAT",
+      "properties": {
+        "mine_id": "M01",
+        "name": "Balaghat Mine Lease Perimeter",
+        "state": "Madhya Pradesh",
+        "district": "Balaghat",
+        "area_sq_km": 14.85,
+        "operator": "MOIL Limited",
+        "lease_validity": "2045-12-31",
+        "data_type": "APPROXIMATE",
+        "stroke": "#f59e0b",
+        "stroke-width": 3,
+        "fill": "#f59e0b",
+        "fill-opacity": 0.08
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [80.171, 21.821],
+            [80.198, 21.821],
+            [80.201, 21.805],
+            [80.185, 21.801],
+            [80.169, 21.808],
+            [80.171, 21.821]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BOUNDARY_KANDRI",
+      "properties": {
+        "mine_id": "M05",
+        "name": "Kandri Mine Lease Perimeter",
+        "state": "Maharashtra",
+        "district": "Nagpur",
+        "area_sq_km": 8.2,
+        "operator": "MOIL Limited",
+        "data_type": "DEMO_APPROXIMATE",
+        "stroke": "#3b82f6",
+        "stroke-width": 3,
+        "fill": "#3b82f6",
+        "fill-opacity": 0.08
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [79.255, 21.418],
+            [79.276, 21.418],
+            [79.278, 21.403],
+            [79.263, 21.400],
+            [79.253, 21.407],
+            [79.255, 21.418]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BOUNDARY_DONGRI",
+      "properties": {
+        "mine_id": "M09",
+        "name": "Dongri Buzurg Mine Lease Perimeter",
+        "state": "Maharashtra",
+        "district": "Bhandara",
+        "area_sq_km": 5.6,
+        "operator": "MOIL Limited",
+        "data_type": "DEMO_APPROXIMATE",
+        "stroke": "#10b981",
+        "stroke-width": 3,
+        "fill": "#10b981",
+        "fill-opacity": 0.08
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [79.678, 21.553],
+            [79.696, 21.553],
+            [79.697, 21.540],
+            [79.685, 21.537],
+            [79.676, 21.543],
+            [79.678, 21.553]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BOUNDARY_CHIKLA",
+      "properties": {
+        "mine_id": "M10",
+        "name": "Chikla Mine Lease Perimeter",
+        "state": "Maharashtra",
+        "district": "Bhandara",
+        "area_sq_km": 4.1,
+        "operator": "MOIL Limited",
+        "data_type": "DEMO_APPROXIMATE",
+        "stroke": "#8b5cf6",
+        "stroke-width": 3,
+        "fill": "#8b5cf6",
+        "fill-opacity": 0.08
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [79.735, 21.540],
+            [79.753, 21.540],
+            [79.754, 21.527],
+            [79.742, 21.525],
+            [79.733, 21.530],
+            [79.735, 21.540]
+          ]
+        ]
+      }
+    }
+  ]
+}
