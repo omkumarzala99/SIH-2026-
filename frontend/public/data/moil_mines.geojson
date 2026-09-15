@@ -1,0 +1,248 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "name": "MOIL Limited — Manganese Mine Locations",
+    "description": "All operational MOIL manganese mines in Maharashtra and Madhya Pradesh",
+    "data_type": "OFFICIAL_APPROXIMATE",
+    "coordinate_sources": [
+      "forestsclearance.nic.in (Government EC documents)",
+      "Mapcarta / Wikimapia geographic references",
+      "ResearchGate geological publications",
+      "MOIL official website (moil.nic.in / moillimited.co.in)"
+    ],
+    "last_updated": "2026-09-15",
+    "coordinate_note": "Coordinates are sourced from publicly available government and geographic references. Some are approximate town/village-level references where exact mine entrance coordinates are not publicly available. Approximate coordinates are flagged with coordinate_accuracy: APPROXIMATE."
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "M01",
+      "properties": {
+        "mine_id": "M01",
+        "name": "Balaghat Mine (Bharveli)",
+        "state": "Madhya Pradesh",
+        "district": "Balaghat",
+        "tehsil": "Balaghat",
+        "commodity": "Manganese Ore",
+        "mine_type": "Underground",
+        "status": "Operational",
+        "operator": "MOIL Limited",
+        "description": "Largest and deepest underground manganese mine in Asia. Also houses a ferro-manganese plant (FMP).",
+        "coordinate_accuracy": "REFERENCED",
+        "source": "Wikimapia / Mapcarta (21.85016°N, 80.22742°E)",
+        "icon": "underground"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [80.2274, 21.8502]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "M02",
+      "properties": {
+        "mine_id": "M02",
+        "name": "Tirodi Mine",
+        "state": "Madhya Pradesh",
+        "district": "Balaghat",
+        "tehsil": "Tirodi",
+        "commodity": "Manganese Ore",
+        "mine_type": "Underground",
+        "status": "Operational",
+        "operator": "MOIL Limited",
+        "description": "Underground manganese mine in the Tirodi area of Balaghat district.",
+        "coordinate_accuracy": "REFERENCED",
+        "source": "Mapcarta / forestsclearance.nic.in (21°41′1″N, 79°43′29″E)",
+        "icon": "underground"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [79.7247, 21.6836]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "M03",
+      "properties": {
+        "mine_id": "M03",
+        "name": "Sitapatore Mine",
+        "state": "Madhya Pradesh",
+        "district": "Balaghat",
+        "tehsil": "Tirodi",
+        "commodity": "Manganese Ore",
+        "mine_type": "Underground",
+        "status": "Operational",
+        "operator": "MOIL Limited",
+        "description": "Underground manganese mine near Sukli in Balaghat district.",
+        "coordinate_accuracy": "APPROXIMATE",
+        "source": "forestsclearance.nic.in (21°42′N, 79°40′E — approximate area reference)",
+        "icon": "underground"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [79.6667, 21.7000]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "M04",
+      "properties": {
+        "mine_id": "M04",
+        "name": "Ukwa Mine",
+        "state": "Madhya Pradesh",
+        "district": "Balaghat",
+        "tehsil": "Ukwa",
+        "commodity": "Manganese Ore",
+        "mine_type": "Underground",
+        "status": "Operational",
+        "operator": "MOIL Limited",
+        "description": "Underground manganese mine in the Ukwa area of Balaghat district.",
+        "coordinate_accuracy": "APPROXIMATE",
+        "source": "latitude.to / geloky.com (21.9691°N, 80.4582°E — town-level reference)",
+        "icon": "underground"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [80.4582, 21.9691]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "M05",
+      "properties": {
+        "mine_id": "M05",
+        "name": "Kandri Mine",
+        "state": "Maharashtra",
+        "district": "Nagpur",
+        "tehsil": "Ramtek",
+        "commodity": "Manganese Ore",
+        "mine_type": "Underground",
+        "status": "Operational",
+        "operator": "MOIL Limited",
+        "description": "Underground manganese mine located ~42 km from Nagpur city on NH 7. Falls under Survey of India Toposheet 55 O/7.",
+        "coordinate_accuracy": "REFERENCED",
+        "source": "forestsclearance.nic.in (21°24′N, 79°16′E)",
+        "icon": "underground"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [79.2656, 21.4106]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "M06",
+      "properties": {
+        "mine_id": "M06",
+        "name": "Mansar Mine",
+        "state": "Maharashtra",
+        "district": "Nagpur",
+        "tehsil": "Ramtek",
+        "commodity": "Manganese Ore",
+        "mine_type": "Underground",
+        "status": "Operational",
+        "operator": "MOIL Limited",
+        "description": "Underground manganese mine with ~140.49 hectares leasehold. Active since 1903. Uses horizontal cut-and-fill method.",
+        "coordinate_accuracy": "APPROXIMATE",
+        "source": "Mapcarta — Mansar village, Ramtek tehsil (21.3967°N, 79.2627°E)",
+        "icon": "underground"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [79.2627, 21.3967]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "M07",
+      "properties": {
+        "mine_id": "M07",
+        "name": "Beldongri Mine",
+        "state": "Maharashtra",
+        "district": "Nagpur",
+        "tehsil": "Parseoni",
+        "commodity": "Manganese Ore",
+        "mine_type": "Underground",
+        "status": "Operational",
+        "operator": "MOIL Limited",
+        "description": "Underground manganese mine in the Parseoni area, part of the Sausar manganese belt.",
+        "coordinate_accuracy": "APPROXIMATE",
+        "source": "Parseoni town reference — moillimited.co.in, latitude.to (21.3833°N, 79.1500°E)",
+        "icon": "underground"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [79.1500, 21.3833]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "M08",
+      "properties": {
+        "mine_id": "M08",
+        "name": "Gumgaon Mine",
+        "state": "Maharashtra",
+        "district": "Nagpur",
+        "tehsil": "Saoner",
+        "commodity": "Manganese Ore",
+        "mine_type": "Underground",
+        "status": "Operational",
+        "operator": "MOIL Limited",
+        "description": "Underground manganese mine near Gumgaon, Khodegaon, and Tegai villages. Accessible via NH 47 (Nagpur–Chhindwara road). Operational since early 20th century.",
+        "coordinate_accuracy": "REFERENCED",
+        "source": "ResearchGate / forestsclearance.nic.in (21°24′N, 78°59′E)",
+        "icon": "underground"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [78.9833, 21.4000]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "M09",
+      "properties": {
+        "mine_id": "M09",
+        "name": "Dongri Buzurg Mine",
+        "state": "Maharashtra",
+        "district": "Bhandara",
+        "tehsil": "Tumsar",
+        "commodity": "Manganese Ore",
+        "mine_type": "Opencast",
+        "status": "Operational",
+        "operator": "MOIL Limited",
+        "description": "Opencast manganese mine with an Electrolytic Manganese Dioxide (EMD) plant. Located in Tumsar tehsil, Bhandara district.",
+        "coordinate_accuracy": "REFERENCED",
+        "source": "forestsclearance.nic.in (21°32′46″N, 79°41′12″E)",
+        "icon": "opencast"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [79.6867, 21.5461]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "M10",
+      "properties": {
+        "mine_id": "M10",
+        "name": "Chikla Mine",
+        "state": "Maharashtra",
+        "district": "Bhandara",
+        "tehsil": "Tumsar",
+        "commodity": "Manganese Ore",
+        "mine_type": "Underground",
+        "status": "Operational",
+        "operator": "MOIL Limited",
+        "description": "Underground manganese mine in the Tumsar tehsil of Bhandara district.",
+        "coordinate_accuracy": "REFERENCED",
+        "source": "Mapcarta / forestsclearance.nic.in (21.5336°N, 79.7437°E)",
+        "icon": "underground"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [79.7437, 21.5336]
+      }
+    }
+  ]
+}
