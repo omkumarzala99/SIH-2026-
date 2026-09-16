@@ -12,6 +12,7 @@ class ReservePredictionRequest(BaseModel):
     mn_grade_pct: Optional[float] = 40.0
     fe_grade_pct: Optional[float] = 6.5
     sio2_pct: Optional[float] = 12.0
+    phosphorus_pct: Optional[float] = 0.15
     rock_formation: Optional[str] = "Mansar Schist"
     ndvi: Optional[float] = 0.18
     land_surface_temp_c: Optional[float] = 34.5

@@ -21,7 +21,7 @@ services:
 
   backend:
     build:
-      context: ./backend
+      context: .
       dockerfile: Dockerfile
     container_name: moil_backend
     restart: unless-stopped
@@ -29,23 +29,27 @@ services:
       - "8000:8000"
     environment:
       - APP_MODE=demo
+      - ENVIRONMENT=production
+      - PORT=8000
       - DATABASE_URL=postgresql://moil_user:moil_secure_password@database:5432/moil_mining
-      - FRONTEND_URL=http://localhost:5173
+      - CORS_ORIGINS=http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173
     depends_on:
       database:
         condition: service_healthy
     volumes:
       - ./data:/app/data
-      - ./ai_ml:/app/ai_ml
+      - ./ai_ml/models:/app/ai_ml/models
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=http://localhost:8000/api
     container_name: moil_frontend
     restart: unless-stopped
     ports:
-      - "5173:5173"
+      - "5173:80"
     environment:
       - VITE_API_URL=http://localhost:8000/api
     depends_on:

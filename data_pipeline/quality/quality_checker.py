@@ -81,7 +81,7 @@ def get_all_data_quality_metrics(base_dir: str = "data/mock") -> Dict[str, Any]:
     metrics["geological"] = evaluate_dataset_quality(
         datasets.get("geological", pd.DataFrame()),
         "Geological Boreholes",
-        ["borehole_id"]
+        ["borehole_id", "depth_meters"]
     )
     metrics["production"] = evaluate_dataset_quality(
         datasets.get("production", pd.DataFrame()),

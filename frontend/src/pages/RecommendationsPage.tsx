@@ -13,7 +13,12 @@ import {
 import { RecommendationItem } from '../types';
 import { apiService } from '../services/api';
 
-export const RecommendationsPage: React.FC = () => {
+interface RecommendationsPageProps {
+  selectedMineId?: string;
+  selectedMineName?: string;
+}
+
+export const RecommendationsPage: React.FC<RecommendationsPageProps> = ({ selectedMineId, selectedMineName }) => {
   const [recommendations, setRecommendations] = useState<RecommendationItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedRecForModify, setSelectedRecForModify] = useState<RecommendationItem | null>(null);
@@ -24,7 +29,7 @@ export const RecommendationsPage: React.FC = () => {
   const fetchRecommendations = async () => {
     setLoading(true);
     try {
-      const list = await apiService.getRecommendations();
+      const list = await apiService.getRecommendations(selectedMineId);
       setRecommendations(list);
     } finally {
       setLoading(false);
@@ -33,7 +38,7 @@ export const RecommendationsPage: React.FC = () => {
 
   useEffect(() => {
     fetchRecommendations();
-  }, []);
+  }, [selectedMineId]);
 
   const handleAction = async (id: string, action: 'APPROVE' | 'REJECT' | 'MODIFY') => {
     try {
@@ -59,7 +64,12 @@ export const RecommendationsPage: React.FC = () => {
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-2">
             <Lightbulb className="w-6 h-6 text-amber-400" />
-            Decision Support & AI Action Protocols
+            Decision Support &amp; AI Action Protocols
+            {selectedMineName && (
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-normal">
+                {selectedMineName}
+              </span>
+            )}
           </h1>
           <p className="text-sm text-slate-400">
             Prescriptive mitigation steps with Human-in-the-Loop decision governance (Approve, Reject, or Modify)
@@ -186,40 +196,46 @@ export const RecommendationsPage: React.FC = () => {
               <h2 className="text-base font-bold text-white">{rec.title}</h2>
 
               {/* Story Pipeline: Problem -> Risk -> Recommendation -> Expected Impact */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-3 bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
                 {/* 1. Problem */}
-                <div className="space-y-1">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                    <AlertCircle className="w-3 h-3 text-rose-400" />
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                    <AlertCircle className="w-3.5 h-3.5 text-rose-400 shrink-0" />
                     1. Observed Problem
                   </span>
                   <p className="text-xs text-slate-300 leading-relaxed">{rec.problem_summary}</p>
                 </div>
 
                 {/* 2. Bottleneck / Risk */}
-                <div className="space-y-1">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                    <ShieldAlert className="w-3 h-3 text-orange-400" />
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                    <ShieldAlert className="w-3.5 h-3.5 text-orange-400 shrink-0" />
                     2. Risk Consequence
                   </span>
                   <p className="text-xs text-slate-300 leading-relaxed">
-                    Sustained production shortfall and potential haul fleet idling.
+                    {rec.category === 'EQUIPMENT'
+                      ? 'Hauling bottleneck and idle primary crusher feed capacity.'
+                      : rec.category === 'BLASTING'
+                      ? 'Wet blast-hole misfire risk and broken muckpile extraction delay.'
+                      : rec.category === 'ENVIRONMENTAL'
+                      ? 'Pit sump saturation and slippery bench haulage hazard.'
+                      : 'Sustained extraction shortfall and operational deficit.'}
                   </p>
                 </div>
 
                 {/* 3. Recommended Action */}
-                <div className="space-y-1">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                    <Lightbulb className="w-3 h-3 text-amber-400" />
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                    <Lightbulb className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                     3. Recommended Action
                   </span>
                   <p className="text-xs text-amber-200 font-medium leading-relaxed">{rec.recommended_action}</p>
                 </div>
 
                 {/* 4. Expected Impact */}
-                <div className="space-y-1">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                    <TrendingUp className="w-3 h-3 text-emerald-400" />
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                    <TrendingUp className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                     4. Expected Recovery
                   </span>
                   <p className="text-xs text-emerald-300 font-medium leading-relaxed">{rec.expected_impact}</p>
@@ -238,14 +254,14 @@ export const RecommendationsPage: React.FC = () => {
               )}
 
               {/* Action Buttons: Approve, Reject, Modify */}
-              <div className="flex flex-wrap items-center justify-end gap-2 pt-2 border-t border-slate-800/80">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-2.5 pt-3 border-t border-slate-800/80">
                 <button
                   onClick={() => {
                     setSelectedRecForModify(rec);
                     setModifiedText(rec.recommended_action);
                     setManagerNotes(rec.manager_notes || '');
                   }}
-                  className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold flex items-center space-x-1.5 transition-colors border border-slate-700"
+                  className="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors border border-slate-700"
                 >
                   <Edit3 className="w-3.5 h-3.5 text-slate-400" />
                   <span>Modify</span>
@@ -253,7 +269,7 @@ export const RecommendationsPage: React.FC = () => {
 
                 <button
                   onClick={() => handleAction(rec.id, 'REJECT')}
-                  className="px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-semibold flex items-center space-x-1.5 transition-colors"
+                  className="px-3.5 py-2 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors"
                 >
                   <XCircle className="w-3.5 h-3.5 text-rose-400" />
                   <span>Reject</span>
@@ -261,7 +277,7 @@ export const RecommendationsPage: React.FC = () => {
 
                 <button
                   onClick={() => handleAction(rec.id, 'APPROVE')}
-                  className="px-4 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold flex items-center space-x-1.5 transition-all shadow-md"
+                  className="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold flex items-center justify-center space-x-1.5 transition-all shadow-md"
                 >
                   <CheckCircle2 className="w-3.5 h-3.5 text-slate-950" />
                   <span>Approve Action</span>

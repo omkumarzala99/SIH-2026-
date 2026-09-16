@@ -1,7 +1,7 @@
 """
 Explainable AI (XAI) helper for risk breakdown and factor attribution.
 """
-from typing import List
+from typing import List, Optional
 from ai_ml.risk_prediction.schemas import RiskFactor
 
 
@@ -9,7 +9,12 @@ def build_risk_explanations(
     downtime: float,
     rainfall: float,
     blasting: float,
-    shortfall_pct: float
+    shortfall_pct: float,
+    soil_moisture: Optional[float] = None,
+    equipment_efficiency: Optional[float] = None,
+    planned_production: Optional[float] = None,
+    predicted_production: Optional[float] = None,
+    shortfall: Optional[float] = None
 ) -> List[RiskFactor]:
     """Evaluates authentic contributing factors without fake metrics."""
     factors: List[RiskFactor] = []
@@ -28,12 +33,16 @@ def build_risk_explanations(
         sev = "LOW"
         desc = f"Optimal equipment availability ({downtime}h downtime)."
 
+    eq_observed = f"{downtime} hrs"
+    if equipment_efficiency is not None:
+        eq_observed += f" ({equipment_efficiency}% eff)"
+
     factors.append(RiskFactor(
         name="Equipment Downtime",
         severity=sev,
         weight=0.35,
         description=desc,
-        observed_value=f"{downtime} hrs"
+        observed_value=eq_observed
     ))
 
     # 2. Weather & rainfall evaluation
@@ -50,12 +59,16 @@ def build_risk_explanations(
         sev = "LOW"
         desc = f"Favorable weather conditions ({rainfall}mm precipitation)."
 
+    wx_observed = f"{rainfall} mm"
+    if soil_moisture is not None:
+        wx_observed += f" ({soil_moisture}% soil moist)"
+
     factors.append(RiskFactor(
         name="Precipitation & Monsoon Impact",
         severity=sev,
         weight=0.25,
         description=desc,
-        observed_value=f"{rainfall} mm"
+        observed_value=wx_observed
     ))
 
     # 3. Blasting delay evaluation
@@ -94,12 +107,18 @@ def build_risk_explanations(
         sev = "LOW"
         desc = f"Production tracking close to planned targets ({shortfall_pct}% shortfall)."
 
+    if planned_production is not None and predicted_production is not None:
+        prod_observed = f"{shortfall_pct}% ({predicted_production}t / {planned_production}t)"
+    else:
+        prod_observed = f"{shortfall_pct}%"
+
     factors.append(RiskFactor(
         name="Daily Production Deficit",
         severity=sev,
         weight=0.20,
         description=desc,
-        observed_value=f"{shortfall_pct}%"
+        observed_value=prod_observed
     ))
 
     return factors
+

@@ -3,7 +3,7 @@ Master API Router: Consolidates all feature routes for the MOIL Mining Platform.
 """
 from fastapi import APIRouter
 from backend.app.api.routes import (
-    health, dashboard, reserves, production, risk, recommendations, gis, simulation, data_quality, demo, models_meta
+    health, dashboard, reserves, production, risk, recommendations, gis, simulation, data_quality, demo, models_meta, pipeline
 )
 
 api_router = APIRouter()
@@ -19,3 +19,4 @@ api_router.include_router(simulation.router)
 api_router.include_router(data_quality.router)
 api_router.include_router(demo.router)
 api_router.include_router(models_meta.router)
+api_router.include_router(pipeline.router)

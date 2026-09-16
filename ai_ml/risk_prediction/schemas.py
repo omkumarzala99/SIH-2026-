@@ -19,6 +19,14 @@ class RiskAssessmentRequest(BaseModel):
     rainfall_mm: float = Field(default=28.0, ge=0.0)
     blasting_delay_hours: float = Field(default=1.5, ge=0.0)
     shortfall_percentage: float = Field(default=16.0, ge=0.0)
+    # Optional production and operational context
+    planned_production: Optional[float] = None
+    predicted_production: Optional[float] = None
+    shortfall: Optional[float] = None
+    equipment_efficiency_pct: Optional[float] = None
+    soil_moisture_pct: Optional[float] = None
+    flood_risk_score: Optional[float] = None
+    active_equipment_count: Optional[float] = None
 
 
 class RiskAssessmentResponse(BaseModel):
@@ -31,3 +39,9 @@ class RiskAssessmentResponse(BaseModel):
     production_risk: float
     contributing_factors: List[RiskFactor]
     summary_explanation: str
+    # Optional production context
+    planned_production: Optional[float] = None
+    predicted_production: Optional[float] = None
+    shortfall: Optional[float] = None
+    shortfall_percentage: Optional[float] = None
+

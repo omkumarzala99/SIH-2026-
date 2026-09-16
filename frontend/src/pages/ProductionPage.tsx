@@ -14,7 +14,12 @@ import { ProductionTrendData, EquipmentItem } from '../types';
 import { apiService } from '../services/api';
 import { ProductionChart } from '../components/charts/ProductionChart';
 
-export const ProductionPage: React.FC = () => {
+interface ProductionPageProps {
+  selectedMineId?: string;
+  selectedMineName?: string;
+}
+
+export const ProductionPage: React.FC<ProductionPageProps> = ({ selectedMineId, selectedMineName }) => {
   const [prodData, setProdData] = useState<ProductionTrendData | null>(null);
   const [equipmentList, setEquipmentList] = useState<EquipmentItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,8 +36,8 @@ export const ProductionPage: React.FC = () => {
       setLoading(true);
       try {
         const [p, eq] = await Promise.all([
-          apiService.getProduction(),
-          apiService.getEquipment()
+          apiService.getProduction(selectedMineId),
+          apiService.getEquipment(selectedMineId)
         ]);
         setProdData(p);
         setEquipmentList(eq);
@@ -43,29 +48,31 @@ export const ProductionPage: React.FC = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [selectedMineId]);
 
   const handleRecalculateForecast = async () => {
     setForecasting(true);
     try {
-      // Local or API prediction
-      const lossDowntime = downtimeInput * 28.0;
-      const lossWeather = Math.max(0, (rainfallInput - 15.0) * 1.8);
-      const lossBlast = blastingInput * 35.0;
-      const totalLoss = lossDowntime + lossWeather + lossBlast;
-      const predicted = Math.max(0, Math.round(1000 - totalLoss));
-      const shortfall = 1000 - predicted;
-      const shortfallPct = Math.round((shortfall / 1000) * 100);
+      const planned = prodData?.current_target || (selectedMineId === 'MINE_BALAGHAT_01' ? 1000 : 660);
+      const res = await apiService.forecastProduction({
+        mine_id: selectedMineId,
+        planned_production: planned,
+        equipment_downtime_hours: downtimeInput,
+        rainfall_mm: rainfallInput,
+        blasting_delay_hours: blastingInput
+      });
 
       setForecastResult({
-        planned: 1000,
-        predicted,
-        shortfall,
-        shortfall_pct: shortfallPct,
-        loss_downtime: Math.round(lossDowntime),
-        loss_weather: Math.round(lossWeather),
-        loss_blast: Math.round(lossBlast)
+        planned: res.planned_production || planned,
+        predicted: res.predicted_production,
+        shortfall: res.shortfall_tonnes !== undefined ? res.shortfall_tonnes : res.shortfall,
+        shortfall_pct: res.shortfall_percentage,
+        loss_downtime: res.contributing_factors?.equipment_downtime_loss_tons || Math.round(downtimeInput * 28.0),
+        loss_weather: res.contributing_factors?.weather_rainfall_loss_tons || Math.round(Math.max(0, (rainfallInput - 15.0) * 1.8)),
+        loss_blast: res.contributing_factors?.blasting_delay_loss_tons || Math.round(blastingInput * 35.0)
       });
+    } catch (err) {
+      console.error('Forecast recalculation failed:', err);
     } finally {
       setForecasting(false);
     }
@@ -82,7 +89,12 @@ export const ProductionPage: React.FC = () => {
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-2">
             <TrendingUp className="w-6 h-6 text-blue-400" />
-            Production Forecasting & Shortfall Prediction
+            Production Forecasting &amp; Shortfall Prediction
+            {selectedMineName && (
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 font-normal">
+                {selectedMineName}
+              </span>
+            )}
           </h1>
           <p className="text-sm text-slate-400">
             Real-time daily extraction monitoring, shift tracking, and machine-learning operational shortfall detection

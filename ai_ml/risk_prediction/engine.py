@@ -10,7 +10,40 @@ def evaluate_mining_risk(req: RiskAssessmentRequest) -> RiskAssessmentResponse:
     downtime = req.equipment_downtime_hours
     rainfall = req.rainfall_mm
     blasting = req.blasting_delay_hours
-    shortfall_pct = req.shortfall_percentage
+
+    planned_prod = req.planned_production
+    pred_prod = req.predicted_production
+    shortfall = req.shortfall
+
+    # If planned production is provided, derive or infer predicted production and shortfall
+    if planned_prod is not None:
+        if pred_prod is None:
+            # Dynamically invoke production ML prediction
+            from ai_ml.production_prediction.schemas import ProductionPredictionRequest
+            from ai_ml.production_prediction.predict import predict_production_and_shortfall
+            prod_req = ProductionPredictionRequest(
+                mine_id=req.mine_id,
+                planned_production=planned_prod,
+                equipment_downtime_hours=downtime,
+                rainfall_mm=rainfall,
+                blasting_delay_hours=blasting,
+                equipment_efficiency_pct=req.equipment_efficiency_pct,
+                soil_moisture_pct=req.soil_moisture_pct,
+                flood_risk_score=req.flood_risk_score,
+                active_equipment_count=req.active_equipment_count
+            )
+            prod_res = predict_production_and_shortfall(prod_req)
+            pred_prod = prod_res.predicted_production
+            shortfall = prod_res.shortfall
+            shortfall_pct = prod_res.shortfall_percentage
+        else:
+            if shortfall is None:
+                shortfall = max(0.0, planned_prod - pred_prod)
+            shortfall_pct = round((shortfall / planned_prod * 100.0), 2) if planned_prod > 0 else 0.0
+    else:
+        shortfall_pct = req.shortfall_percentage
+        if shortfall is None and planned_prod is not None:
+            shortfall = round((shortfall_pct / 100.0) * planned_prod, 1)
 
     # Domain risk scores scaled to 0-100
     eq_risk = min(100.0, max(0.0, (downtime / 8.0) * 100.0))
@@ -36,7 +69,17 @@ def evaluate_mining_risk(req: RiskAssessmentRequest) -> RiskAssessmentResponse:
     else:
         tier = "LOW"
 
-    factors = build_risk_explanations(downtime, rainfall, blasting, shortfall_pct)
+    factors = build_risk_explanations(
+        downtime=downtime,
+        rainfall=rainfall,
+        blasting=blasting,
+        shortfall_pct=shortfall_pct,
+        soil_moisture=req.soil_moisture_pct,
+        equipment_efficiency=req.equipment_efficiency_pct,
+        planned_production=planned_prod,
+        predicted_production=pred_prod,
+        shortfall=shortfall
+    )
 
     critical_factors = [f.name for f in factors if f.severity in ["HIGH", "CRITICAL"]]
     if critical_factors:
@@ -53,5 +96,10 @@ def evaluate_mining_risk(req: RiskAssessmentRequest) -> RiskAssessmentResponse:
         blasting_risk=round(blasting_risk, 1),
         production_risk=round(prod_risk, 1),
         contributing_factors=factors,
-        summary_explanation=summary
+        summary_explanation=summary,
+        planned_production=planned_prod,
+        predicted_production=pred_prod,
+        shortfall=shortfall,
+        shortfall_percentage=round(shortfall_pct, 2)
     )
+

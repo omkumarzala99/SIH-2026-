@@ -1,9 +1,9 @@
 """
 Decision Support & AI Recommendations Endpoints.
 """
-from fastapi import APIRouter, Depends, HTTPException
+from typing import List, Optional
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from typing import List
 from datetime import datetime, timezone
 from backend.app.api.dependencies import get_db
 from database.models import Recommendation
@@ -16,9 +16,15 @@ router = APIRouter(prefix="/recommendations", tags=["Recommendations"])
 
 
 @router.get("", response_model=List[RecommendationItem])
-def list_recommendations(db: Session = Depends(get_db)):
+def list_recommendations(
+    mine_id: Optional[str] = Query(None, description="Optional mine ID filter"),
+    db: Session = Depends(get_db)
+):
     """Fetches all active prescriptive AI recommendations."""
-    recs = db.query(Recommendation).all()
+    query = db.query(Recommendation)
+    if mine_id and mine_id.upper() != "ALL":
+        query = query.filter(Recommendation.mine_id == mine_id)
+    recs = query.all()
     if not recs:
         # Generate initial recommendations if DB is fresh
         sample_gen = generate_recommendations(RecommendationGenerationRequest())

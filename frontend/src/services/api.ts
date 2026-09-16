@@ -1,7 +1,8 @@
 // API client with seamless offline fallback and Demo Mode
 import {
   DashboardData, ReserveZone, BoreholeRecord, ProductionTrendData,
-  EquipmentItem, RiskData, RecommendationItem, SimulationResult, DataQualityReport
+  EquipmentItem, RiskData, RecommendationItem, SimulationResult, DataQualityReport,
+  PipelineRunResult
 } from '../types';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
@@ -316,10 +317,11 @@ export const apiService = {
     this.isDemoMode = enabled;
   },
 
-  async getDashboard(): Promise<DashboardData> {
+  async getDashboard(mineId?: string): Promise<DashboardData> {
     if (this.isDemoMode) return FALLBACK_DASHBOARD;
     try {
-      const res = await fetch(`${API_BASE}/dashboard`, { signal: AbortSignal.timeout(2500) });
+      const url = mineId ? `${API_BASE}/dashboard?mine_id=${encodeURIComponent(mineId)}` : `${API_BASE}/dashboard`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(2500) });
       if (!res.ok) throw new Error('API failed');
       return await res.json();
     } catch {
@@ -327,10 +329,11 @@ export const apiService = {
     }
   },
 
-  async getReserves(): Promise<ReserveZone[]> {
+  async getReserves(mineId?: string): Promise<ReserveZone[]> {
     if (this.isDemoMode) return FALLBACK_RESERVES;
     try {
-      const res = await fetch(`${API_BASE}/reserves`, { signal: AbortSignal.timeout(2500) });
+      const url = mineId ? `${API_BASE}/reserves?mine_id=${encodeURIComponent(mineId)}` : `${API_BASE}/reserves`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(2500) });
       if (!res.ok) throw new Error('API failed');
       return await res.json();
     } catch {
@@ -374,10 +377,11 @@ export const apiService = {
     }
   },
 
-  async getProduction(): Promise<ProductionTrendData> {
+  async getProduction(mineId?: string): Promise<ProductionTrendData> {
     if (this.isDemoMode) return FALLBACK_PRODUCTION;
     try {
-      const res = await fetch(`${API_BASE}/production`, { signal: AbortSignal.timeout(2500) });
+      const url = mineId ? `${API_BASE}/production?mine_id=${encodeURIComponent(mineId)}` : `${API_BASE}/production`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(2500) });
       if (!res.ok) throw new Error('API failed');
       return await res.json();
     } catch {
@@ -385,10 +389,53 @@ export const apiService = {
     }
   },
 
-  async getEquipment(): Promise<EquipmentItem[]> {
+  async forecastProduction(params: any): Promise<any> {
+    if (this.isDemoMode) {
+      const planned = params.planned_production || params.planned_tonnage || 1000;
+      const downtimeLoss = (params.equipment_downtime_hours || params.excavator_downtime_hours || 0) * 28.0;
+      const weatherLoss = Math.max(0, ((params.rainfall_mm || 0) - 15.0) * 1.8);
+      const blastingLoss = (params.blasting_delay_hours || 0) * 35.0;
+      const predicted = Math.max(0, Math.round(planned - downtimeLoss - weatherLoss - blastingLoss));
+      const shortfall = Math.max(0, planned - predicted);
+      return {
+        planned_production: planned,
+        predicted_production: predicted,
+        shortfall_tonnes: shortfall,
+        shortfall_percentage: Math.round((shortfall / planned) * 100),
+        confidence: 0.85,
+        contributing_factors: {
+          equipment_downtime_loss_tons: Math.round(downtimeLoss),
+          weather_rainfall_loss_tons: Math.round(weatherLoss),
+          blasting_delay_loss_tons: Math.round(blastingLoss)
+        }
+      };
+    }
+    try {
+      const res = await fetch(`${API_BASE}/production/forecast`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(params),
+        signal: AbortSignal.timeout(3000)
+      });
+      if (!res.ok) throw new Error('Forecast API failed');
+      return await res.json();
+    } catch {
+      const planned = params.planned_production || params.planned_tonnage || 1000;
+      return {
+        planned_production: planned,
+        predicted_production: Math.round(planned * 0.82),
+        shortfall_tonnes: Math.round(planned * 0.18),
+        shortfall_percentage: 18.0,
+        confidence: 0.85
+      };
+    }
+  },
+
+  async getEquipment(mineId?: string): Promise<EquipmentItem[]> {
     if (this.isDemoMode) return FALLBACK_EQUIPMENT;
     try {
-      const res = await fetch(`${API_BASE}/production/equipment`, { signal: AbortSignal.timeout(2500) });
+      const url = mineId ? `${API_BASE}/production/equipment?mine_id=${encodeURIComponent(mineId)}` : `${API_BASE}/production/equipment`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(2500) });
       if (!res.ok) throw new Error('API failed');
       return await res.json();
     } catch {
@@ -396,10 +443,11 @@ export const apiService = {
     }
   },
 
-  async getRisk(): Promise<RiskData> {
+  async getRisk(mineId?: string): Promise<RiskData> {
     if (this.isDemoMode) return FALLBACK_RISK;
     try {
-      const res = await fetch(`${API_BASE}/risk`, { signal: AbortSignal.timeout(2500) });
+      const url = mineId ? `${API_BASE}/risk?mine_id=${encodeURIComponent(mineId)}` : `${API_BASE}/risk`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(2500) });
       if (!res.ok) throw new Error('API failed');
       return await res.json();
     } catch {
@@ -407,10 +455,11 @@ export const apiService = {
     }
   },
 
-  async getRecommendations(): Promise<RecommendationItem[]> {
+  async getRecommendations(mineId?: string): Promise<RecommendationItem[]> {
     if (this.isDemoMode) return localRecommendations;
     try {
-      const res = await fetch(`${API_BASE}/recommendations`, { signal: AbortSignal.timeout(2500) });
+      const url = mineId ? `${API_BASE}/recommendations?mine_id=${encodeURIComponent(mineId)}` : `${API_BASE}/recommendations`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(2500) });
       if (!res.ok) throw new Error('API failed');
       return await res.json();
     } catch {
@@ -531,10 +580,11 @@ export const apiService = {
     };
   },
 
-  async getDataQuality(): Promise<DataQualityReport> {
+  async getDataQuality(mineId?: string): Promise<DataQualityReport> {
     if (this.isDemoMode) return FALLBACK_QUALITY;
     try {
-      const res = await fetch(`${API_BASE}/data-quality`, { signal: AbortSignal.timeout(2500) });
+      const url = mineId ? `${API_BASE}/data-quality?mine_id=${encodeURIComponent(mineId)}` : `${API_BASE}/data-quality`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(2500) });
       if (!res.ok) throw new Error('API failed');
       return await res.json();
     } catch {
@@ -569,5 +619,229 @@ export const apiService = {
         description: 'Heavy rainfall (64.2mm) in Balaghat concession, accompanied by hydraulic failure on CAT-349 excavator and 2.5h bench blasting delay.'
       };
     }
+  },
+
+  async getGisGeoJson(layerName: string, mineId?: string): Promise<any> {
+    const cleanName = layerName.replace('.geojson', '');
+    if (this.isDemoMode) {
+      try {
+        const res = await fetch(`/data/${cleanName}.geojson`);
+        if (res.ok) return await res.json();
+      } catch {
+        // pass
+      }
+    }
+    try {
+      const url = mineId
+        ? `${API_BASE}/gis/geojson/${cleanName}?mine_id=${encodeURIComponent(mineId)}`
+        : `${API_BASE}/gis/geojson/${cleanName}`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(3000) });
+      if (!res.ok) throw new Error(`GIS layer API failed: ${res.status}`);
+      return await res.json();
+    } catch {
+      // Offline fallback to static file
+      try {
+        const fallbackRes = await fetch(`/data/${cleanName}.geojson`);
+        if (fallbackRes.ok) return await fallbackRes.json();
+      } catch {
+        // ignore
+      }
+      return { type: 'FeatureCollection', features: [] };
+    }
+  },
+
+  async getSatelliteIndices(mineId?: string): Promise<any> {
+    if (this.isDemoMode) {
+      try {
+        const res = await fetch('/data/satellite_indicators.json');
+        if (res.ok) return await res.json();
+      } catch {
+        // pass
+      }
+    }
+    try {
+      const url = mineId
+        ? `${API_BASE}/gis/satellite-indices?mine_id=${encodeURIComponent(mineId)}`
+        : `${API_BASE}/gis/satellite-indices`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(3000) });
+      if (!res.ok) throw new Error(`Satellite indices API failed: ${res.status}`);
+      return await res.json();
+    } catch {
+      // Offline fallback
+      try {
+        const res = await fetch('/data/satellite_indicators.json');
+        if (res.ok) return await res.json();
+      } catch {
+        // ignore
+      }
+      return {
+        mine_id: mineId || 'MINE_BALAGHAT_01',
+        mine_name: 'Balaghat Manganese Concession',
+        satellite_mission: 'Sentinel-2 MSI Level-2A',
+        acquisition_date: '2026-03-14',
+        ndvi: 0.174,
+        ndwi: -0.082,
+        land_surface_temp_c: 36.8,
+        soil_moisture_satellite_pct: 24.5,
+        cloud_coverage_pct: 4.2,
+        rainfall_mm: 54.2,
+        status: 'VALID_OBSERVATION',
+        indicators: []
+      };
+    }
+  },
+
+  async runPipeline(mineId?: string): Promise<PipelineRunResult> {
+    const targetMineId = mineId || 'MINE_BALAGHAT_01';
+    if (this.isDemoMode) {
+      return this.getFallbackPipelineResult(targetMineId);
+    }
+    try {
+      const url = `${API_BASE}/pipeline/run?mine_id=${encodeURIComponent(targetMineId)}`;
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: AbortSignal.timeout(10000)
+      });
+      if (!res.ok) throw new Error(`Pipeline execution failed: ${res.status}`);
+      return await res.json();
+    } catch (err) {
+      console.warn('Pipeline backend call failed, falling back to deterministic local execution:', err);
+      return this.getFallbackPipelineResult(targetMineId);
+    }
+  },
+
+  getFallbackPipelineResult(mineId: string): PipelineRunResult {
+    const isBalaghat = mineId === 'MINE_BALAGHAT_01' || !mineId;
+    return {
+      analysis_id: `ANALYSIS-${mineId}-${Date.now()}`,
+      executed_at: new Date().toISOString(),
+      mine: {
+        id: mineId,
+        name: isBalaghat ? 'Balaghat Manganese Concession' : 'Gumgaon Manganese Mine',
+        concession_code: isBalaghat ? 'MOIL-MP-BAL-01' : 'MOIL-MH-GMG-02',
+        state: isBalaghat ? 'Madhya Pradesh' : 'Maharashtra',
+        district: isBalaghat ? 'Balaghat' : 'Nagpur',
+        latitude: isBalaghat ? 21.8045 : 21.3789,
+        longitude: isBalaghat ? 80.1856 : 78.9834,
+        mineral_type: 'Manganese Ore'
+      },
+      stages: [
+        {
+          id: 0,
+          name: 'Ingesting Multi-Spectral Satellite & Environmental Data',
+          status: 'COMPLETED',
+          duration_ms: 12.4,
+          summary: isBalaghat
+            ? 'Ingested Sentinel-2 MSI (NDVI: 0.17, NDWI: -0.08) and weather telemetry (54.2 mm rain, 58.4% soil moisture).'
+            : 'Ingested Sentinel-2 MSI (NDVI: 0.22, NDWI: -0.12) and weather telemetry (8.5 mm rain, 30.0% soil moisture).'
+        },
+        {
+          id: 1,
+          name: 'Querying Geological Corehole Assays & Borehole Logs',
+          status: 'COMPLETED',
+          duration_ms: 8.2,
+          summary: isBalaghat
+            ? 'Retrieved 25 exploratory borehole assay logs across 5 operational mine zones.'
+            : 'Retrieved 16 exploratory borehole assay logs across 4 operational mine zones.'
+        },
+        {
+          id: 2,
+          name: 'Executing Reserve Random Forest Classifier',
+          status: 'COMPLETED',
+          duration_ms: 15.6,
+          summary: isBalaghat
+            ? 'Reserve ML evaluated 5 zones: HIGH potential (89%), total est. reserves 1,485,000 tonnes.'
+            : 'Reserve ML evaluated 4 zones: HIGH potential (82%), total est. reserves 840,000 tonnes.'
+        },
+        {
+          id: 3,
+          name: 'Executing 14-Feature Production GradientBoosting Regressor',
+          status: 'COMPLETED',
+          duration_ms: 18.1,
+          summary: isBalaghat
+            ? 'GradientBoosting forecasted 820.0T output against 1000.0T target (confidence: 85%).'
+            : 'GradientBoosting forecasted 610.0T output against 650.0T target (confidence: 90%).'
+        },
+        {
+          id: 4,
+          name: 'Evaluating Production Shortfall & Bench Availability',
+          status: 'COMPLETED',
+          duration_ms: 4.5,
+          summary: isBalaghat
+            ? 'Shortfall analysis: 18.0% production deficit (180.0 tonnes below target)'
+            : 'Shortfall analysis: 6.2% production deficit (40.0 tonnes below target)'
+        },
+        {
+          id: 5,
+          name: 'Computing Authoritative 4-Component Risk Matrix & Attribution',
+          status: 'COMPLETED',
+          duration_ms: 11.3,
+          summary: isBalaghat
+            ? 'Composite risk calculated at 68.5/100 (HIGH Risk) with full 4-domain XAI factor attribution.'
+            : 'Composite risk calculated at 34.0/100 (LOW Risk) with full 4-domain XAI factor attribution.'
+        },
+        {
+          id: 6,
+          name: 'Synthesizing Prescriptive Action Protocols',
+          status: 'COMPLETED',
+          duration_ms: 9.8,
+          summary: isBalaghat
+            ? 'Synthesized 3 prioritized prescriptive mitigation protocols for operational management approval.'
+            : 'Synthesized 2 prioritized prescriptive mitigation protocols for operational management approval.'
+        }
+      ],
+      reserve: {
+        total_estimated_reserves: isBalaghat ? 1485000 : 840000,
+        primary_classification: 'HIGH',
+        average_reserve_probability: isBalaghat ? 0.89 : 0.82,
+        average_mn_grade: isBalaghat ? 41.8 : 37.2,
+        zones_evaluated: isBalaghat ? 5 : 4,
+        zones: []
+      },
+      production: {
+        target_date: '2026-03-15',
+        planned_production: isBalaghat ? 1000 : 650,
+        predicted_production: isBalaghat ? 820 : 610,
+        confidence: isBalaghat ? 0.85 : 0.90
+      },
+      shortfall: {
+        shortfall_tonnes: isBalaghat ? 180 : 40,
+        shortfall_percentage: isBalaghat ? 18.0 : 6.2,
+        is_deficit: true,
+        assessment: isBalaghat
+          ? '18.0% production deficit (180.0 tonnes below target)'
+          : '6.2% production deficit (40.0 tonnes below target)'
+      },
+      risk: {
+        mine_id: mineId,
+        overall_risk_score: isBalaghat ? 68.5 : 34.0,
+        risk_tier: isBalaghat ? 'HIGH' : 'LOW',
+        equipment_risk: isBalaghat ? 72.0 : 25.0,
+        weather_risk: isBalaghat ? 84.0 : 18.0,
+        blasting_risk: isBalaghat ? 55.0 : 20.0,
+        production_risk: isBalaghat ? 60.0 : 15.0,
+        contributing_factors: isBalaghat ? FALLBACK_RISK.contributing_factors : [
+          { name: 'Equipment Downtime', severity: 'LOW', weight: 0.35, description: 'Optimal equipment availability (1.5h downtime).', observed_value: '1.5 hrs' },
+          { name: 'Precipitation & Monsoon Impact', severity: 'LOW', weight: 0.25, description: 'Favorable weather conditions (8.5mm precipitation).', observed_value: '8.5 mm' },
+          { name: 'Blasting Schedule Adherence', severity: 'LOW', weight: 0.20, description: 'Blasting executed on scheduled shift window (0.5h delay).', observed_value: '0.5 hrs' },
+          { name: 'Daily Production Deficit', severity: 'LOW', weight: 0.20, description: 'Production tracking close to planned targets (6.2% shortfall).', observed_value: '6.2%' }
+        ],
+        summary_explanation: isBalaghat ? FALLBACK_RISK.summary_explanation : 'Operations within normal parameters.'
+      },
+      recommendations: isBalaghat ? localRecommendations : []
+    };
+  },
+
+  checkHealth: async (): Promise<boolean> => {
+    try {
+      const res = await fetch(`${API_BASE}/health`, { signal: AbortSignal.timeout(2000) });
+      return res.ok;
+    } catch {
+      return false;
+    }
   }
 };
+
+export const api = apiService;
+

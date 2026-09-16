@@ -13,7 +13,12 @@ import {
 import { RiskData } from '../types';
 import { apiService } from '../services/api';
 
-export const RiskPage: React.FC = () => {
+interface RiskPageProps {
+  selectedMineId?: string;
+  selectedMineName?: string;
+}
+
+export const RiskPage: React.FC<RiskPageProps> = ({ selectedMineId, selectedMineName }) => {
   const [riskData, setRiskData] = useState<RiskData | null>(null);
   const [history, setHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -22,7 +27,7 @@ export const RiskPage: React.FC = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const r = await apiService.getRisk();
+        const r = await apiService.getRisk(selectedMineId);
         setRiskData(r);
         // Predefined 7-day risk timeline
         setHistory([
@@ -41,7 +46,7 @@ export const RiskPage: React.FC = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [selectedMineId]);
 
   if (loading || !riskData) {
     return <div className="p-12 text-center text-slate-400">Loading Multi-Factor Mining Risk Intelligence...</div>;
@@ -56,7 +61,12 @@ export const RiskPage: React.FC = () => {
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-2">
             <AlertTriangle className="w-6 h-6 text-orange-400" />
-            Transparent Multi-Factor Risk Engine & Explainability
+            Transparent Multi-Factor Risk Engine &amp; Explainability
+            {selectedMineName && (
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-orange-500/20 text-orange-300 border border-orange-500/30 font-normal">
+                {selectedMineName}
+              </span>
+            )}
           </h1>
           <p className="text-sm text-slate-400">
             Real-time composite operational risk index and explainable factor attribution without black-box opacity
