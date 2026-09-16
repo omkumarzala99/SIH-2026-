@@ -101,6 +101,7 @@ export const ReservePage: React.FC<ReservePageProps> = ({ selectedMineId, select
 
           <div className="h-[420px] w-full">
             <MineMap
+              selectedMineId={selectedMineId}
               selectedZoneId={selectedZoneId}
               onZoneSelect={(zid) => setSelectedZoneId(zid)}
             />

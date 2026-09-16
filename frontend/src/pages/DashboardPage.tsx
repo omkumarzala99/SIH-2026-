@@ -180,7 +180,10 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigateTab, sel
         </div>
 
         <div className="h-[440px] w-full">
-          <MineMap onZoneSelect={() => onNavigateTab('reserves')} />
+          <MineMap
+            selectedMineId={selectedMineId}
+            onZoneSelect={() => onNavigateTab('reserves')}
+          />
         </div>
       </div>
 

@@ -5,19 +5,18 @@ import os
 import json
 from typing import Dict, Any, Optional
 
-GEOJSON_DIR = "gis/geojson"
+GEOJSON_DIRS = ["gis/geojson", "gis/data"]
 
 
 def get_layer_geojson(layer_name: str) -> Optional[Dict[str, Any]]:
     """Retrieves GeoJSON feature collection by layer name."""
     filename = f"{layer_name}.geojson" if not layer_name.endswith(".geojson") else layer_name
-    path = os.path.join(GEOJSON_DIR, filename)
-
-    if not os.path.exists(path):
-        return None
-
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
+    for base_dir in GEOJSON_DIRS:
+        path = os.path.join(base_dir, filename)
+        if os.path.exists(path):
+            with open(path, "r", encoding="utf-8") as f:
+                return json.load(f)
+    return None
 
 
 def list_available_layers() -> Dict[str, Any]:

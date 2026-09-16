@@ -209,7 +209,11 @@ export const App: React.FC = () => {
                     </button>
                   </div>
                   <div className="h-[600px] w-full bg-slate-900/90 border border-slate-800 rounded-2xl p-4 shadow-xl">
-                    <MineMap onZoneSelect={() => setActiveTab('results')} />
+                    <MineMap
+                      selectedMineId={selectedMine.id}
+                      center={[selectedMine.lat, selectedMine.lng]}
+                      onZoneSelect={() => setActiveTab('results')}
+                    />
                   </div>
                 </div>
               )}
@@ -218,6 +222,7 @@ export const App: React.FC = () => {
               {activeTab === 'satellite' && (
                 <SatellitePanel
                   mineName={selectedMine.name}
+                  selectedMineId={selectedMine.id}
                   onRunAiAnalysis={() => setIsAiModalOpen(true)}
                 />
               )}
@@ -266,6 +271,8 @@ export const App: React.FC = () => {
       <AiAnalysisModal
         isOpen={isAiModalOpen}
         onClose={() => setIsAiModalOpen(false)}
+        selectedMineId={selectedMine.id}
+        selectedMineName={selectedMine.name}
         onComplete={() => {
           setActiveTab('results');
         }}
