@@ -1,7 +1,6 @@
 # 🚀 MOIL AI/ML Mining Intelligence Platform
 ### Decision Support System for Manganese Reserve Identification & Production Shortfall Mitigation
-**Smart India Hackathon 2026 | Problem Statement: PS-26009**
-**Organization:** MOIL Limited / Ministry of Steel | **Theme:** Software / Space Technology
+**Organization:** MOIL Limited / Ministry of Steel | **Theme:** Enterprise Software / Space Technology
 
 [![Tests](https://img.shields.io/badge/tests-63%20passed-brightgreen.svg)]()
 [![FastAPI](https://img.shields.io/badge/backend-FastAPI%200.115-009688.svg)]()
@@ -12,7 +11,7 @@
 
 ---
 
-## 1. Executive Summary & Problem Context (PS-26009)
+## 1. Executive Summary & Operational Context
 
 **MOIL Limited** is India's largest producer of manganese ore, supplying crucial raw materials to the national steel manufacturing sector. Meeting domestic production targets requires solving two fundamental challenges:
 1. **Accurate Reserve Delineation:** Identifying high-grade manganese horizons beneath complex geological overburden without excessive exploratory drilling.
@@ -64,25 +63,25 @@ $$\mathbf{Discover\ (Reserve\ ML)} \longrightarrow \mathbf{Predict\ (Production\
        |  - 14-Day Production Trend & Shortfall SVG Chart            |
        |  - Interactive What-If Operational Simulator                |
        |  - Human-in-the-Loop Workflow (Approve/Reject/Modify)       |
-       |  - Instant SIH 2026 Crisis Demo Scenario Trigger            |
+       |  - Instant Operational Crisis Scenario Trigger              |
        |  - Resilient Zero-Downtime Offline Fallback                 |
        +-------------------------------------------------------------+
 ```
 
 ---
 
-## 2. Six-Member Team Engineering Architecture
+## 2. Platform Subsystem Architecture
 
-The platform reflects an enterprise division of labor across 6 specialized engineering tracks:
+The platform reflects an enterprise division of labor across 6 specialized subsystem tracks:
 
-| Role / Track | Primary Domain | Core Code Assets |
+| Subsystem / Layer | Primary Domain | Core Code Assets |
 | :--- | :--- | :--- |
-| **1. Team Lead / Integration** | Unified Pipeline & Cloud Architecture | `backend/app/api/routes/pipeline.py`, `render.yaml`, `Dockerfile` |
-| **2. Reserve AI/ML Specialist** | Subsurface Geological Modeling | `ai_ml/reserve_prediction/`, `ai_ml/models/reserve_model.joblib` |
+| **1. Pipeline & Cloud Services** | Unified Pipeline & Cloud Architecture | `backend/app/api/routes/pipeline.py`, `render.yaml`, `Dockerfile` |
+| **2. Reserve AI/ML Subsystem** | Subsurface Geological Modeling | `ai_ml/reserve_prediction/`, `ai_ml/models/reserve_model.joblib` |
 | **3. Production & Risk AI/ML** | Constraint Regression & Transparent XAI | `ai_ml/production_prediction/`, `ai_ml/risk_prediction/`, `ai_ml/recommendation_engine/` |
 | **4. GIS & Space Technology** | Multi-Mine Vector GIS & Remote Sensing | `gis/`, `frontend/src/components/map/MineMap.tsx`, `frontend/src/components/workspace/SatellitePanel.tsx` |
 | **5. Backend & Data Pipeline** | REST API, Persistence & Data Quality | `backend/app/`, `database/models.py`, `data_pipeline/`, `scripts/seed.py` |
-| **6. Frontend & UI/UX** | Responsive Web App & Managerial Governance | `frontend/src/App.tsx`, `frontend/src/pages/`, `frontend/src/services/api.ts` |
+| **6. Frontend Dashboard** | Responsive Web App & Managerial Governance | `frontend/src/App.tsx`, `frontend/src/pages/`, `frontend/src/services/api.ts` |
 
 ---
 
@@ -109,7 +108,7 @@ The platform reflects an enterprise division of labor across 6 specialized engin
 - Actionable operational recommendations (equipment re-routing, blasting postponement, high-grade face activation).
 - Strict manager governance lifecycle: `PENDING` &rarr; `APPROVED` / `REJECTED` / `MODIFIED` with persistent audit trails.
 
-### 🚨 SIH 2026 Presentation Crisis Demo
+### 🚨 Operational Crisis Scenario Simulation
 - One-click trigger in the UI simulating an acute operational bottleneck: $54.2\text{mm}$ monsoon deluge, $6.5\text{h}$ shovel breakdown, $-231.5\text{t}$ shortfall, and CRITICAL risk ($77.5/100$).
 
 ---
@@ -176,7 +175,7 @@ python scripts/run_tests.py
 - **`tests/backend/test_pipeline.py` (3 tests):** Unified `POST /api/pipeline/run` execution, transaction commit, error handling.
 - **`tests/data_pipeline/test_pipeline.py` (3 tests):** Ingestion, cleaning, empirical completeness scoring.
 - **`tests/frontend/test_build.py` (2 tests):** Production bundle presence and page routing verification.
-- **`tests/integration/test_workflow.py` (1 test):** Full end-to-end hackathon demo user journey.
+- **`tests/integration/test_workflow.py` (1 test):** Full end-to-end operational user journey.
 - **`backend/tests/test_endpoints.py` (3 tests):** Model registry, prediction history, GIS zones.
 
 **Total:** **63 passed / 63 total (100% pass rate)**.
@@ -184,7 +183,7 @@ python scripts/run_tests.py
 ### Frontend Build Verification:
 ```bash
 cd frontend && npm run build
-# Built in 4.45s with 0 errors (1881 modules transformed)
+# Built with 0 errors
 ```
 
 ---
@@ -203,5 +202,5 @@ cd frontend && npm run build
 
 ## 7. License & Credits
 
-Developed for the **Smart India Hackathon 2026** under Problem Statement **PS-26009** for **MOIL Limited** and the **Ministry of Steel, Government of India**.
+Developed for **MOIL Limited** and the **Ministry of Steel, Government of India**.
 Released under the [MIT License](LICENSE).

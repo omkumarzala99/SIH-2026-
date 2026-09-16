@@ -1,4 +1,4 @@
-// Common Data Contracts for PS-26009 MOIL Mining Intelligence Platform
+// Common Data Contracts for MOIL Mining Intelligence Platform
 
 export interface DashboardKPIs {
   total_estimated_reserves_tonnes: number;

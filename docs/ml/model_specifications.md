@@ -1,4 +1,4 @@
-# AI/ML Model Specifications: PS-26009
+# AI/ML Model Specifications: MOIL Mining Intelligence Platform
 
 The platform implements modular, model-agnostic intelligence components.
 

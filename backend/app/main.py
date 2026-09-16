@@ -1,5 +1,5 @@
 """
-Main entry point for the PS-26009 MOIL Mining Intelligence Platform Backend.
+Main entry point for the MOIL Mining Intelligence Platform Backend.
 """
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends

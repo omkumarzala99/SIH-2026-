@@ -1,7 +1,7 @@
-# GIS & Space Technology Module (Member 4 Ownership)
+# GIS & Space Technology Subsystem
 
-> **PS-26009** — Using AI/ML and Space Technology to Identify Manganese Reserves and Overcome Production Shortfalls  
-> **Smart India Hackathon 2026** | MOIL Mining Intelligence Platform
+> **MOIL Mining Intelligence Platform** — Using AI/ML and Space Technology to Identify Manganese Reserves and Overcome Production Shortfalls  
+> Operational Spatial & Remote Sensing Telemetry
 
 ---
 
@@ -358,7 +358,7 @@ fetch('/api/ml/reserve-predictions')
 
 ### React Frontend Integration
 
-The React frontend (Member 6) can integrate the GIS module by:
+The React frontend can integrate the GIS module by:
 
 1. **Using static data** from `frontend/public/data/` with `react-leaflet`
 2. **Embedding the standalone map** in an iframe during development
@@ -421,6 +421,6 @@ The React frontend (Member 6) can integrate the GIS module by:
 ## Satellite / Remote Sensing Architecture
 
 - `gis/satellite/provider.py`: Provides modular `BaseSatelliteProvider` interface.
-- Includes `MockSatelliteProvider` for offline hackathon demonstration.
+- Includes `MockSatelliteProvider` for offline operational demonstration.
 - Includes `CopernicusSatelliteAdapter` ready for live ESA Copernicus / Sentinel Hub API connection.
 - Frontend satellite data served via `satellite_indicators.json` — designed to be replaced by API responses.

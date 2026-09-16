@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { GlobeCanvas, MOIL_MINES_DATA, MineLocation } from './GlobeCanvas';
 import { LocationExplorerModal } from './LocationExplorerModal';
-import { SpaceTransitionOverlay } from './SpaceTransitionOverlay';
 import { MapPin, Compass, Pickaxe, ArrowRight, ShieldCheck, Sparkles, Orbit } from 'lucide-react';
 
 interface SpaceLandingPageProps {
@@ -10,8 +9,7 @@ interface SpaceLandingPageProps {
 
 export const SpaceLandingPage: React.FC<SpaceLandingPageProps> = ({ onEnterWorkspace }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [targetMine, setTargetMine] = useState<{ lat: number; lng: number; name: string; id: string }>({
+  const [targetMine] = useState<{ lat: number; lng: number; name: string; id: string }>({
     lat: 21.8502,
     lng: 80.2274,
     name: 'Balaghat Mine (Bharveli)',
@@ -31,29 +29,12 @@ export const SpaceLandingPage: React.FC<SpaceLandingPageProps> = ({ onEnterWorks
 
   const handleSelectOnMap = () => {
     setIsModalOpen(false);
-    setTargetMine({
-      lat: 21.8502,
-      lng: 80.2274,
-      name: 'Balaghat Concession (Full GIS Map)',
-      id: 'MINE_BALAGHAT_01'
-    });
-    setIsTransitioning(true);
+    onEnterWorkspace(21.8502, 80.2274, 'Balaghat Concession (Full GIS Map)', 'MINE_BALAGHAT_01', 'map');
   };
 
   const handleConfirmLocation = (lat: number, lng: number, mineName?: string, mineId?: string) => {
     setIsModalOpen(false);
-    setTargetMine({
-      lat,
-      lng,
-      name: mineName || 'Balaghat Mine',
-      id: mineId || 'MINE_BALAGHAT_01'
-    });
-    setIsTransitioning(true);
-  };
-
-  const handleTransitionComplete = () => {
-    setIsTransitioning(false);
-    onEnterWorkspace(targetMine.lat, targetMine.lng, targetMine.name, targetMine.id);
+    onEnterWorkspace(lat, lng, mineName || 'Balaghat Mine', mineId || 'MINE_BALAGHAT_01');
   };
 
   return (
@@ -62,7 +43,7 @@ export const SpaceLandingPage: React.FC<SpaceLandingPageProps> = ({ onEnterWorks
       <div className="absolute inset-0 z-0">
         <GlobeCanvas
           selectedMineId={targetMine.id}
-          isZooming={isTransitioning}
+          isZooming={false}
         />
       </div>
 
@@ -76,7 +57,7 @@ export const SpaceLandingPage: React.FC<SpaceLandingPageProps> = ({ onEnterWorks
             <div className="flex items-center space-x-2">
               <span className="font-extrabold text-white text-base tracking-wider">MOIL LIMITED</span>
               <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 font-mono">
-                SIH 2026
+                Enterprise DSS
               </span>
             </div>
             <p className="text-[11px] text-slate-400">Ministry of Steel &bull; Government of India Undertaking</p>
@@ -206,16 +187,6 @@ export const SpaceLandingPage: React.FC<SpaceLandingPageProps> = ({ onEnterWorks
         onConfirmLocation={handleConfirmLocation}
         onSelectOnMap={handleSelectOnMap}
       />
-
-      {/* Flight / Transition HUD Overlay */}
-      {isTransitioning && (
-        <SpaceTransitionOverlay
-          targetName={targetMine.name}
-          targetLat={targetMine.lat}
-          targetLng={targetMine.lng}
-          onTransitionComplete={handleTransitionComplete}
-        />
-      )}
     </div>
   );
 };

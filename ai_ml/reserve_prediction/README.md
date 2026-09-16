@@ -1,4 +1,4 @@
-# Reserve Intelligence ML Module (Member 2 Ownership)
+# Reserve Intelligence ML Subsystem
 
 Identifies and maps manganese ore reserves using surface indicators (satellite NDVI, surface reflectance, land surface temperature) and sub-surface indicators (borehole assays, depth, lithology, $Mn/Fe$ grade ratios).
 
@@ -27,7 +27,7 @@ Identifies and maps manganese ore reserves using surface indicators (satellite N
 }
 ```
 
-## Developer Guide for Member 2
+## Subsystem Development Guide
 - Modify feature engineering in `features.py`.
 - Update scikit-learn or XGBoost training pipelines in `train.py`.
 - Evaluate model metrics with `evaluate.py`.

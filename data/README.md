@@ -1,8 +1,8 @@
-# Synthetic Datasets Documentation: PS-26009 MOIL Mining Intelligence Platform
+# Synthetic Datasets Documentation: MOIL Mining Intelligence Platform
 
 > [!IMPORTANT]
 > **PROTOTYPE DATA DISCLAIMER**:
-> All datasets located in `data/mock/` and `data/mock_baseline/` (`mines.csv`, `mining_zones.csv`, `geological_data.csv`, `production_data.csv`, `equipment_data.csv`, `weather_data.csv`, `satellite_data.csv`, `quality_test_records.csv`) are **100% synthetic prototype datasets** generated strictly for software engineering, architecture modeling, algorithmic verification, and hackathon evaluation for Problem Statement PS-26009.
+> All datasets located in `data/mock/` and `data/mock_baseline/` (`mines.csv`, `mining_zones.csv`, `geological_data.csv`, `production_data.csv`, `equipment_data.csv`, `weather_data.csv`, `satellite_data.csv`, `quality_test_records.csv`) are **100% synthetic prototype datasets** generated strictly for software engineering, architecture modeling, and algorithmic verification.
 > They are parameterized after realistic public domain geological and mining literature regarding Indian manganese belts (e.g., the Sausar Group, Mansar Formation, Gondite, and Chorbaoli Quartzite across Madhya Pradesh and Maharashtra) and do **NOT** represent confidential, proprietary, or actual operational telemetry of MOIL Limited.
 
 ---

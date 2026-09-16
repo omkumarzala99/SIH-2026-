@@ -1,4 +1,4 @@
-# Decision Support & Recommendation Engine (Member 3 Ownership)
+# Decision Support & Recommendation Engine
 
 Prescriptive intelligence engine that translates production shortfall predictions and multi-factor operational risks into prioritized, actionable interventions for Mine Managers.
 

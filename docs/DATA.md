@@ -1,5 +1,5 @@
 # Data Dictionary & Synthetic Catalog Specifications
-**MOIL AI Mining Intelligence Platform | SIH 2026 Problem Statement PS-26009**
+**MOIL AI Mining Intelligence Platform**
 **Organization:** MOIL Limited / Ministry of Steel
 
 ---

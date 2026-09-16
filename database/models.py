@@ -1,5 +1,5 @@
 """
-SQLAlchemy database models for PS-26009 MOIL Mining Intelligence Platform.
+SQLAlchemy database models for MOIL Mining Intelligence Platform.
 Supports PostgreSQL for production/docker and SQLite for zero-config local demos.
 """
 from datetime import datetime

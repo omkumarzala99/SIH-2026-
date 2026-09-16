@@ -1,4 +1,4 @@
-# Production Prediction Module (Member 3 Ownership)
+# Production Prediction Subsystem
 
 Forecasts daily extraction tonnages, identifies production shortfalls against scheduled targets, and flags operational bottlenecks caused by equipment downtime, monsoon rainfall, and blasting delays.
 
@@ -20,7 +20,7 @@ Forecasts daily extraction tonnages, identifies production shortfalls against sc
 }
 ```
 
-## Developer Guide for Member 3
+## Subsystem Development Guide
 - Update regression algorithms in `train.py`.
 - Add additional operational features (e.g. operator fatigue, hauling distance, road gradient) in `features.py`.
 - Ensure Pydantic contracts match `schemas.py`.

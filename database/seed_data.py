@@ -72,7 +72,19 @@ FULL_EQUIPMENT_FLEET = [
     {"id": "DMP_CAT_773E_03", "mine_id": "MINE_UKWA_08", "equipment_type": "Haul Dumper", "model": "CAT 773E Off-Highway", "year": 2023, "zone": "ZONE_UKW_01"},
     {"id": "DMP_CAT_773E_04", "mine_id": "MINE_UKWA_08", "equipment_type": "Haul Dumper", "model": "CAT 773E Off-Highway", "year": 2023, "zone": "ZONE_UKW_02"},
     {"id": "DRL_ATLAS_ROC_03", "mine_id": "MINE_UKWA_08", "equipment_type": "Blast Drill Rig", "model": "Atlas Copco ROC L8", "year": 2021, "zone": "ZONE_UKW_01"},
-    {"id": "WTR_TRK_TATA_04", "mine_id": "MINE_UKWA_08", "equipment_type": "Dust Suppression Bowser", "model": "Tata Prima 2828", "year": 2022, "zone": "ZONE_UKW_02"}
+    {"id": "WTR_TRK_TATA_04", "mine_id": "MINE_UKWA_08", "equipment_type": "Dust Suppression Bowser", "model": "Tata Prima 2828", "year": 2022, "zone": "ZONE_UKW_02"},
+
+    # Sitapatore (4 units)
+    {"id": "EXC_KOM_PC300_02", "mine_id": "MINE_SITAPATORE_09", "equipment_type": "Hydraulic Excavator", "model": "Komatsu PC300-8", "year": 2022, "zone": "ZONE_STP_01"},
+    {"id": "DMP_VOLVO_FMX_51", "mine_id": "MINE_SITAPATORE_09", "equipment_type": "Haul Dumper", "model": "Volvo FMX 440 8x4", "year": 2023, "zone": "ZONE_STP_01"},
+    {"id": "DMP_VOLVO_FMX_52", "mine_id": "MINE_SITAPATORE_09", "equipment_type": "Haul Dumper", "model": "Volvo FMX 440 8x4", "year": 2022, "zone": "ZONE_STP_02"},
+    {"id": "DRL_ATLAS_ROC_04", "mine_id": "MINE_SITAPATORE_09", "equipment_type": "Blast Drill Rig", "model": "Atlas Copco ROC L8", "year": 2021, "zone": "ZONE_STP_01"},
+
+    # Beldongri (4 units)
+    {"id": "EXC_CAT_320_01", "mine_id": "MINE_BELDONGRI_10", "equipment_type": "Hydraulic Excavator", "model": "CAT 320D3", "year": 2022, "zone": "ZONE_BLD_01"},
+    {"id": "DMP_BEML_BH35_05", "mine_id": "MINE_BELDONGRI_10", "equipment_type": "Haul Dumper", "model": "BEML BH35-2", "year": 2023, "zone": "ZONE_BLD_01"},
+    {"id": "DMP_BEML_BH35_06", "mine_id": "MINE_BELDONGRI_10", "equipment_type": "Haul Dumper", "model": "BEML BH35-2", "year": 2022, "zone": "ZONE_BLD_02"},
+    {"id": "WTR_TRK_TATA_05", "mine_id": "MINE_BELDONGRI_10", "equipment_type": "Dust Suppression Bowser", "model": "Tata Prima 2828", "year": 2021, "zone": "ZONE_BLD_01"}
 ]
 
 RECOMMENDATIONS = [
@@ -185,6 +197,62 @@ RECOMMENDATIONS = [
         urgency="HIGH",
         status="PENDING",
         created_at=datetime.now(timezone.utc)
+    ),
+    # Sitapatore
+    Recommendation(
+        id="REC_2026_009",
+        mine_id="MINE_SITAPATORE_09",
+        title="Ventilation Circuit Enhancement at Deep Stope 1",
+        category="ENVIRONMENTAL",
+        problem_summary="Airflow velocity at -130m stope face dropped below 0.3 m/s threshold during peak extraction.",
+        recommended_action="Install auxiliary 45kW booster fan at crosscut junction and seal abandoned lateral drift.",
+        expected_impact="Restores face ventilation to 0.6 m/s, eliminating heat stress stoppages and enabling 3-shift operation.",
+        expected_tonnage_recovery=55.0,
+        urgency="MEDIUM",
+        status="PENDING",
+        created_at=datetime.now(timezone.utc)
+    ),
+    # Beldongri
+    Recommendation(
+        id="REC_2026_010",
+        mine_id="MINE_BELDONGRI_10",
+        title="Optimize Open Cast Bench Geometry for Selective Mining",
+        category="ZONE_PRIORITIZATION",
+        problem_summary="Current 10m bench height at Pit 1 causes excessive dilution (12%) with hanging wall schist.",
+        recommended_action="Reduce bench height to 6m and implement selective fragmentation drilling pattern for ore-waste discrimination.",
+        expected_impact="Reduces dilution to 5%, improving ROM feed grade from 34.5% to 38.2% Mn.",
+        expected_tonnage_recovery=40.0,
+        urgency="LOW",
+        status="PENDING",
+        created_at=datetime.now(timezone.utc)
+    ),
+    # Kandri
+    Recommendation(
+        id="REC_2026_011",
+        mine_id="MINE_KANDRI_05",
+        title="Upgrade Dewatering Capacity at Lower Incline Stope",
+        category="ENVIRONMENTAL",
+        problem_summary="Infiltration rate increased by 22% along underground stope footwall following seasonal aquifer recharge.",
+        recommended_action="Deploy automated submersible sump pump with continuous water level telemetry at -150m level.",
+        expected_impact="Prevents stope submersion risk and secures 80 tons/shift production schedule.",
+        expected_tonnage_recovery=80.0,
+        urgency="MEDIUM",
+        status="PENDING",
+        created_at=datetime.now(timezone.utc)
+    ),
+    # Mansar
+    Recommendation(
+        id="REC_2026_012",
+        mine_id="MINE_MANSAR_06",
+        title="Stope Pillar Stabilization and Geotechnical Reinforcement",
+        category="ZONE_PRIORITIZATION",
+        problem_summary="Local rock stress detected at Level 4 extraction drive during routine geotechnical seismic monitoring.",
+        recommended_action="Apply resin rock bolts and wire mesh reinforcement along crown drive, re-routing loader to North Drift.",
+        expected_impact="Stabilizes hanging wall integrity and maintains safe extraction rate of 75 tons/shift.",
+        expected_tonnage_recovery=75.0,
+        urgency="HIGH",
+        status="PENDING",
+        created_at=datetime.now(timezone.utc)
     )
 ]
 
@@ -219,7 +287,7 @@ def seed_database(profile: str = "full", clean: bool = False):
     try:
         # Check if database is already fully seeded
         mine_count = session.query(Mine).count()
-        if not clean and profile == "full" and mine_count >= 8:
+        if not clean and profile == "full" and mine_count >= 10:
             print(f"Database already populated with {mine_count} mines. Skipping re-seed.")
             return
 

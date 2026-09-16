@@ -1,5 +1,4 @@
 # MOIL AI Mining Intelligence Platform — Comprehensive Production Audit Report
-**Smart India Hackathon 2026 | Problem Statement: PS-26009**
 **Organization: MOIL Limited / Ministry of Steel | Theme: Software / Space Technology**
 **Audit Date:** September 16, 2026
 **Branch:** `feature/ai-ml` | **Status:** ✅ FULLY INTEGRATED, HARDENED & PRODUCTION-READY
@@ -8,11 +7,11 @@
 
 ## Executive Summary
 
-This audit report documents the comprehensive verification, hardening, multi-mine integration, and deployment readiness of the **MOIL AI Mining Intelligence Platform**. Built specifically for Smart India Hackathon 2026 (Problem Statement PS-26009), the platform unites subsurface geological borehole assays, historical production records, heavy earth-moving machinery (HEMM) telematics, meteorological sensor observations, and space-borne satellite indicators into an actionable, explainable, and judge-ready decision support system.
+This audit report documents the comprehensive verification, hardening, multi-mine integration, and deployment readiness of the **MOIL AI Mining Intelligence Platform**. The platform unites subsurface geological borehole assays, historical production records, heavy earth-moving machinery (HEMM) telematics, meteorological sensor observations, and space-borne satellite indicators into an actionable, explainable, and enterprise-grade decision support system.
 
 ### Verification Key Metrics
 - **Automated Backend & AI/ML Tests:** 63 passed / 63 total (100% pass rate) across `tests/ai_ml`, `tests/backend`, `tests/data_pipeline`, `tests/frontend`, `tests/integration`, and `backend/tests/test_endpoints`.
-- **Frontend Production Build:** Vite 8.3.0 + React 19 + TypeScript + Tailwind CSS successfully built in 4.45s with 0 errors (`1881 modules transformed`).
+- **Frontend Production Build:** Vite 8.3.0 + React 19 + TypeScript + Tailwind CSS successfully built with 0 errors.
 - **Multi-Mine Relational Coverage:** 8 operational MOIL mines seeded and dynamically supported across GIS boundaries, satellite indices, production targets, equipment fleets, and risk evaluations.
 - **Unified Pipeline:** `POST /api/pipeline/run?mine_id=...` actively coordinates Reserve ML -> Production ML -> Risk Engine -> Prescriptive Recommendations end-to-end with real database persistence.
 - **Docker Readiness:** Production-ready multi-stage containers configured for both Python FastAPI backend and Nginx-served React frontend, with unified root context and dynamic `$PORT` support.
@@ -20,18 +19,18 @@ This audit report documents the comprehensive verification, hardening, multi-min
 
 ---
 
-## 1. 6-Member Team Ownership Architecture
+## 1. Subsystem Domain Architecture
 
-The platform architecture is designed with clear domain ownership across 6 specialized functional tracks, reflecting a collaborative, enterprise-grade engineering team:
+The platform architecture is designed with clear domain separation across 6 specialized functional tracks:
 
-| Track / Owner | Functional Domain | Primary Codebase Assets | Responsibility |
+| Subsystem Track | Functional Domain | Primary Codebase Assets | Responsibility |
 | :--- | :--- | :--- | :--- |
-| **Team Lead / Integration** | System Architecture & End-to-End Pipeline | `backend/app/api/routes/pipeline.py`, `scripts/run_tests.py`, `.github/workflows/ci.yml`, `render.yaml` | End-to-end orchestration, unified pipeline execution, CI/CD automation, cloud deployment topology, and SIH narrative alignment. |
-| **Reserve AI/ML Specialist** | Subsurface Geological Modeling | `ai_ml/reserve_prediction/`, `ai_ml/models/reserve_model.joblib`, `tests/ai_ml/test_models.py` | Borehole assay ingestion, lithology feature engineering, Random Forest reserve classification, spatial Kriging estimation, and leakage prevention. |
-| **Production & Risk AI/ML Specialist** | Operational Forecasting & Transparent XAI | `ai_ml/production_prediction/`, `ai_ml/risk_prediction/`, `ai_ml/recommendation_engine/` | 14-feature lag-constrained production regression (Gradient Boosting), 4-pillar risk assessment engine, Explainable AI (SHAP weights), and prescriptive rules. |
-| **GIS & Space Tech Specialist** | Spatial Vector Mapping & Earth Observation | `gis/`, `frontend/src/components/map/MineMap.tsx`, `frontend/src/components/workspace/SatellitePanel.tsx` | Multi-mine GeoJSON vector layers, Leaflet interactive mapping, Sentinel-2 (NDVI, SAVI, NDWI, MNDWI) and Landsat-9 (LST, Clay, Iron) telemetry. |
-| **Backend & Data Pipeline Specialist** | REST API, Persistence & Data Quality | `backend/app/`, `database/`, `data_pipeline/`, `scripts/seed.py` | FastAPI endpoints, SQLAlchemy ORM, SQLite/PostgreSQL dual compatibility, empirical data cleaning, deduplication, and non-fabricated quality audit. |
-| **Frontend & UI/UX Specialist** | Responsive Executive Web Application | `frontend/src/App.tsx`, `frontend/src/pages/`, `frontend/src/components/`, `frontend/src/services/api.ts` | Executive dashboard, interactive What-If simulator, Human-in-the-Loop decision cards, crisis demo triggering, and resilient offline fallback. |
+| **Pipeline & Integration** | System Architecture & End-to-End Pipeline | `backend/app/api/routes/pipeline.py`, `scripts/run_tests.py`, `.github/workflows/ci.yml`, `render.yaml` | End-to-end orchestration, unified pipeline execution, CI/CD automation, cloud deployment topology, and enterprise workflow alignment. |
+| **Reserve AI/ML Subsystem** | Subsurface Geological Modeling | `ai_ml/reserve_prediction/`, `ai_ml/models/reserve_model.joblib`, `tests/ai_ml/test_models.py` | Borehole assay ingestion, lithology feature engineering, Random Forest reserve classification, spatial Kriging estimation, and leakage prevention. |
+| **Production & Risk AI/ML** | Operational Forecasting & Transparent XAI | `ai_ml/production_prediction/`, `ai_ml/risk_prediction/`, `ai_ml/recommendation_engine/` | 14-feature lag-constrained production regression (Gradient Boosting), 4-pillar risk assessment engine, Explainable AI (SHAP weights), and prescriptive rules. |
+| **GIS & Space Technology** | Spatial Vector Mapping & Earth Observation | `gis/`, `frontend/src/components/map/MineMap.tsx`, `frontend/src/components/workspace/SatellitePanel.tsx` | Multi-mine GeoJSON vector layers, Leaflet interactive mapping, Sentinel-2 (NDVI, SAVI, NDWI, MNDWI) and Landsat-9 (LST, Clay, Iron) telemetry. |
+| **Backend & Data Infrastructure** | REST API, Persistence & Data Quality | `backend/app/`, `database/`, `data_pipeline/`, `scripts/seed.py` | FastAPI endpoints, SQLAlchemy ORM, SQLite/PostgreSQL dual compatibility, empirical data cleaning, deduplication, and non-fabricated quality audit. |
+| **Frontend Visual Workspace** | Responsive Executive Web Application | `frontend/src/App.tsx`, `frontend/src/pages/`, `frontend/src/components/`, `frontend/src/services/api.ts` | Executive dashboard, interactive What-If simulator, Human-in-the-Loop decision cards, crisis simulation triggering, and resilient offline fallback. |
 
 ---
 
@@ -75,7 +74,7 @@ The platform architecture is designed with clear domain ownership across 6 speci
 4. **Land Surface Temperature (LST):** Derived from Landsat-9 thermal infrared sensors (TIRS-2) to detect thermal radiation anomalies and open ground exposure.
 5. **Clay & Iron Spectral Ratios:** Shortwave Infrared (SWIR) reflectance ratios characterizing surface alteration halos and lateritic gossan caps commonly associated with manganiferous horizons.
 
-Every UI panel and report featuring satellite observations includes clear scientific disclosure to prevent misinterpretation during hackathon evaluation.
+Every UI panel and report featuring satellite observations includes clear scientific disclosure to prevent misinterpretation.
 
 ---
 

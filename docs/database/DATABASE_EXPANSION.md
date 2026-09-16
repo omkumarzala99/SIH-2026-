@@ -1,8 +1,8 @@
-# Database Expansion Architecture Document: PS-26009
+# Database Expansion Architecture Document
 
 ## Executive Summary
 
-This document describes the database expansion executed for Problem Statement **PS-26009** (MOIL Mining Intelligence Platform).
+This document describes the database expansion executed for the **MOIL Mining Intelligence Platform**.
 The database was transitioned from an initial minimal prototype (2 mines, 5 zones, 60 borehole observations) to an **enterprise-grade, relational synthetic mining intelligence repository** (8 mines, 37 zones, 40 heavy equipment units, ~1,204 borehole records, ~2,992 equipment telematics records, ~1,297 weather observations, ~1,742 satellite observations, and ~2,290 production tracking records).
 
 ---

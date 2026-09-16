@@ -1,4 +1,4 @@
-# Data Dictionary: PS-26009 MOIL Mining Intelligence Platform
+# Data Dictionary: MOIL Mining Intelligence Platform
 
 ## Overview of Datasets
 All prototype datasets (`geological_data.csv`, `production_data.csv`, `equipment_data.csv`, `weather_data.csv`, `satellite_data.csv`) are located in `data/mock/` and are joined via consistent primary keys: `mine_id`, `zone_id`, and `timestamp`.

@@ -1,7 +1,7 @@
-# System Architecture: PS-26009 MOIL Mining Intelligence Platform
+# System Architecture: MOIL Mining Intelligence Platform
 
 ## Overview
-The MOIL Mining Intelligence Platform is a full-stack, AI-powered Decision Support System designed for **Smart India Hackathon 2026 Problem Statement PS-26009**. It couples geological drilling assays, daily extraction records, heavy machinery telematics, and space-borne satellite indicators (Sentinel-2, Landsat-9) to identify manganese ore reserves, forecast production shortfalls, and prescribe operational mitigations.
+The MOIL Mining Intelligence Platform is a full-stack, AI-powered Decision Support System for manganese mining operations. It couples geological drilling assays, daily extraction records, heavy machinery telematics, and space-borne satellite indicators (Sentinel-2, Landsat-9) to identify manganese ore reserves, forecast production shortfalls, and prescribe operational mitigations.
 
 ---
 
@@ -48,7 +48,7 @@ The MOIL Mining Intelligence Platform is a full-stack, AI-powered Decision Suppo
        |  - 14-Day Production Trend & Shortfall SVG Chart            |
        |  - Interactive What-If Operational Simulator                |
        |  - Human-in-the-Loop Workflow (Approve/Reject/Modify)       |
-       |  - Instant SIH 2026 Crisis Demo Scenario Trigger            |
+       |  - Instant Operational Crisis Scenario Trigger              |
        |  - Resilient Zero-Downtime Offline Fallback                 |
        +-------------------------------------------------------------+
 ```

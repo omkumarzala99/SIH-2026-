@@ -63,19 +63,19 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigateTab, sel
       {/* Page Title & Subtitle */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-slate-800 pb-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-2">
             Executive Mining Dashboard
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+            <span className="text-xs px-2.5 py-0.5 rounded bg-slate-800 text-amber-300 border border-slate-700 font-medium">
               {selectedMineName || 'Balaghat Concession'}
             </span>
           </h1>
-          <p className="text-sm text-slate-400">
+          <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
             Real-time multi-source intelligence: Geological Reserves, Extraction Forecast, Multi-Factor Risk & Corrective Actions
           </p>
         </div>
-        <div className="flex items-center space-x-2 text-xs text-slate-400 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-          <span>Feed Refreshed: Just now</span>
+        <div className="flex items-center space-x-2 text-xs text-slate-400 bg-slate-900 px-3 py-1.5 rounded-md border border-slate-800 self-start sm:self-auto">
+          <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span>Telemetry Active &bull; Shift A</span>
         </div>
       </div>
 
@@ -84,77 +84,77 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigateTab, sel
         {/* Card 1: Estimated Reserves */}
         <div
           onClick={() => onNavigateTab('reserves')}
-          className="bg-slate-900/80 border border-slate-800 hover:border-amber-500/50 rounded-xl p-4 transition-all hover:shadow-lg hover:shadow-amber-500/5 cursor-pointer group"
+          className="bg-slate-900 border border-slate-800 hover:border-amber-500/60 rounded-xl p-4.5 transition-colors cursor-pointer group"
         >
-          <div className="flex items-center justify-between text-slate-400 text-xs font-medium mb-1">
-            <span>PROVED & PROBABLE RESERVES</span>
-            <Layers className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" />
+          <div className="flex items-center justify-between text-slate-400 text-xs font-semibold tracking-wider mb-1">
+            <span>ESTIMATED RESERVES</span>
+            <Layers className="w-4 h-4 text-emerald-400" />
           </div>
-          <div className="text-2xl font-extrabold text-white font-mono">
+          <div className="text-2xl font-bold text-white tabular-nums font-mono">
             {kpis.total_estimated_reserves_tonnes.toLocaleString()} <span className="text-xs font-normal text-slate-400">tonnes</span>
           </div>
-          <div className="mt-2 text-xs flex items-center justify-between text-slate-400">
-            <span className="text-emerald-400 font-semibold flex items-center">
-              <ArrowUpRight className="w-3 h-3 mr-0.5" /> 5 Operational Zones
+          <div className="mt-2 text-xs flex items-center justify-between text-slate-400 pt-2 border-t border-slate-800/80">
+            <span className="text-emerald-400 font-medium flex items-center">
+              <ArrowUpRight className="w-3 h-3 mr-0.5" /> 5 Zones Mapped
             </span>
-            <span className="font-mono text-slate-300">Avg 41.8% Mn</span>
+            <span className="tabular-nums font-mono text-slate-300">Avg 41.8% Mn</span>
           </div>
         </div>
 
         {/* Card 2: Daily Scheduled Production */}
         <div
           onClick={() => onNavigateTab('production')}
-          className="bg-slate-900/80 border border-slate-800 hover:border-blue-500/50 rounded-xl p-4 transition-all hover:shadow-lg hover:shadow-blue-500/5 cursor-pointer group"
+          className="bg-slate-900 border border-slate-800 hover:border-sky-500/60 rounded-xl p-4.5 transition-colors cursor-pointer group"
         >
-          <div className="flex items-center justify-between text-slate-400 text-xs font-medium mb-1">
-            <span>DAILY PLANNED EXTRACTION</span>
-            <TrendingUp className="w-4 h-4 text-blue-400 group-hover:scale-110 transition-transform" />
+          <div className="flex items-center justify-between text-slate-400 text-xs font-semibold tracking-wider mb-1">
+            <span>DAILY SCHEDULED EXTRACTION</span>
+            <TrendingUp className="w-4 h-4 text-sky-400" />
           </div>
-          <div className="text-2xl font-extrabold text-white font-mono">
+          <div className="text-2xl font-bold text-white tabular-nums font-mono">
             {kpis.daily_planned_production_tonnes.toLocaleString()} <span className="text-xs font-normal text-slate-400">tons / day</span>
           </div>
-          <div className="mt-2 text-xs flex items-center justify-between text-slate-400">
-            <span className="text-slate-300">AI Forecast:</span>
-            <span className="font-mono text-amber-400 font-semibold">{kpis.daily_predicted_production_tonnes} tons</span>
+          <div className="mt-2 text-xs flex items-center justify-between text-slate-400 pt-2 border-t border-slate-800/80">
+            <span className="text-slate-400">AI Predicted:</span>
+            <span className="tabular-nums font-mono text-amber-400 font-semibold">{kpis.daily_predicted_production_tonnes} tons</span>
           </div>
         </div>
 
         {/* Card 3: Shortfall Deficit */}
         <div
           onClick={() => onNavigateTab('production')}
-          className="bg-slate-900/80 border border-slate-800 hover:border-rose-500/50 rounded-xl p-4 transition-all hover:shadow-lg hover:shadow-rose-500/5 cursor-pointer group"
+          className="bg-slate-900 border border-slate-800 hover:border-rose-500/60 rounded-xl p-4.5 transition-colors cursor-pointer group"
         >
-          <div className="flex items-center justify-between text-slate-400 text-xs font-medium mb-1">
+          <div className="flex items-center justify-between text-slate-400 text-xs font-semibold tracking-wider mb-1">
             <span>PROJECTED SHORTFALL</span>
-            <AlertTriangle className="w-4 h-4 text-rose-400 group-hover:scale-110 transition-transform" />
+            <AlertTriangle className="w-4 h-4 text-rose-400" />
           </div>
-          <div className="text-2xl font-extrabold text-rose-400 font-mono">
+          <div className="text-2xl font-bold text-rose-400 tabular-nums font-mono">
             -{kpis.daily_shortfall_tonnes} <span className="text-xs font-normal text-slate-400">tons ({kpis.shortfall_percentage}%)</span>
           </div>
-          <div className="mt-2 text-xs flex items-center justify-between text-slate-400">
-            <span className="text-rose-400">Deficit Alert Active</span>
-            <span className="text-slate-300">Shift-A & B Lag</span>
+          <div className="mt-2 text-xs flex items-center justify-between text-slate-400 pt-2 border-t border-slate-800/80">
+            <span className="text-rose-400 font-medium">Deficit Alert Active</span>
+            <span className="text-slate-300">Shift Lag</span>
           </div>
         </div>
 
         {/* Card 4: Multi-Factor Risk */}
         <div
           onClick={() => onNavigateTab('risk')}
-          className="bg-slate-900/80 border border-slate-800 hover:border-orange-500/50 rounded-xl p-4 transition-all hover:shadow-lg hover:shadow-orange-500/5 cursor-pointer group"
+          className="bg-slate-900 border border-slate-800 hover:border-orange-500/60 rounded-xl p-4.5 transition-colors cursor-pointer group"
         >
-          <div className="flex items-center justify-between text-slate-400 text-xs font-medium mb-1">
-            <span>MULTI-FACTOR RISK SCORE</span>
-            <Flame className="w-4 h-4 text-orange-400 group-hover:scale-110 transition-transform" />
+          <div className="flex items-center justify-between text-slate-400 text-xs font-semibold tracking-wider mb-1">
+            <span>OPERATIONAL RISK SCORE</span>
+            <Flame className="w-4 h-4 text-orange-400" />
           </div>
-          <div className="text-2xl font-extrabold text-orange-400 font-mono flex items-baseline gap-2">
+          <div className="text-2xl font-bold text-orange-400 tabular-nums font-mono flex items-baseline gap-2">
             {kpis.current_risk_score} <span className="text-xs font-normal text-slate-400">/ 100</span>
-            <span className="text-xs font-bold px-2 py-0.5 rounded bg-orange-500/20 text-orange-300 border border-orange-500/30">
+            <span className="text-xs font-semibold px-2 py-0.5 rounded bg-orange-500/20 text-orange-300 border border-orange-500/30">
               {kpis.current_risk_tier}
             </span>
           </div>
-          <div className="mt-2 text-xs flex items-center justify-between text-slate-400">
-            <span>Fleet Availability: {kpis.fleet_health_score}%</span>
-            <span className="text-orange-400 font-medium">Explain Factors &rarr;</span>
+          <div className="mt-2 text-xs flex items-center justify-between text-slate-400 pt-2 border-t border-slate-800/80">
+            <span>Fleet Health: {kpis.fleet_health_score}%</span>
+            <span className="text-orange-400 font-medium hover:underline">Explain Factors &rarr;</span>
           </div>
         </div>
       </div>
@@ -278,21 +278,21 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigateTab, sel
         </div>
       </div>
 
-      {/* BOTTOM SECTION: PRIORITY AI RECOMMENDATION HERO CARD */}
-      <div className="bg-gradient-to-r from-amber-500/10 via-slate-900 to-slate-900 border border-amber-500/30 rounded-2xl p-5 shadow-xl">
+      {/* BOTTOM SECTION: PRIORITY AI RECOMMENDATION CARD */}
+      <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-start space-x-4">
-            <div className="p-3 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 shrink-0">
-              <ShieldCheck className="w-6 h-6" />
+            <div className="p-2.5 rounded-lg bg-slate-800 text-amber-400 border border-slate-700 shrink-0">
+              <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <span className="text-xs font-semibold px-2 py-0.5 rounded bg-amber-500 text-slate-950 uppercase font-mono">
-                  Priority AI Action
+                <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-amber-500 text-slate-950 uppercase font-mono">
+                  Priority Action
                 </span>
-                <span className="text-xs text-slate-400 uppercase tracking-wider">{top_recommendation.category}</span>
+                <span className="text-xs text-slate-400 uppercase tracking-wider font-mono">{top_recommendation.category}</span>
               </div>
-              <h3 className="text-base font-bold text-white mt-1">{top_recommendation.title}</h3>
+              <h3 className="text-base font-semibold text-white mt-1">{top_recommendation.title}</h3>
               <p className="text-xs text-slate-300 mt-1 max-w-3xl leading-relaxed">
                 {top_recommendation.recommended_action}
               </p>
@@ -301,12 +301,12 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigateTab, sel
 
           <div className="flex flex-row md:flex-col items-end justify-between md:justify-center shrink-0 border-t md:border-t-0 md:border-l border-slate-800 pt-3 md:pt-0 md:pl-6 gap-2">
             <div className="text-right">
-              <div className="text-[11px] text-slate-400">Potential Recovery</div>
-              <div className="text-lg font-bold text-emerald-400 font-mono">+{top_recommendation.expected_tonnage_recovery} tons</div>
+              <div className="text-[11px] text-slate-400 font-medium">Expected Recovery</div>
+              <div className="text-lg font-bold text-emerald-400 font-mono tabular-nums">+{top_recommendation.expected_tonnage_recovery} tons</div>
             </div>
             <button
               onClick={() => onNavigateTab('recommendations')}
-              className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-md transition-all"
+              className="px-3.5 py-1.5 rounded-md bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-sm transition-colors"
             >
               Review & Approve &rarr;
             </button>

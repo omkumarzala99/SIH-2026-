@@ -13,7 +13,7 @@ class BaseSatelliteProvider:
 
 
 class MockSatelliteProvider(BaseSatelliteProvider):
-    """Calibrated offline / prototype space provider for SIH 2026."""
+    """Calibrated offline / prototype space provider for MOIL mining telemetry."""
     def get_indices(self, lat: float, lon: float, date: Optional[str] = None) -> Dict[str, Any]:
         # Synthesizes realistic remote sensing parameters for Balaghat region
         return {

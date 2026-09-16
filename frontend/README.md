@@ -1,4 +1,4 @@
-# Frontend Dashboard: PS-26009 MOIL Mining Intelligence Platform (Member 6 Ownership)
+# Frontend Dashboard: MOIL Mining Intelligence Platform
 
 Executive mining decision support web application built with React 18, TypeScript, Vite, Tailwind CSS, and Leaflet GIS mapping.
 

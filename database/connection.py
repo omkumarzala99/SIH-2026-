@@ -1,5 +1,5 @@
 """
-Database connection and session factory for PS-26009 MOIL Mining Intelligence Platform.
+Database connection and session factory for MOIL Mining Intelligence Platform.
 Supports PostgreSQL and SQLite fallback for local demo mode.
 """
 import os

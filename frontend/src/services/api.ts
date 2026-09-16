@@ -595,7 +595,7 @@ export const apiService = {
   async triggerCrisisScenario(): Promise<any> {
     if (this.isDemoMode) {
       return {
-        scenario_id: 'SIH_2026_CRISIS_01',
+        scenario_id: 'CRISIS_SCENARIO_01',
         name: 'Monsoon Inflow & Fleet Mechanical Breakdown',
         description: 'Heavy rainfall (64.2mm) in Balaghat concession, accompanied by hydraulic failure on CAT-349 excavator and 2.5h bench blasting delay.',
         prediction_impact: {
@@ -614,7 +614,7 @@ export const apiService = {
       return await res.json();
     } catch {
       return {
-        scenario_id: 'SIH_2026_CRISIS_01',
+        scenario_id: 'CRISIS_SCENARIO_01',
         name: 'Monsoon Inflow & Fleet Mechanical Breakdown',
         description: 'Heavy rainfall (64.2mm) in Balaghat concession, accompanied by hydraulic failure on CAT-349 excavator and 2.5h bench blasting delay.'
       };

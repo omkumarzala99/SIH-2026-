@@ -1,4 +1,4 @@
-# Risk Engine Module (Member 3 Ownership)
+# Risk Engine Subsystem
 
 Transparent rule-based and extensible multi-variable risk scoring engine for MOIL mining operations.
 

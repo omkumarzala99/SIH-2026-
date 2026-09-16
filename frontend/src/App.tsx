@@ -28,8 +28,8 @@ interface SelectedMineContext {
 }
 
 export const App: React.FC = () => {
-  // Navigation & View Mode
-  const [viewMode, setViewMode] = useState<'space' | 'workspace'>('space');
+  // Navigation & View Mode: Default directly to 'workspace' for instant loading
+  const [viewMode, setViewMode] = useState<'space' | 'workspace'>('workspace');
   const [activeTab, setActiveTab] = useState<WorkspaceTab>('overview');
 
   // Selected Mine & Coordinates
@@ -69,7 +69,7 @@ export const App: React.FC = () => {
     try {
       await apiService.triggerCrisisScenario();
       setCrisisAlert(
-        `🚨 SIH 2026 Presentation Crisis Triggered: Heavy Monsoon (54.2mm), Saturated Pits (58.4%), and CAT-349 Excavator Breakdown (6.5h) loaded. Predicted Production 768.5t vs 1,000t target (-231.5t shortfall, CRITICAL Risk 77.5 / 100).`
+        `🚨 Operational Crisis Scenario Injected: Heavy Monsoon (54.2mm), Saturated Pits (58.4%), and CAT-349 Excavator Breakdown (6.5h) loaded. Predicted Production 768.5t vs 1,000t target (-231.5t shortfall, CRITICAL Risk 77.5 / 100).`
       );
       setActiveTab('results');
       setTimeout(() => {
@@ -205,6 +205,7 @@ export const App: React.FC = () => {
                       selectedMineId={selectedMine.id}
                       center={[selectedMine.lat, selectedMine.lng]}
                       onZoneSelect={() => setActiveTab('results')}
+                      onSelectMineId={handleSelectMineId}
                     />
                   </div>
                 </div>
@@ -252,7 +253,7 @@ export const App: React.FC = () => {
                 />
               )}
 
-              {/* Tab 8: System Architecture & 6-Dev Team Hub */}
+              {/* Tab 8: System Architecture & Subsystems */}
               {activeTab === 'system' && <SystemInfoPage />}
             </div>
           </main>

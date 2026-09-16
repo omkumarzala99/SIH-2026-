@@ -25,7 +25,7 @@ export const MOIL_MINES_DATA: MineLocation[] = [
     annualCapacity: '650,000 Tonnes/Yr'
   },
   {
-    id: 'M02',
+    id: 'MINE_TIRODI_03',
     name: 'Tirodi Mine',
     state: 'Madhya Pradesh',
     district: 'Balaghat',
@@ -36,7 +36,7 @@ export const MOIL_MINES_DATA: MineLocation[] = [
     annualCapacity: '280,000 Tonnes/Yr'
   },
   {
-    id: 'M03',
+    id: 'MINE_DONGRI_04',
     name: 'Dongri Buzurg Mine',
     state: 'Maharashtra',
     district: 'Bhandara',
@@ -58,7 +58,7 @@ export const MOIL_MINES_DATA: MineLocation[] = [
     annualCapacity: '180,000 Tonnes/Yr'
   },
   {
-    id: 'M05',
+    id: 'MINE_KANDRI_05',
     name: 'Kandri Mine',
     state: 'Maharashtra',
     district: 'Nagpur',
@@ -69,7 +69,7 @@ export const MOIL_MINES_DATA: MineLocation[] = [
     annualCapacity: '210,000 Tonnes/Yr'
   },
   {
-    id: 'M06',
+    id: 'MINE_MANSAR_06',
     name: 'Mansar Mine',
     state: 'Maharashtra',
     district: 'Nagpur',
@@ -80,7 +80,7 @@ export const MOIL_MINES_DATA: MineLocation[] = [
     annualCapacity: '150,000 Tonnes/Yr'
   },
   {
-    id: 'M07',
+    id: 'MINE_UKWA_08',
     name: 'Ukwa Mine',
     state: 'Madhya Pradesh',
     district: 'Balaghat',
@@ -91,7 +91,7 @@ export const MOIL_MINES_DATA: MineLocation[] = [
     annualCapacity: '140,000 Tonnes/Yr'
   },
   {
-    id: 'M08',
+    id: 'MINE_CHIKLA_07',
     name: 'Chikla Mine',
     state: 'Maharashtra',
     district: 'Bhandara',
@@ -100,6 +100,28 @@ export const MOIL_MINES_DATA: MineLocation[] = [
     type: 'Underground',
     status: 'Operational',
     annualCapacity: '240,000 Tonnes/Yr'
+  },
+  {
+    id: 'MINE_SITAPATORE_09',
+    name: 'Sitapatore Mine',
+    state: 'Madhya Pradesh',
+    district: 'Balaghat',
+    lat: 21.7000,
+    lng: 79.6667,
+    type: 'Underground',
+    status: 'Operational',
+    annualCapacity: '120,000 Tonnes/Yr'
+  },
+  {
+    id: 'MINE_BELDONGRI_10',
+    name: 'Beldongri Mine',
+    state: 'Maharashtra',
+    district: 'Nagpur',
+    lat: 21.3833,
+    lng: 79.1500,
+    type: 'Underground',
+    status: 'Operational',
+    annualCapacity: '110,000 Tonnes/Yr'
   }
 ];
 

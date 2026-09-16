@@ -1,5 +1,5 @@
 """
-Synthetic Mock Data Generator for MOIL Mining Intelligence Platform (PS-26009).
+Synthetic Mock Data Generator for MOIL Mining Intelligence Platform.
 Generates realistic, relational, multi-mine synthetic datasets for:
 - 8 MOIL manganese concessions across Madhya Pradesh and Maharashtra
 - 37 mining zones with varied geological potential (HIGH, MEDIUM, LOW)
@@ -129,6 +129,32 @@ SYNTHETIC_MINES = [
         "mineral_type": "Manganese Ore",
         "annual_capacity": "260,000 Tonnes/Yr",
         "type": "Underground"
+    },
+    {
+        "id": "MINE_SITAPATORE_09",
+        "name": "Sitapatore Manganese Mine",
+        "concession_code": "MOIL-MP-STP-009",
+        "state": "Madhya Pradesh",
+        "district": "Balaghat",
+        "latitude": 21.7000,
+        "longitude": 79.6667,
+        "area_sq_km": 6.40,
+        "mineral_type": "Manganese Ore",
+        "annual_capacity": "120,000 Tonnes/Yr",
+        "type": "Underground"
+    },
+    {
+        "id": "MINE_BELDONGRI_10",
+        "name": "Beldongri Manganese Mine",
+        "concession_code": "MOIL-MH-BLD-010",
+        "state": "Maharashtra",
+        "district": "Nagpur",
+        "latitude": 21.3833,
+        "longitude": 79.1500,
+        "area_sq_km": 5.80,
+        "mineral_type": "Manganese Ore",
+        "annual_capacity": "110,000 Tonnes/Yr",
+        "type": "Underground / Open Cast"
     }
 ]
 
@@ -184,7 +210,19 @@ SYNTHETIC_ZONES = [
     {"id": "ZONE_UKW_02", "mine_id": "MINE_UKWA_08", "name": "Ukwa Central Extraction 2", "operational_status": "ACTIVE_EXTRACTION", "bench_level": "-120m RL", "daily_target_tons": 290, "potential": "HIGH", "lat_offset": -0.002, "lng_offset": 0.001},
     {"id": "ZONE_UKW_03", "mine_id": "MINE_UKWA_08", "name": "Ukwa North Expansion 3", "operational_status": "DEVELOPMENT_BENCH", "bench_level": "-80m RL", "daily_target_tons": 190, "potential": "MEDIUM", "lat_offset": 0.005, "lng_offset": -0.003},
     {"id": "ZONE_UKW_04", "mine_id": "MINE_UKWA_08", "name": "Ukwa Exploration Trench 4", "operational_status": "GEOLOGICAL_PROSPECTING", "bench_level": "Surface (+340m RL)", "daily_target_tons": 0, "potential": "LOW", "lat_offset": -0.006, "lng_offset": 0.004},
-    {"id": "ZONE_UKW_05", "mine_id": "MINE_UKWA_08", "name": "Ukwa Overburden Mound 5", "operational_status": "WASTE_STABILIZATION", "bench_level": "Surface (+360m RL)", "daily_target_tons": 0, "potential": "LOW", "lat_offset": 0.004, "lng_offset": -0.006}
+    {"id": "ZONE_UKW_05", "mine_id": "MINE_UKWA_08", "name": "Ukwa Overburden Mound 5", "operational_status": "WASTE_STABILIZATION", "bench_level": "Surface (+360m RL)", "daily_target_tons": 0, "potential": "LOW", "lat_offset": 0.004, "lng_offset": -0.006},
+
+    # 9. Sitapatore (4 zones)
+    {"id": "ZONE_STP_01", "mine_id": "MINE_SITAPATORE_09", "name": "Sitapatore Deep Stope 1", "operational_status": "ACTIVE_EXTRACTION", "bench_level": "-130m RL", "daily_target_tons": 210, "potential": "HIGH", "lat_offset": 0.003, "lng_offset": 0.003},
+    {"id": "ZONE_STP_02", "mine_id": "MINE_SITAPATORE_09", "name": "Sitapatore North Bench 2", "operational_status": "ACTIVE_EXTRACTION", "bench_level": "-90m RL", "daily_target_tons": 180, "potential": "HIGH", "lat_offset": 0.005, "lng_offset": -0.002},
+    {"id": "ZONE_STP_03", "mine_id": "MINE_SITAPATORE_09", "name": "Sitapatore South Incline 3", "operational_status": "DEVELOPMENT_BENCH", "bench_level": "-60m RL", "daily_target_tons": 140, "potential": "MEDIUM", "lat_offset": -0.004, "lng_offset": 0.002},
+    {"id": "ZONE_STP_04", "mine_id": "MINE_SITAPATORE_09", "name": "Sitapatore Exploration Trench 4", "operational_status": "GEOLOGICAL_PROSPECTING", "bench_level": "Surface (+305m RL)", "daily_target_tons": 0, "potential": "LOW", "lat_offset": -0.006, "lng_offset": -0.004},
+
+    # 10. Beldongri (4 zones)
+    {"id": "ZONE_BLD_01", "mine_id": "MINE_BELDONGRI_10", "name": "Beldongri Main Quarry Pit 1", "operational_status": "ACTIVE_EXTRACTION", "bench_level": "-70m RL", "daily_target_tons": 160, "potential": "HIGH", "lat_offset": 0.002, "lng_offset": 0.003},
+    {"id": "ZONE_BLD_02", "mine_id": "MINE_BELDONGRI_10", "name": "Beldongri East Bench 2", "operational_status": "ACTIVE_EXTRACTION", "bench_level": "-95m RL", "daily_target_tons": 140, "potential": "MEDIUM", "lat_offset": -0.003, "lng_offset": 0.004},
+    {"id": "ZONE_BLD_03", "mine_id": "MINE_BELDONGRI_10", "name": "Beldongri West Development 3", "operational_status": "DEVELOPMENT_BENCH", "bench_level": "-40m RL", "daily_target_tons": 100, "potential": "MEDIUM", "lat_offset": -0.004, "lng_offset": -0.003},
+    {"id": "ZONE_BLD_04", "mine_id": "MINE_BELDONGRI_10", "name": "Beldongri Overburden Mound 4", "operational_status": "WASTE_STABILIZATION", "bench_level": "Surface (+295m RL)", "daily_target_tons": 0, "potential": "LOW", "lat_offset": 0.005, "lng_offset": -0.005}
 ]
 
 SYNTHETIC_EQUIPMENT = [
@@ -242,7 +280,19 @@ SYNTHETIC_EQUIPMENT = [
     {"id": "DMP_CAT_773E_03", "mine_id": "MINE_UKWA_08", "equipment_type": "Haul Dumper", "model": "CAT 773E Off-Highway", "year": 2023, "zone": "ZONE_UKW_01"},
     {"id": "DMP_CAT_773E_04", "mine_id": "MINE_UKWA_08", "equipment_type": "Haul Dumper", "model": "CAT 773E Off-Highway", "year": 2023, "zone": "ZONE_UKW_02"},
     {"id": "DRL_ATLAS_ROC_03", "mine_id": "MINE_UKWA_08", "equipment_type": "Blast Drill Rig", "model": "Atlas Copco ROC L8", "year": 2021, "zone": "ZONE_UKW_01"},
-    {"id": "WTR_TRK_TATA_04", "mine_id": "MINE_UKWA_08", "equipment_type": "Dust Suppression Bowser", "model": "Tata Prima 2828", "year": 2022, "zone": "ZONE_UKW_02"}
+    {"id": "WTR_TRK_TATA_04", "mine_id": "MINE_UKWA_08", "equipment_type": "Dust Suppression Bowser", "model": "Tata Prima 2828", "year": 2022, "zone": "ZONE_UKW_02"},
+
+    # Sitapatore (4 units)
+    {"id": "EXC_KOM_PC300_02", "mine_id": "MINE_SITAPATORE_09", "equipment_type": "Hydraulic Excavator", "model": "Komatsu PC300-8", "year": 2022, "zone": "ZONE_STP_01"},
+    {"id": "DMP_VOLVO_FMX_51", "mine_id": "MINE_SITAPATORE_09", "equipment_type": "Haul Dumper", "model": "Volvo FMX 440 8x4", "year": 2023, "zone": "ZONE_STP_01"},
+    {"id": "DMP_VOLVO_FMX_52", "mine_id": "MINE_SITAPATORE_09", "equipment_type": "Haul Dumper", "model": "Volvo FMX 440 8x4", "year": 2022, "zone": "ZONE_STP_02"},
+    {"id": "DRL_ATLAS_ROC_04", "mine_id": "MINE_SITAPATORE_09", "equipment_type": "Blast Drill Rig", "model": "Atlas Copco ROC L8", "year": 2021, "zone": "ZONE_STP_01"},
+
+    # Beldongri (4 units)
+    {"id": "EXC_CAT_320_01", "mine_id": "MINE_BELDONGRI_10", "equipment_type": "Hydraulic Excavator", "model": "CAT 320D3", "year": 2022, "zone": "ZONE_BLD_01"},
+    {"id": "DMP_BEML_BH35_05", "mine_id": "MINE_BELDONGRI_10", "equipment_type": "Haul Dumper", "model": "BEML BH35-2", "year": 2023, "zone": "ZONE_BLD_01"},
+    {"id": "DMP_BEML_BH35_06", "mine_id": "MINE_BELDONGRI_10", "equipment_type": "Haul Dumper", "model": "BEML BH35-2", "year": 2022, "zone": "ZONE_BLD_02"},
+    {"id": "WTR_TRK_TATA_05", "mine_id": "MINE_BELDONGRI_10", "equipment_type": "Dust Suppression Bowser", "model": "Tata Prima 2828", "year": 2021, "zone": "ZONE_BLD_01"}
 ]
 
 

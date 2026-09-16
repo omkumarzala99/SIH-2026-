@@ -1,12 +1,15 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import L from 'leaflet';
 import { api } from '../../services/api';
+import { MOIL_MINES, MoilMineInfo } from '../../data/constants';
+import { Compass, Globe2, Layers, MapPin, Pickaxe } from 'lucide-react';
 
 interface MineMapProps {
   onZoneSelect?: (zoneId: string) => void;
   selectedZoneId?: string;
   selectedMineId?: string;
   center?: [number, number];
+  onSelectMineId?: (mineId: string) => void;
 }
 
 const MINE_CENTERS: Record<string, [number, number]> = {
@@ -17,18 +20,22 @@ const MINE_CENTERS: Record<string, [number, number]> = {
   MINE_KANDRI_05: [21.4167, 79.2667],
   MINE_MANSAR_06: [21.4000, 79.2833],
   MINE_CHIKLA_07: [21.5667, 79.7667],
-  MINE_UKWA_08: [21.9667, 80.4667]
+  MINE_UKWA_08: [21.9667, 80.4667],
+  MINE_SITAPATORE_09: [21.7000, 79.6667],
+  MINE_BELDONGRI_10: [21.3833, 79.1500]
 };
 
 export const MineMap: React.FC<MineMapProps> = ({
   onZoneSelect,
   selectedZoneId,
   selectedMineId = 'MINE_BALAGHAT_01',
-  center
+  center,
+  onSelectMineId
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
 
+  const [showAllMines, setShowAllMines] = useState(true);
   const [showBoundary, setShowBoundary] = useState(true);
   const [showPits, setShowPits] = useState(true);
   const [showReserves, setShowReserves] = useState(true);
@@ -36,6 +43,8 @@ export const MineMap: React.FC<MineMapProps> = ({
   const [loadingLayers, setLoadingLayers] = useState(false);
   const [layerError, setLayerError] = useState<string | null>(null);
 
+  const showAllMinesRef = useRef(showAllMines);
+  showAllMinesRef.current = showAllMines;
   const showBoundaryRef = useRef(showBoundary);
   showBoundaryRef.current = showBoundary;
   const showPitsRef = useRef(showPits);
@@ -47,16 +56,27 @@ export const MineMap: React.FC<MineMapProps> = ({
   const boundaryLayerRef = useRef<L.GeoJSON | null>(null);
   const pitsLayerRef = useRef<L.GeoJSON | null>(null);
   const reservesLayerRef = useRef<L.GeoJSON | null>(null);
+  const allMinesLayerGroupRef = useRef<L.LayerGroup | null>(null);
 
-  // Basemap Tile Providers (Watermark-free public & configurable)
+  // Basemap Tile Providers
   const SATELLITE_TILE_URL = import.meta.env.VITE_MAP_TILE_URL || 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
   const SATELLITE_ATTRIBUTION = import.meta.env.VITE_MAP_ATTRIBUTION || '&copy; Esri &mdash; Earthstar Geographics';
   const STREETS_TILE_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
   const STREETS_ATTRIBUTION = '&copy; OpenStreetMap contributors';
 
-  // Center coordinate primitives to avoid re-renders on new array references
   const centerLat = center?.[0];
   const centerLng = center?.[1];
+
+  // Fit all MOIL mines across Central India
+  const handleFitAllMines = useCallback(() => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+    // Bounding box encompassing Nagpur, Bhandara, and Balaghat concessions
+    const allMinesBounds = L.latLngBounds(
+      MOIL_MINES.map((m) => [m.lat, m.lon] as [number, number])
+    );
+    map.fitBounds(allMinesBounds, { padding: [50, 50], maxZoom: 12 });
+  }, []);
 
   // Initialize Map Once
   useEffect(() => {
@@ -68,7 +88,7 @@ export const MineMap: React.FC<MineMapProps> = ({
 
     const map = L.map(mapContainerRef.current, {
       center: initialCenter,
-      zoom: 14,
+      zoom: 13,
       zoomControl: true,
       attributionControl: false
     });
@@ -79,9 +99,12 @@ export const MineMap: React.FC<MineMapProps> = ({
     }).addTo(map);
     tileLayerRef.current = initialTile;
 
+    // Create LayerGroup for all MOIL mines markers
+    const allMinesGroup = L.layerGroup().addTo(map);
+    allMinesLayerGroupRef.current = allMinesGroup;
+
     mapInstanceRef.current = map;
 
-    // Trigger invalidateSize to ensure correct tile rendering once mounted
     const timer = setTimeout(() => {
       map.invalidateSize();
     }, 200);
@@ -109,11 +132,131 @@ export const MineMap: React.FC<MineMapProps> = ({
     }).addTo(map);
     tileLayerRef.current = newTile;
 
-    // Bring vector layers to front
     if (boundaryLayerRef.current && showBoundaryRef.current) boundaryLayerRef.current.bringToFront();
     if (pitsLayerRef.current && showPitsRef.current) pitsLayerRef.current.bringToFront();
     if (reservesLayerRef.current && showReservesRef.current) reservesLayerRef.current.bringToFront();
   }, [basemapType]);
+
+  // Render & update ALL MOIL Mines Markers on the map
+  useEffect(() => {
+    const group = allMinesLayerGroupRef.current;
+    if (!group) return;
+
+    group.clearLayers();
+
+    if (!showAllMines) return;
+
+    MOIL_MINES.forEach((mine) => {
+      const isSelected = mine.id === selectedMineId;
+
+      // Custom high-tech Leaflet DivIcon
+      const markerHtml = `
+        <div class="moil-mine-marker group" style="position: relative; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
+          ${isSelected ? '<div style="position: absolute; width: 38px; height: 38px; border-radius: 50%; background: rgba(245, 158, 11, 0.25); animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;"></div>' : ''}
+          <div style="
+            width: ${isSelected ? '32px' : '26px'};
+            height: ${isSelected ? '32px' : '26px'};
+            border-radius: 8px;
+            background: ${isSelected ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 'linear-gradient(135deg, #0284c7, #0369a1)'};
+            border: 2px solid ${isSelected ? '#fef3c7' : '#e0f2fe'};
+            box-shadow: 0 4px 12px ${isSelected ? 'rgba(245, 158, 11, 0.5)' : 'rgba(2, 132, 199, 0.4)'};
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0f172a;
+            font-weight: 900;
+            font-size: ${isSelected ? '14px' : '11px'};
+            transition: transform 0.2s;
+          ">
+            ⛏️
+          </div>
+          <div style="
+            margin-top: 4px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid ${isSelected ? '#f59e0b' : '#334155'};
+            color: ${isSelected ? '#fbbf24' : '#e2e8f0'};
+            font-size: 10px;
+            font-weight: bold;
+            font-family: sans-serif;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+            letter-spacing: 0.3px;
+          ">
+            ${mine.name.replace(' Mine', '').replace(' Manganese Concession', '')}
+          </div>
+        </div>
+      `;
+
+      const customIcon = L.divIcon({
+        className: 'moil-custom-mine-pin',
+        html: markerHtml,
+        iconSize: [32, 48],
+        iconAnchor: [16, 24],
+        popupAnchor: [0, -26]
+      });
+
+      const marker = L.marker([mine.lat, mine.lon], { icon: customIcon });
+
+      const popupHtml = `
+        <div style="font-family: system-ui, sans-serif; min-width: 220px; color: #0f172a; padding: 2px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 6px;">
+            <span style="font-size: 9px; font-weight: 800; text-transform: uppercase; color: #d97706; background: #fef3c7; padding: 2px 6px; border-radius: 4px; font-family: monospace;">
+              MOIL CONCESSION
+            </span>
+            <span style="font-size: 10px; font-weight: 600; color: #059669;">
+              ● ${mine.status.split('—')[0].trim()}
+            </span>
+          </div>
+          <h3 style="margin: 0 0 4px 0; font-size: 14px; font-weight: 800; color: #0f172a;">
+            ${mine.name}
+          </h3>
+          <div style="font-size: 11px; color: #475569; line-height: 1.5; margin-bottom: 8px;">
+            <div><b>Region:</b> ${mine.district}, ${mine.state}</div>
+            <div><b>Concession ID:</b> <code style="background: #f1f5f9; padding: 1px 4px; border-radius: 3px; color: #0f172a;">${mine.id}</code></div>
+            <div><b>Type:</b> ${mine.type}</div>
+            <div><b>Annual Capacity:</b> ${mine.annual_capacity}</div>
+            <div><b>Coordinates:</b> ${mine.lat.toFixed(4)}°N, ${mine.lon.toFixed(4)}°E</div>
+          </div>
+          <button
+            id="popup-btn-select-${mine.id}"
+            style="
+              width: 100%;
+              padding: 6px 12px;
+              background: #f59e0b;
+              color: #0f172a;
+              border: none;
+              border-radius: 6px;
+              font-weight: 800;
+              font-size: 11px;
+              cursor: pointer;
+              box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+              transition: background 0.15s;
+            "
+            onmouseover="this.style.background='#d97706'; this.style.color='#ffffff';"
+            onmouseout="this.style.background='#f59e0b'; this.style.color='#0f172a';"
+          >
+            ${isSelected ? '✓ Current Active Concession' : 'Select & Focus Concession →'}
+          </button>
+        </div>
+      `;
+
+      marker.bindPopup(popupHtml);
+
+      marker.on('popupopen', () => {
+        const btn = document.getElementById(`popup-btn-select-${mine.id}`);
+        if (btn && onSelectMineId) {
+          btn.onclick = () => {
+            onSelectMineId(mine.id);
+            marker.closePopup();
+          };
+        }
+      });
+
+      marker.addTo(group);
+    });
+  }, [showAllMines, selectedMineId, onSelectMineId]);
 
   // Load and refresh GeoJSON layers whenever selectedMineId changes
   const loadLayersForMine = useCallback(async (mineId: string) => {
@@ -123,7 +266,7 @@ export const MineMap: React.FC<MineMapProps> = ({
     setLoadingLayers(true);
     setLayerError(null);
 
-    // 1. Remove previous layers
+    // 1. Remove previous polygon layers
     if (boundaryLayerRef.current) {
       map.removeLayer(boundaryLayerRef.current);
       boundaryLayerRef.current = null;
@@ -168,7 +311,6 @@ export const MineMap: React.FC<MineMapProps> = ({
         boundaryLayerRef.current = bLayer;
         if (showBoundaryRef.current) bLayer.addTo(map);
 
-        // Auto-fit bounds to boundary if valid
         try {
           const bounds = bLayer.getBounds();
           if (bounds.isValid()) {
@@ -246,7 +388,6 @@ export const MineMap: React.FC<MineMapProps> = ({
         if (showReservesRef.current) rLayer.addTo(map);
       }
 
-      // Invalidate size once layers are fitted
       setTimeout(() => {
         if (mapInstanceRef.current) {
           mapInstanceRef.current.invalidateSize();
@@ -265,7 +406,7 @@ export const MineMap: React.FC<MineMapProps> = ({
     loadLayersForMine(selectedMineId);
   }, [selectedMineId, loadLayersForMine]);
 
-  // Handle Layer Visibility Toggles (Instantaneous Leaflet toggle with zero re-fetching)
+  // Handle Layer Visibility Toggles
   useEffect(() => {
     if (!mapInstanceRef.current) return;
     if (boundaryLayerRef.current) {
@@ -290,99 +431,171 @@ export const MineMap: React.FC<MineMapProps> = ({
     }
   }, [showReserves]);
 
+  const activeMineObj = MOIL_MINES.find((m) => m.id === selectedMineId) || MOIL_MINES[0];
+
   return (
-    <div className="relative w-full h-full min-h-[420px] rounded-xl overflow-hidden border border-slate-800 bg-slate-950 shadow-inner">
-      <div ref={mapContainerRef} className="w-full h-full" />
-
-      {/* Loading Status Indicator */}
-      {loadingLayers && (
-        <div className="absolute top-3 left-3 z-[1000] bg-slate-900/90 backdrop-blur border border-amber-500/40 rounded-lg px-3 py-1.5 shadow-xl text-xs flex items-center space-x-2 text-amber-300">
-          <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-amber-400" />
-          <span className="font-mono text-[11px]">Updating GIS layers...</span>
+    <div className="relative w-full h-full min-h-[480px] rounded-xl overflow-hidden border border-slate-800 bg-slate-950 shadow-inner flex flex-col">
+      {/* Top Concession Navigation Bar */}
+      <div className="bg-slate-900/95 border-b border-slate-800 px-3 py-2 flex items-center justify-between gap-2 overflow-x-auto z-10 scrollbar-none">
+        <div className="flex items-center space-x-1.5 shrink-0">
+          <Pickaxe className="w-4 h-4 text-amber-400 shrink-0" />
+          <span className="text-xs font-bold text-white uppercase tracking-wider shrink-0">
+            MOIL Mines ({MOIL_MINES.length}):
+          </span>
         </div>
-      )}
 
-      {/* Layer Error Notification */}
-      {layerError && (
-        <div className="absolute top-3 left-3 z-[1000] bg-rose-950/90 backdrop-blur border border-rose-700/80 rounded-lg px-3 py-1.5 shadow-xl text-xs text-rose-300 flex items-center space-x-2">
-          <span>{layerError}</span>
+        {/* Quick Mine Selection Chips */}
+        <div className="flex items-center space-x-1.5 overflow-x-auto scrollbar-none py-0.5">
+          {MOIL_MINES.map((m) => {
+            const isSel = m.id === selectedMineId;
+            return (
+              <button
+                key={m.id}
+                type="button"
+                onClick={() => onSelectMineId?.(m.id)}
+                className={`px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition-all flex items-center space-x-1 ${
+                  isSel
+                    ? 'bg-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/20'
+                    : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700'
+                }`}
+              >
+                <span>{m.name.replace(' Mine', '').replace(' Manganese Concession', '')}</span>
+                <span className={`text-[10px] ${isSel ? 'text-slate-900' : 'text-slate-400'}`}>
+                  ({m.state === 'Madhya Pradesh' ? 'MP' : 'MH'})
+                </span>
+              </button>
+            );
+          })}
         </div>
-      )}
 
-      {/* Floating Layer Controls */}
-      <div className="absolute top-3 right-3 z-[1000] bg-slate-900/90 backdrop-blur border border-slate-700/80 rounded-lg p-2.5 shadow-xl text-xs space-y-1.5">
-        <div className="font-semibold text-slate-300 pb-1 border-b border-slate-800">GIS Layer Controls</div>
-        <label className="flex items-center space-x-2 cursor-pointer hover:text-amber-400 text-slate-300">
-          <input
-            type="checkbox"
-            checked={showBoundary}
-            onChange={(e) => setShowBoundary(e.target.checked)}
-            className="rounded border-slate-700 text-amber-500 focus:ring-0"
-          />
-          <span>Mine Boundary</span>
-        </label>
-        <label className="flex items-center space-x-2 cursor-pointer hover:text-blue-400 text-slate-300">
-          <input
-            type="checkbox"
-            checked={showPits}
-            onChange={(e) => setShowPits(e.target.checked)}
-            className="rounded border-slate-700 text-blue-500 focus:ring-0"
-          />
-          <span>Operational Pits</span>
-        </label>
-        <label className="flex items-center space-x-2 cursor-pointer hover:text-emerald-400 text-slate-300">
-          <input
-            type="checkbox"
-            checked={showReserves}
-            onChange={(e) => setShowReserves(e.target.checked)}
-            className="rounded border-slate-700 text-emerald-500 focus:ring-0"
-          />
-          <span>AI Reserve Heatmap</span>
-        </label>
-
-        {/* Basemap Style Switcher */}
-        <div className="pt-2 mt-1 border-t border-slate-800 space-y-1">
-          <div className="text-[10px] uppercase font-bold text-slate-400">Basemap View</div>
-          <div className="grid grid-cols-2 gap-1 bg-slate-950/70 p-0.5 rounded border border-slate-800">
-            <button
-              type="button"
-              onClick={() => setBasemapType('satellite')}
-              className={`px-1.5 py-1 text-[10px] font-semibold rounded transition-colors ${
-                basemapType === 'satellite'
-                  ? 'bg-amber-500 text-slate-950 font-bold shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              🛰️ Satellite
-            </button>
-            <button
-              type="button"
-              onClick={() => setBasemapType('streets')}
-              className={`px-1.5 py-1 text-[10px] font-semibold rounded transition-colors ${
-                basemapType === 'streets'
-                  ? 'bg-amber-500 text-slate-950 font-bold shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              🗺️ Streets
-            </button>
-          </div>
-        </div>
+        {/* Fit All Mines Button */}
+        <button
+          type="button"
+          onClick={handleFitAllMines}
+          className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 hover:text-amber-300 border border-slate-700 text-xs font-bold whitespace-nowrap flex items-center space-x-1 shrink-0 transition-colors shadow"
+          title="Fit all 10 MOIL mines across Madhya Pradesh and Maharashtra"
+        >
+          <Globe2 className="w-3.5 h-3.5" />
+          <span>Fit All Mines</span>
+        </button>
       </div>
 
-      {/* Legend */}
-      <div className="absolute bottom-3 left-3 z-[1000] bg-slate-900/90 backdrop-blur border border-slate-700/80 rounded-lg px-3 py-2 shadow-xl text-[11px] flex items-center space-x-4">
-        <div className="flex items-center space-x-1.5">
-          <span className="w-2.5 h-2.5 rounded bg-emerald-500 inline-block"></span>
-          <span className="text-slate-300">High Reserve (&gt;75%)</span>
+      {/* Map Display Container */}
+      <div className="relative flex-1 w-full h-full min-h-[420px]">
+        <div ref={mapContainerRef} className="w-full h-full" />
+
+        {/* Loading Status Indicator */}
+        {loadingLayers && (
+          <div className="absolute top-3 left-3 z-[1000] bg-slate-900/90 backdrop-blur border border-amber-500/40 rounded-lg px-3 py-1.5 shadow-xl text-xs flex items-center space-x-2 text-amber-300">
+            <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-amber-400" />
+            <span className="font-mono text-[11px]">Updating GIS layers for {activeMineObj.name}...</span>
+          </div>
+        )}
+
+        {/* Layer Error Notification */}
+        {layerError && (
+          <div className="absolute top-3 left-3 z-[1000] bg-rose-950/90 backdrop-blur border border-rose-700/80 rounded-lg px-3 py-1.5 shadow-xl text-xs text-rose-300 flex items-center space-x-2">
+            <span>{layerError}</span>
+          </div>
+        )}
+
+        {/* Floating Layer Controls */}
+        <div className="absolute top-3 right-3 z-[1000] bg-slate-900/95 backdrop-blur-md border border-slate-700/80 rounded-xl p-3 shadow-2xl text-xs space-y-2 max-w-[200px]">
+          <div className="font-bold text-white pb-1.5 border-b border-slate-800 flex items-center justify-between">
+            <span className="flex items-center gap-1.5">
+              <Layers className="w-3.5 h-3.5 text-amber-400" />
+              GIS Layers
+            </span>
+          </div>
+
+          <label className="flex items-center space-x-2 cursor-pointer hover:text-amber-400 text-slate-200">
+            <input
+              type="checkbox"
+              checked={showAllMines}
+              onChange={(e) => setShowAllMines(e.target.checked)}
+              className="rounded border-slate-700 text-amber-500 focus:ring-0"
+            />
+            <span className="font-medium">All MOIL Mines ({MOIL_MINES.length})</span>
+          </label>
+
+          <label className="flex items-center space-x-2 cursor-pointer hover:text-amber-400 text-slate-300">
+            <input
+              type="checkbox"
+              checked={showBoundary}
+              onChange={(e) => setShowBoundary(e.target.checked)}
+              className="rounded border-slate-700 text-amber-500 focus:ring-0"
+            />
+            <span>Mine Lease Boundary</span>
+          </label>
+
+          <label className="flex items-center space-x-2 cursor-pointer hover:text-blue-400 text-slate-300">
+            <input
+              type="checkbox"
+              checked={showPits}
+              onChange={(e) => setShowPits(e.target.checked)}
+              className="rounded border-slate-700 text-blue-500 focus:ring-0"
+            />
+            <span>Operational Benches</span>
+          </label>
+
+          <label className="flex items-center space-x-2 cursor-pointer hover:text-emerald-400 text-slate-300">
+            <input
+              type="checkbox"
+              checked={showReserves}
+              onChange={(e) => setShowReserves(e.target.checked)}
+              className="rounded border-slate-700 text-emerald-500 focus:ring-0"
+            />
+            <span>Reserve AI Heatmap</span>
+          </label>
+
+          {/* Basemap Style Switcher */}
+          <div className="pt-2 border-t border-slate-800 space-y-1">
+            <div className="text-[10px] uppercase font-bold text-slate-400">Basemap View</div>
+            <div className="grid grid-cols-2 gap-1 bg-slate-950/70 p-0.5 rounded border border-slate-800">
+              <button
+                type="button"
+                onClick={() => setBasemapType('satellite')}
+                className={`px-1.5 py-1 text-[10px] font-semibold rounded transition-colors ${
+                  basemapType === 'satellite'
+                    ? 'bg-amber-500 text-slate-950 font-bold shadow-sm'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                🛰️ Satellite
+              </button>
+              <button
+                type="button"
+                onClick={() => setBasemapType('streets')}
+                className={`px-1.5 py-1 text-[10px] font-semibold rounded transition-colors ${
+                  basemapType === 'streets'
+                    ? 'bg-amber-500 text-slate-950 font-bold shadow-sm'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                🗺️ Streets
+              </button>
+            </div>
+          </div>
         </div>
-        <div className="flex items-center space-x-1.5">
-          <span className="w-2.5 h-2.5 rounded bg-amber-500 inline-block"></span>
-          <span className="text-slate-300">Medium (50-75%)</span>
-        </div>
-        <div className="flex items-center space-x-1.5">
-          <span className="w-2.5 h-2.5 rounded bg-rose-500 inline-block"></span>
-          <span className="text-slate-300">Low (&lt;50%)</span>
+
+        {/* Legend */}
+        <div className="absolute bottom-3 left-3 z-[1000] bg-slate-900/90 backdrop-blur border border-slate-700/80 rounded-lg px-3 py-2 shadow-xl text-[11px] flex flex-wrap items-center gap-3">
+          <div className="flex items-center space-x-1.5">
+            <span className="w-3 h-3 rounded bg-amber-500 flex items-center justify-center text-[8px] text-slate-950 font-bold">⛏️</span>
+            <span className="text-slate-300">MOIL Mine Location</span>
+          </div>
+          <div className="flex items-center space-x-1.5">
+            <span className="w-2.5 h-2.5 rounded bg-emerald-500 inline-block"></span>
+            <span className="text-slate-300">High Grade Reserve (&gt;75%)</span>
+          </div>
+          <div className="flex items-center space-x-1.5">
+            <span className="w-2.5 h-2.5 rounded bg-amber-500 inline-block"></span>
+            <span className="text-slate-300">Medium Reserve (50-75%)</span>
+          </div>
+          <div className="flex items-center space-x-1.5">
+            <span className="w-2.5 h-2.5 rounded bg-rose-500 inline-block"></span>
+            <span className="text-slate-300">Low Reserve (&lt;50%)</span>
+          </div>
         </div>
       </div>
     </div>

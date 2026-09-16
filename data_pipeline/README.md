@@ -1,4 +1,4 @@
-# Data Pipeline: PS-26009 MOIL Mining Intelligence Platform
+# Data Pipeline: MOIL Mining Intelligence Platform
 
 The data pipeline provides a robust, multi-stage ETL and feature store framework designed to bridge raw mining telemetry, geological assays, and space-borne satellite observations with the downstream AI/ML inference and prediction layers.
 

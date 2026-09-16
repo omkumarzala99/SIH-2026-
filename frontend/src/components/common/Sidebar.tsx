@@ -41,7 +41,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'recommendations', label: 'Decision Support', icon: Lightbulb, countBadge: pendingRecsCount },
     { id: 'simulation', label: 'What-If Simulation', icon: Sliders },
     { id: 'quality', label: 'Data Quality & Health', icon: CheckCircle2 },
-    { id: 'system', label: '6-Dev Architecture', icon: Users, badge: 'Team Hub' },
+    { id: 'system', label: 'System Architecture', icon: Layers, badge: 'Specs' },
   ];
 
   return (
@@ -109,7 +109,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <span className="text-slate-200 font-mono">42.5% Mn</span>
         </div>
         <div className="pt-2 text-[10px] text-slate-400 text-center">
-          Smart India Hackathon 2026 &copy; MOIL
+          MOIL Limited &copy; Mining Intelligence Platform
         </div>
       </div>
     </aside>

@@ -1,4 +1,4 @@
-# Risk Prediction Module (Member 3 Ownership)
+# Risk Prediction Subsystem
 
 Transparent, explainable multi-variable risk scoring engine that evaluates operational risk tiers (`LOW`, `MEDIUM`, `HIGH`, `CRITICAL`) across:
 1. Heavy equipment downtime

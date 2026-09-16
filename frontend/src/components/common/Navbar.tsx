@@ -1,6 +1,8 @@
 import React from 'react';
 import { Pickaxe, Radio, AlertOctagon, Sparkles, Satellite, RefreshCw } from 'lucide-react';
 
+import { MOIL_MINES } from '../../data/constants';
+
 interface NavbarProps {
   isDemoMode: boolean;
   onToggleDemoMode: (val: boolean) => void;
@@ -31,10 +33,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div className="flex items-center space-x-2">
                 <span className="text-xl font-bold tracking-tight text-white">MOIL</span>
                 <span className="text-xs px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono">
-                  PS-26009
-                </span>
-                <span className="hidden sm:inline-block text-xs px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                  SIH 2026
+                  Enterprise DSS
                 </span>
               </div>
               <p className="text-xs text-slate-400">AI/ML & Space Mining Intelligence Platform</p>
@@ -47,21 +46,24 @@ export const Navbar: React.FC<NavbarProps> = ({
             <select
               value={selectedMine}
               onChange={(e) => onSelectMine(e.target.value)}
-              className="bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-amber-500"
+              className="bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-amber-500 cursor-pointer"
             >
-              <option value="MINE_BALAGHAT_01">Balaghat Manganese Concession</option>
-              <option value="MINE_GUMGAON_02">Gumgaon Manganese Mine</option>
+              {MOIL_MINES.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.name} ({m.district})
+                </option>
+              ))}
             </select>
 
-            {/* SIH Predefined Crisis Scenario Button */}
+            {/* Operational Crisis Scenario Button */}
             <button
               onClick={onTriggerCrisisDemo}
               className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 text-xs font-semibold transition-all shadow-sm group"
-              title="Loads the heavy monsoon + equipment downtime hackathon crisis scenario"
+              title="Loads heavy monsoon + equipment downtime crisis scenario"
             >
               <AlertOctagon className="w-3.5 h-3.5 text-rose-400 group-hover:animate-pulse" />
-              <span className="hidden md:inline">Run SIH Crisis Demo</span>
-              <span className="md:hidden">Demo</span>
+              <span className="hidden md:inline">Run Crisis Simulation</span>
+              <span className="md:hidden">Crisis</span>
             </button>
 
             {/* Live / Demo Mode Toggle */}

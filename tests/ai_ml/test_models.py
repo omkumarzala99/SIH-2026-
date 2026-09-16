@@ -608,7 +608,7 @@ def test_risk_tier_boundary_consistency_regression():
     assert res_75_0.overall_risk_score == 75.0
     assert res_75_0.risk_tier == "CRITICAL"
 
-    # 3. Score 77.5 -> CRITICAL (Hackathon Crisis Scenario)
+    # 3. Score 77.5 -> CRITICAL (Operational Crisis Scenario)
     req_77_5 = RiskAssessmentRequest(
         equipment_downtime_hours=6.5,
         rainfall_mm=54.2,

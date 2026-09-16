@@ -17,7 +17,7 @@ from ai_ml.recommendation_engine.recommender import generate_recommendations
 
 def run_demo():
     print("=" * 70)
-    print("   PS-26009 MOIL AI/ML MINING INTELLIGENCE PLATFORM (SIH 2026)   ")
+    print("           MOIL AI/ML MINING INTELLIGENCE PLATFORM            ")
     print("=" * 70)
 
     print("\n1. Initializing & Verifying Database...")
@@ -31,7 +31,7 @@ def run_demo():
     for dom, m in quality['domains'].items():
         print(f"     - {m['name']}: {m['overall_score']}% (Rows: {m['total_records']}, Missing: {m['missing_values']})")
 
-    print("\n3. Simulating SIH 2026 Monsoon Crisis Scenario...")
+    print("\n3. Simulating Operational Monsoon Crisis Scenario...")
     print("   Conditions: 54.2mm Rainfall | 6.5h CAT-349 Downtime | 2.2h Blasting Delay")
     prod = predict_production_and_shortfall(ProductionPredictionRequest(
         planned_production=1000.0,

@@ -1,5 +1,5 @@
 # Production Deployment & Infrastructure Runbook
-**MOIL AI Mining Intelligence Platform | SIH 2026 Problem Statement PS-26009**
+**MOIL AI Mining Intelligence Platform**
 **Organization:** MOIL Limited / Ministry of Steel
 
 ---
@@ -144,7 +144,7 @@ The platform features multi-level health verification:
 
 ## 7. Zero-Downtime Resilience: Demo Fallback Mode
 
-To ensure an un-breakable evaluation experience during judge presentations and network interruptions:
+To ensure an un-breakable operational experience during system demonstrations and network interruptions:
 1. **Frontend Fallback Interceptor:** If the backend becomes unreachable, `frontend/src/services/api.ts` transparently returns high-fidelity fallback datasets calibrated for MOIL's Balaghat concession.
-2. **Visual Status Indicator:** The navigation bar displays an active status badge (**API Online: Green** vs **Demo Mode: Amber**), informing the evaluator of the connection state.
-3. **Crisis Trigger Button:** An on-screen **"🚨 Crisis Demo"** button injects a live shortfall scenario (54.2mm monsoon deluge, 6.5h excavator failure, -231.5t deficit) for instant hackathon walkthroughs.
+2. **Visual Status Indicator:** The navigation bar displays an active status badge (**API Online: Green** vs **Demo Mode: Amber**), informing the operator of the connection state.
+3. **Crisis Trigger Button:** An on-screen **"🚨 Simulate Crisis"** button injects a live shortfall scenario (54.2mm monsoon deluge, 6.5h excavator failure, -231.5t deficit) for instant operational walkthroughs.

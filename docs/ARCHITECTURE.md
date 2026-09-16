@@ -1,5 +1,5 @@
 # System Architecture & Technical Specifications
-**MOIL AI Mining Intelligence Platform | SIH 2026 Problem Statement PS-26009**
+**MOIL AI Mining Intelligence Platform**
 **Organization:** MOIL Limited / Ministry of Steel
 
 ---
@@ -85,13 +85,13 @@ graph TD
 
 ---
 
-## 2. Six-Member Conceptual Ownership Architecture
+## 2. Subsystem Architecture & Domain Decomposition
 
-To simulate a professional enterprise engineering environment, the codebase is partitioned into 6 distinct ownership tracks:
+The codebase is partitioned into 6 distinct modular subsystem tracks:
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│ 1. TEAM LEAD / INTEGRATION                                                  │
+│ 1. PIPELINE & CLOUD SERVICES                                                │
 │    • System Topology & Unified Pipeline: backend/app/api/routes/pipeline.py │
 │    • Containerization & Orchestration: Dockerfile, docker-compose.yml       │
 │    • Deployment Automation: render.yaml, .github/workflows/ci.yml           │
@@ -100,8 +100,8 @@ To simulate a professional enterprise engineering environment, the codebase is p
          ┌────────────────────────┼────────────────────────┐
          ▼                        ▼                        ▼
 ┌──────────────────┐    ┌──────────────────┐    ┌──────────────────┐
-│ 2. RESERVE ML    │    │ 3. PRODUCTION &  │    │ 4. GIS & SPACE   │
-│    SPECIALIST    │    │    RISK ML       │    │    TECHNOLOGY    │
+│ 2. RESERVE AI/ML │    │ 3. PRODUCTION &  │    │ 4. GIS & REMOTE  │
+│    SUBSYSTEM     │    │    RISK ENGINE   │    │    SENSING       │
 │ • Subsurface     │    │ • Production     │    │ • Multi-mine     │
 │   assays         │    │   regression     │    │   GeoJSON layers │
 │ • Lithology      │    │ • 14 lag-shifted │    │ • Leaflet map    │
@@ -115,7 +115,7 @@ To simulate a professional enterprise engineering environment, the codebase is p
          └────────────────────────┼────────────────────────┘
                                   ▼
          ┌─────────────────────────────────────────────────┐
-         │ 5. BACKEND, DB & DATA PIPELINE SPECIALIST       │
+         │ 5. BACKEND & DATA INFRASTRUCTURE                │
          │    • FastAPI REST Router & Endpoints            │
          │    • SQLAlchemy ORM (14 Relational Models)      │
          │    • SQLite & PostgreSQL Dual Driver Support    │
@@ -124,12 +124,12 @@ To simulate a professional enterprise engineering environment, the codebase is p
                                   │
                                   ▼
          ┌─────────────────────────────────────────────────┐
-         │ 6. FRONTEND & UI/UX SPECIALIST                  │
+         │ 6. FRONTEND & VISUAL ANALYTICS                  │
          │    • React 19 + TypeScript + Vite Dashboard     │
          │    • Responsive Leaflet GIS Integration         │
          │    • What-If Operational Simulation Engine      │
          │    • Human-in-the-Loop Management Interface     │
-         │    • SIH 2026 Crisis Demo Scenario Trigger      │
+         │    • Operational Crisis Simulation Trigger      │
          └─────────────────────────────────────────────────┘
 ```
 

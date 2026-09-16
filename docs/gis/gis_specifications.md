@@ -1,4 +1,4 @@
-# GIS & Space Technology Specifications: PS-26009
+# GIS & Space Technology Specifications: MOIL Mining Intelligence Platform
 
 ## Overview
 The Geographic Information Systems (GIS) layer provides spatial visualization and remote sensing telemetry for the MOIL mining platform.

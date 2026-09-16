@@ -1,4 +1,4 @@
-# Backend Service: PS-26009 MOIL Mining Intelligence Platform (Member 5 Ownership)
+# Backend Service: MOIL Mining Intelligence Platform
 
 FastAPI REST API providing data contracts, ML orchestration, and persistence for the MOIL Decision Support System.
 

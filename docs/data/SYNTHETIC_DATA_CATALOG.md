@@ -1,7 +1,7 @@
-# Synthetic Data Catalog & Generation Methodology: PS-26009
+# Synthetic Data Catalog & Generation Methodology
 
-## Disclaimer & Regulatory Purpose
-All data documented in this catalog was synthesized programmatically to support end-to-end software engineering, spatial analytics, and AI/ML model execution for the **PS-26009 MOIL Mining Intelligence Platform**. No confidential mining data, proprietary mineral reserve ledgers, or non-public telemetry from MOIL Limited was utilized.
+## Disclaimer & Purpose
+All data documented in this catalog was synthesized programmatically to support end-to-end software engineering, spatial analytics, and AI/ML model execution for the **MOIL Mining Intelligence Platform**. No confidential mining data, proprietary mineral reserve ledgers, or non-public telemetry from MOIL Limited was utilized.
 
 ---
 

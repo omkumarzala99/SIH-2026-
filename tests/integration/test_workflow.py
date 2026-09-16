@@ -1,5 +1,5 @@
 """
-End-to-end integration test: Simulates full SIH Crisis Demo flow.
+End-to-end integration test: Simulates full operational crisis workflow.
 """
 from fastapi.testclient import TestClient
 from backend.app.main import app
@@ -7,7 +7,7 @@ from backend.app.main import app
 client = TestClient(app)
 
 
-def test_full_hackathon_demo_story():
+def test_full_operational_crisis_story():
     # 1. Trigger Crisis Scenario
     crisis_res = client.post("/api/demo/crisis-scenario")
     assert crisis_res.status_code == 200

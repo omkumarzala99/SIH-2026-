@@ -1,4 +1,4 @@
-# API Reference: PS-26009 MOIL Mining Intelligence Platform
+# API Reference: MOIL Mining Intelligence Platform
 
 FastAPI REST endpoints providing multi-source mining telemetry, ML predictions, and GIS layers.
 
@@ -51,8 +51,8 @@ FastAPI REST endpoints providing multi-source mining telemetry, ML predictions, 
 ### 9. Data Quality & Pipeline Health
 - **`GET /data-quality`**: Computes empirical completeness %, duplicate checks, and freshness timestamps across all 5 datasets.
 
-### 10. Hackathon Presentation Demo
-- **`POST /demo/crisis-scenario`**: Triggers the benchmark SIH 2026 crisis scenario.
+### 10. Operational Crisis Scenario
+- **`POST /demo/crisis-scenario`**: Triggers the benchmark operational crisis scenario.
 
 ### 11. Model Registry & History
 - **`GET /models`**: Lists registered models, versions, and accuracy metrics.

@@ -1,5 +1,5 @@
 # REST API Reference Manual
-**MOIL AI Mining Intelligence Platform | SIH 2026 Problem Statement PS-26009**
+**MOIL AI Mining Intelligence Platform**
 **Base URL:** `http://localhost:8000` | **Prefix:** `/api`
 **Interactive Swagger UI:** `/api/docs` | **ReDoc:** `/api/redoc`
 
@@ -249,7 +249,7 @@ Returns Sentinel-2 and Landsat-9 spectral telemetry for the designated mine zone
 Runs an interactive What-If scenario adjusting rainfall, machinery downtime, or blasting delays.
 
 ### `POST /api/demo/crisis`
-Instantly triggers the SIH 2026 Crisis Presentation Scenario (heavy monsoon + excavator failure).
+Instantly triggers the Operational Crisis Scenario (heavy monsoon + excavator failure).
 
 ### `GET /api/quality`
 Returns non-fabricated empirical data pipeline quality and completeness metrics.

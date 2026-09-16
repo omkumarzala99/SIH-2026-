@@ -1,6 +1,6 @@
 """
-Predefined Hackathon Demo Scenario Endpoint.
-Provides the SIH 2026 Crisis Scenario: Heavy Rainfall + Equipment Downtime + Blasting Delay.
+Operational Crisis Scenario Simulation Endpoint.
+Provides the Crisis Scenario: Heavy Rainfall + Equipment Downtime + Blasting Delay.
 """
 from fastapi import APIRouter
 from typing import Dict, Any
@@ -9,10 +9,10 @@ router = APIRouter(prefix="/demo", tags=["Demo Scenario"])
 
 
 @router.post("/crisis-scenario")
-def trigger_hackathon_crisis_scenario() -> Dict[str, Any]:
-    """Triggers the benchmark SIH 2026 crisis presentation scenario."""
+def trigger_crisis_scenario() -> Dict[str, Any]:
+    """Triggers the benchmark operational crisis scenario."""
     return {
-        "scenario_id": "SIH_2026_CRISIS_01",
+        "scenario_id": "CRISIS_SCENARIO_01",
         "name": "Monsoon Inflow & Fleet Mechanical Breakdown",
         "description": "Heavy rainfall (64.2mm) in Balaghat concession, accompanied by hydraulic failure on CAT-349 excavator and 2.5h bench blasting delay.",
         "environmental_conditions": {
