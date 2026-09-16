@@ -13,7 +13,12 @@ import {
 import { RecommendationItem } from '../types';
 import { apiService } from '../services/api';
 
-export const RecommendationsPage: React.FC = () => {
+interface RecommendationsPageProps {
+  selectedMineId?: string;
+  selectedMineName?: string;
+}
+
+export const RecommendationsPage: React.FC<RecommendationsPageProps> = ({ selectedMineId, selectedMineName }) => {
   const [recommendations, setRecommendations] = useState<RecommendationItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedRecForModify, setSelectedRecForModify] = useState<RecommendationItem | null>(null);
@@ -24,7 +29,7 @@ export const RecommendationsPage: React.FC = () => {
   const fetchRecommendations = async () => {
     setLoading(true);
     try {
-      const list = await apiService.getRecommendations();
+      const list = await apiService.getRecommendations(selectedMineId);
       setRecommendations(list);
     } finally {
       setLoading(false);
@@ -33,7 +38,7 @@ export const RecommendationsPage: React.FC = () => {
 
   useEffect(() => {
     fetchRecommendations();
-  }, []);
+  }, [selectedMineId]);
 
   const handleAction = async (id: string, action: 'APPROVE' | 'REJECT' | 'MODIFY') => {
     try {
@@ -59,7 +64,12 @@ export const RecommendationsPage: React.FC = () => {
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-2">
             <Lightbulb className="w-6 h-6 text-amber-400" />
-            Decision Support & AI Action Protocols
+            Decision Support &amp; AI Action Protocols
+            {selectedMineName && (
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-normal">
+                {selectedMineName}
+              </span>
+            )}
           </h1>
           <p className="text-sm text-slate-400">
             Prescriptive mitigation steps with Human-in-the-Loop decision governance (Approve, Reject, or Modify)

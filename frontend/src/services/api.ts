@@ -316,10 +316,11 @@ export const apiService = {
     this.isDemoMode = enabled;
   },
 
-  async getDashboard(): Promise<DashboardData> {
+  async getDashboard(mineId?: string): Promise<DashboardData> {
     if (this.isDemoMode) return FALLBACK_DASHBOARD;
     try {
-      const res = await fetch(`${API_BASE}/dashboard`, { signal: AbortSignal.timeout(2500) });
+      const url = mineId ? `${API_BASE}/dashboard?mine_id=${encodeURIComponent(mineId)}` : `${API_BASE}/dashboard`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(2500) });
       if (!res.ok) throw new Error('API failed');
       return await res.json();
     } catch {
@@ -327,10 +328,11 @@ export const apiService = {
     }
   },
 
-  async getReserves(): Promise<ReserveZone[]> {
+  async getReserves(mineId?: string): Promise<ReserveZone[]> {
     if (this.isDemoMode) return FALLBACK_RESERVES;
     try {
-      const res = await fetch(`${API_BASE}/reserves`, { signal: AbortSignal.timeout(2500) });
+      const url = mineId ? `${API_BASE}/reserves?mine_id=${encodeURIComponent(mineId)}` : `${API_BASE}/reserves`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(2500) });
       if (!res.ok) throw new Error('API failed');
       return await res.json();
     } catch {
@@ -374,10 +376,11 @@ export const apiService = {
     }
   },
 
-  async getProduction(): Promise<ProductionTrendData> {
+  async getProduction(mineId?: string): Promise<ProductionTrendData> {
     if (this.isDemoMode) return FALLBACK_PRODUCTION;
     try {
-      const res = await fetch(`${API_BASE}/production`, { signal: AbortSignal.timeout(2500) });
+      const url = mineId ? `${API_BASE}/production?mine_id=${encodeURIComponent(mineId)}` : `${API_BASE}/production`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(2500) });
       if (!res.ok) throw new Error('API failed');
       return await res.json();
     } catch {
@@ -385,10 +388,11 @@ export const apiService = {
     }
   },
 
-  async getEquipment(): Promise<EquipmentItem[]> {
+  async getEquipment(mineId?: string): Promise<EquipmentItem[]> {
     if (this.isDemoMode) return FALLBACK_EQUIPMENT;
     try {
-      const res = await fetch(`${API_BASE}/production/equipment`, { signal: AbortSignal.timeout(2500) });
+      const url = mineId ? `${API_BASE}/production/equipment?mine_id=${encodeURIComponent(mineId)}` : `${API_BASE}/production/equipment`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(2500) });
       if (!res.ok) throw new Error('API failed');
       return await res.json();
     } catch {
@@ -396,10 +400,11 @@ export const apiService = {
     }
   },
 
-  async getRisk(): Promise<RiskData> {
+  async getRisk(mineId?: string): Promise<RiskData> {
     if (this.isDemoMode) return FALLBACK_RISK;
     try {
-      const res = await fetch(`${API_BASE}/risk`, { signal: AbortSignal.timeout(2500) });
+      const url = mineId ? `${API_BASE}/risk?mine_id=${encodeURIComponent(mineId)}` : `${API_BASE}/risk`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(2500) });
       if (!res.ok) throw new Error('API failed');
       return await res.json();
     } catch {
@@ -407,10 +412,11 @@ export const apiService = {
     }
   },
 
-  async getRecommendations(): Promise<RecommendationItem[]> {
+  async getRecommendations(mineId?: string): Promise<RecommendationItem[]> {
     if (this.isDemoMode) return localRecommendations;
     try {
-      const res = await fetch(`${API_BASE}/recommendations`, { signal: AbortSignal.timeout(2500) });
+      const url = mineId ? `${API_BASE}/recommendations?mine_id=${encodeURIComponent(mineId)}` : `${API_BASE}/recommendations`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(2500) });
       if (!res.ok) throw new Error('API failed');
       return await res.json();
     } catch {
@@ -531,10 +537,11 @@ export const apiService = {
     };
   },
 
-  async getDataQuality(): Promise<DataQualityReport> {
+  async getDataQuality(mineId?: string): Promise<DataQualityReport> {
     if (this.isDemoMode) return FALLBACK_QUALITY;
     try {
-      const res = await fetch(`${API_BASE}/data-quality`, { signal: AbortSignal.timeout(2500) });
+      const url = mineId ? `${API_BASE}/data-quality?mine_id=${encodeURIComponent(mineId)}` : `${API_BASE}/data-quality`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(2500) });
       if (!res.ok) throw new Error('API failed');
       return await res.json();
     } catch {

@@ -1,0 +1,9 @@
+id,name,concession_code,state,district,latitude,longitude,area_sq_km,mineral_type,annual_capacity,type
+MINE_BALAGHAT_01,Balaghat Manganese Concession,MOIL-MP-BGT-001,Madhya Pradesh,Balaghat,21.8129,80.1835,14.85,Manganese Ore,"650,000 Tonnes/Yr",Underground / Deep Bench
+MINE_GUMGAON_02,Gumgaon Manganese Mine,MOIL-MH-GMG-002,Maharashtra,Nagpur,21.3854,78.9812,9.4,Manganese Ore,"180,000 Tonnes/Yr",Underground
+MINE_TIRODI_03,Tirodi Manganese Mine,MOIL-MP-TRD-003,Madhya Pradesh,Balaghat,21.6836,79.7247,8.2,Manganese Ore,"280,000 Tonnes/Yr",Opencast & Underground
+MINE_DONGRI_04,Dongri Buzurg Mine,MOIL-MH-DGB-004,Maharashtra,Bhandara,21.55,79.6833,11.5,Manganese Ore,"420,000 Tonnes/Yr",Opencast / Beneficiation
+MINE_KANDRI_05,Kandri Manganese Mine,MOIL-MH-KND-005,Maharashtra,Nagpur,21.4167,79.2667,7.8,Manganese Ore,"210,000 Tonnes/Yr",Underground
+MINE_MANSAR_06,Mansar Manganese Mine,MOIL-MH-MSR-006,Maharashtra,Nagpur,21.4,79.2833,6.9,Manganese Ore,"190,000 Tonnes/Yr",Underground
+MINE_CHIKLA_07,Chikla Manganese Mine,MOIL-MH-CHK-007,Maharashtra,Bhandara,21.5667,79.7667,8.6,Manganese Ore,"230,000 Tonnes/Yr",Underground
+MINE_UKWA_08,Ukwa Manganese Mine,MOIL-MP-UKW-008,Madhya Pradesh,Balaghat,21.9667,80.4667,10.3,Manganese Ore,"260,000 Tonnes/Yr",Underground

@@ -19,9 +19,11 @@ import { ProductionChart } from '../components/charts/ProductionChart';
 
 interface DashboardPageProps {
   onNavigateTab: (tab: any) => void;
+  selectedMineId?: string;
+  selectedMineName?: string;
 }
 
-export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigateTab }) => {
+export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigateTab, selectedMineId, selectedMineName }) => {
   const [data, setData] = useState<DashboardData | null>(null);
   const [prodTrend, setProdTrend] = useState<ProductionTrendData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -31,8 +33,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigateTab }) =
       setLoading(true);
       try {
         const [dash, prod] = await Promise.all([
-          apiService.getDashboard(),
-          apiService.getProduction()
+          apiService.getDashboard(selectedMineId),
+          apiService.getProduction(selectedMineId)
         ]);
         setData(dash);
         setProdTrend(prod);
@@ -43,7 +45,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigateTab }) =
       }
     };
     fetchData();
-  }, []);
+  }, [selectedMineId]);
 
   if (loading || !data) {
     return (
@@ -64,7 +66,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigateTab }) =
           <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
             Executive Mining Dashboard
             <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
-              Balaghat Concession
+              {selectedMineName || 'Balaghat Concession'}
             </span>
           </h1>
           <p className="text-sm text-slate-400">

@@ -12,14 +12,19 @@ import {
 import { DataQualityReport } from '../types';
 import { apiService } from '../services/api';
 
-export const DataQualityPage: React.FC = () => {
+interface DataQualityPageProps {
+  selectedMineId?: string;
+  selectedMineName?: string;
+}
+
+export const DataQualityPage: React.FC<DataQualityPageProps> = ({ selectedMineId, selectedMineName }) => {
   const [report, setReport] = useState<DataQualityReport | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchQuality = async () => {
     setLoading(true);
     try {
-      const q = await apiService.getDataQuality();
+      const q = await apiService.getDataQuality(selectedMineId);
       setReport(q);
     } finally {
       setLoading(false);
@@ -28,7 +33,7 @@ export const DataQualityPage: React.FC = () => {
 
   useEffect(() => {
     fetchQuality();
-  }, []);
+  }, [selectedMineId]);
 
   if (loading || !report) {
     return <div className="p-12 text-center text-slate-400">Auditing Real Mining Datasets Quality...</div>;
@@ -43,7 +48,12 @@ export const DataQualityPage: React.FC = () => {
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-2">
             <CheckCircle2 className="w-6 h-6 text-emerald-400" />
-            Data Quality & Pipeline Health Governance
+            Data Quality &amp; Pipeline Health Governance
+            {selectedMineName && (
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-normal">
+                {selectedMineName}
+              </span>
+            )}
           </h1>
           <p className="text-sm text-slate-400">
             Automated empirical audit tracking completeness, duplicate integrity, out-of-bound values, and sensor freshness

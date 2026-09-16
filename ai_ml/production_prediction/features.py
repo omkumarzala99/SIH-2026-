@@ -155,6 +155,8 @@ def build_production_training_dataset(
         raise FileNotFoundError(f"Production data not found at '{prod_path}'")
 
     prod_df = pd.read_csv(prod_path)
+    if "mine_id" in prod_df.columns:
+        prod_df = prod_df[prod_df["mine_id"] == "MINE_BALAGHAT_01"]
 
     # 1. Daily production totals
     daily_prod = prod_df.groupby("date").agg(
@@ -169,6 +171,8 @@ def build_production_training_dataset(
     # 2. Weather observations
     if os.path.exists(weather_path):
         weath_df = pd.read_csv(weather_path)
+        if "mine_id" in weath_df.columns:
+            weath_df = weath_df[weath_df["mine_id"] == "MINE_BALAGHAT_01"]
         weath_df["flood_risk_score"] = weath_df["flood_risk_index"].map(FLOOD_RISK_MAP).fillna(0.0)
         df = pd.merge(daily_prod, weath_df, on=["date", "mine_id"], how="left")
     else:
@@ -183,6 +187,12 @@ def build_production_training_dataset(
     # 3. Equipment status logs
     if os.path.exists(eq_path):
         eq_df = pd.read_csv(eq_path)
+        balaghat_eq_ids = {
+            "EXC_CAT_349_01", "EXC_KOM_PC450_02", "DMP_VOLVO_FMX_11", "DMP_VOLVO_FMX_12",
+            "DMP_VOLVO_FMX_13", "DRL_ATLAS_ROC_01", "CRU_TELSMITH_01", "WTR_TRK_TATA_01"
+        }
+        if "equipment_id" in eq_df.columns:
+            eq_df = eq_df[eq_df["equipment_id"].isin(balaghat_eq_ids)]
         eq_df["date"] = eq_df["timestamp"].str[:10]
         daily_eq = eq_df.groupby("date").agg(
             equipment_downtime_hours=("downtime_hours", "sum"),

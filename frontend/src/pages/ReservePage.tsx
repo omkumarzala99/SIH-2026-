@@ -4,7 +4,12 @@ import { ReserveZone, BoreholeRecord } from '../types';
 import { apiService } from '../services/api';
 import { MineMap } from '../components/map/MineMap';
 
-export const ReservePage: React.FC = () => {
+interface ReservePageProps {
+  selectedMineId?: string;
+  selectedMineName?: string;
+}
+
+export const ReservePage: React.FC<ReservePageProps> = ({ selectedMineId, selectedMineName }) => {
   const [zones, setZones] = useState<ReserveZone[]>([]);
   const [selectedZoneId, setSelectedZoneId] = useState<string>('ZONE_NORTH_A');
   const [filterClass, setFilterClass] = useState<string>('ALL');
@@ -13,11 +18,14 @@ export const ReservePage: React.FC = () => {
 
   useEffect(() => {
     const load = async () => {
-      const list = await apiService.getReserves();
+      const list = await apiService.getReserves(selectedMineId);
       setZones(list);
+      if (list.length > 0 && !list.some(z => z.zone_id === selectedZoneId)) {
+        setSelectedZoneId(list[0].zone_id);
+      }
     };
     load();
-  }, []);
+  }, [selectedMineId]);
 
   const selectedZone = zones.find(z => z.zone_id === selectedZoneId) || zones[0];
 
@@ -83,9 +91,9 @@ export const ReservePage: React.FC = () => {
         <div className="lg:col-span-2 bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col justify-between">
           <div className="flex items-center justify-between mb-3">
             <div className="text-sm font-semibold text-white flex items-center gap-2">
-              <span>Balaghat Manganese Concession Map</span>
+              <span>{selectedMineName || 'Balaghat Manganese Concession'} Map</span>
               <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono">
-                5 Geological Blocks
+                {zones.length} Geological Blocks
               </span>
             </div>
             <span className="text-xs text-slate-400">Click any zone polygon to inspect indicators</span>

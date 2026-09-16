@@ -22,14 +22,19 @@ def list_reserve_zones(
     Returns evaluated manganese reserve potential across operational zones
     derived from real database geological observations and Reserve ML inference.
     """
-    if mine_id:
+    if mine_id and mine_id.upper() == "ALL":
+        target_mine_id = None
+    elif mine_id:
         mine = db.query(Mine).filter(Mine.id == mine_id).first()
         if not mine:
             raise HTTPException(status_code=404, detail=f"Mine '{mine_id}' not found")
+        target_mine_id = mine_id
+    else:
+        target_mine_id = "MINE_BALAGHAT_01"
 
     obs_query = db.query(GeologicalObservation)
-    if mine_id:
-        obs_query = obs_query.filter(GeologicalObservation.mine_id == mine_id)
+    if target_mine_id:
+        obs_query = obs_query.filter(GeologicalObservation.mine_id == target_mine_id)
 
     observations = obs_query.all()
     if not observations:
@@ -42,8 +47,8 @@ def list_reserve_zones(
 
     # Fetch zones in deterministic order
     zone_query = db.query(MineZone)
-    if mine_id:
-        zone_query = zone_query.filter(MineZone.mine_id == mine_id)
+    if target_mine_id:
+        zone_query = zone_query.filter(MineZone.mine_id == target_mine_id)
     zones = zone_query.all()
 
     ordered_zone_ids = [z.id for z in zones]

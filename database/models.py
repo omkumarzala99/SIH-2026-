@@ -50,8 +50,8 @@ class GeologicalObservation(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     borehole_id = Column(String(50), index=True, nullable=False)
-    mine_id = Column(String(50), ForeignKey("mines.id"), nullable=False)
-    zone_id = Column(String(50), ForeignKey("mine_zones.id"), nullable=False)
+    mine_id = Column(String(50), ForeignKey("mines.id"), index=True, nullable=False)
+    zone_id = Column(String(50), ForeignKey("mine_zones.id"), index=True, nullable=False)
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
     depth_meters = Column(Float, nullable=False)
@@ -71,36 +71,36 @@ class SatelliteObservation(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     satellite_source = Column(String(50), default="Sentinel-2 MSI")
-    mine_id = Column(String(50), ForeignKey("mines.id"), nullable=False)
-    zone_id = Column(String(50), ForeignKey("mine_zones.id"), nullable=False)
+    mine_id = Column(String(50), ForeignKey("mines.id"), index=True, nullable=False)
+    zone_id = Column(String(50), ForeignKey("mine_zones.id"), index=True, nullable=False)
     ndvi = Column(Float, nullable=False)
     ndwi = Column(Float, nullable=False)
     land_surface_temp_c = Column(Float, nullable=False)
     soil_moisture_satellite_pct = Column(Float, nullable=False)
     cloud_coverage_pct = Column(Float, default=5.0)
     data_quality_flag = Column(String(20), default="CLEAR")
-    observed_at = Column(DateTime, default=datetime.utcnow)
+    observed_at = Column(DateTime, default=datetime.utcnow, index=True)
 
 
 class WeatherObservation(Base):
     __tablename__ = "weather_observations"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    mine_id = Column(String(50), ForeignKey("mines.id"), nullable=False)
+    mine_id = Column(String(50), ForeignKey("mines.id"), index=True, nullable=False)
     rainfall_mm = Column(Float, nullable=False)
     soil_moisture_pct = Column(Float, nullable=False)
     ambient_temp_c = Column(Float, nullable=False)
     humidity_pct = Column(Float, nullable=False)
     wind_speed_kmh = Column(Float, default=15.0)
     flood_risk_index = Column(String(20), default="LOW")
-    observed_at = Column(DateTime, default=datetime.utcnow)
+    observed_at = Column(DateTime, default=datetime.utcnow, index=True)
 
 
 class Equipment(Base):
     __tablename__ = "equipment"
 
     id = Column(String(50), primary_key=True)
-    mine_id = Column(String(50), ForeignKey("mines.id"), nullable=False)
+    mine_id = Column(String(50), ForeignKey("mines.id"), index=True, nullable=False)
     equipment_type = Column(String(100), nullable=False)
     model = Column(String(100), nullable=False)
     commissioned_year = Column(Integer, default=2022)
@@ -114,13 +114,13 @@ class EquipmentStatus(Base):
     __tablename__ = "equipment_status"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    equipment_id = Column(String(50), ForeignKey("equipment.id"), nullable=False)
+    equipment_id = Column(String(50), ForeignKey("equipment.id"), index=True, nullable=False)
     operational_hours = Column(Float, nullable=False)
     downtime_hours = Column(Float, nullable=False)
     downtime_reason = Column(String(200), default="None")
     efficiency_pct = Column(Float, default=90.0)
     health_status = Column(String(50), default="OPTIMAL")
-    recorded_at = Column(DateTime, default=datetime.utcnow)
+    recorded_at = Column(DateTime, default=datetime.utcnow, index=True)
 
     equipment = relationship("Equipment", back_populates="status_logs")
 
@@ -129,9 +129,9 @@ class ProductionRecord(Base):
     __tablename__ = "production_records"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    mine_id = Column(String(50), ForeignKey("mines.id"), nullable=False)
-    zone_id = Column(String(50), ForeignKey("mine_zones.id"), nullable=False)
-    date = Column(String(20), nullable=False)
+    mine_id = Column(String(50), ForeignKey("mines.id"), index=True, nullable=False)
+    zone_id = Column(String(50), ForeignKey("mine_zones.id"), index=True, nullable=False)
+    date = Column(String(20), index=True, nullable=False)
     shift = Column(String(20), nullable=False)
     planned_tonnage = Column(Float, nullable=False)
     actual_tonnage = Column(Float, nullable=False)
@@ -196,7 +196,7 @@ class Recommendation(Base):
     __tablename__ = "recommendations"
 
     id = Column(String(50), primary_key=True)
-    mine_id = Column(String(50), ForeignKey("mines.id"), nullable=False)
+    mine_id = Column(String(50), ForeignKey("mines.id"), index=True, nullable=False)
     title = Column(String(200), nullable=False)
     category = Column(String(50), nullable=False) # EQUIPMENT, BLASTING, SCHEDULE, PIT_SELECTION
     problem_summary = Column(Text, nullable=False)
@@ -204,7 +204,7 @@ class Recommendation(Base):
     expected_impact = Column(String(200), nullable=False)
     expected_tonnage_recovery = Column(Float, default=120.0)
     urgency = Column(String(20), default="HIGH") # LOW, MEDIUM, HIGH, CRITICAL
-    status = Column(String(20), default="PENDING") # PENDING, APPROVED, REJECTED, MODIFIED
+    status = Column(String(20), default="PENDING", index=True) # PENDING, APPROVED, REJECTED, MODIFIED
     manager_notes = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     reviewed_at = Column(DateTime, nullable=True)

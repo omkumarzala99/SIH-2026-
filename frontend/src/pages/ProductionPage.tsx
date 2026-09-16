@@ -14,7 +14,12 @@ import { ProductionTrendData, EquipmentItem } from '../types';
 import { apiService } from '../services/api';
 import { ProductionChart } from '../components/charts/ProductionChart';
 
-export const ProductionPage: React.FC = () => {
+interface ProductionPageProps {
+  selectedMineId?: string;
+  selectedMineName?: string;
+}
+
+export const ProductionPage: React.FC<ProductionPageProps> = ({ selectedMineId, selectedMineName }) => {
   const [prodData, setProdData] = useState<ProductionTrendData | null>(null);
   const [equipmentList, setEquipmentList] = useState<EquipmentItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,8 +36,8 @@ export const ProductionPage: React.FC = () => {
       setLoading(true);
       try {
         const [p, eq] = await Promise.all([
-          apiService.getProduction(),
-          apiService.getEquipment()
+          apiService.getProduction(selectedMineId),
+          apiService.getEquipment(selectedMineId)
         ]);
         setProdData(p);
         setEquipmentList(eq);
@@ -43,7 +48,7 @@ export const ProductionPage: React.FC = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [selectedMineId]);
 
   const handleRecalculateForecast = async () => {
     setForecasting(true);
@@ -82,7 +87,12 @@ export const ProductionPage: React.FC = () => {
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-2">
             <TrendingUp className="w-6 h-6 text-blue-400" />
-            Production Forecasting & Shortfall Prediction
+            Production Forecasting &amp; Shortfall Prediction
+            {selectedMineName && (
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 font-normal">
+                {selectedMineName}
+              </span>
+            )}
           </h1>
           <p className="text-sm text-slate-400">
             Real-time daily extraction monitoring, shift tracking, and machine-learning operational shortfall detection

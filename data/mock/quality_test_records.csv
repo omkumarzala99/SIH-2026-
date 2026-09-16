@@ -1,0 +1,6 @@
+record_id,domain,issue_type,field,value,status,timestamp
+TEST_Q_01,geological,OUT_OF_BOUND_ASSAY,mn_grade_pct,78.5,FLAGGED,2026-03-14T08:00:00Z
+TEST_Q_02,geological,NEGATIVE_DEPTH,depth_meters,-14.2,FLAGGED,2026-03-14T08:05:00Z
+TEST_Q_03,production,DUPLICATE_SHIFT_LOG,shift_id,DUP_PROD_99,FLAGGED,2026-03-14T08:10:00Z
+TEST_Q_04,weather,STALE_SENSOR_HEARTBEAT,rainfall_mm,NaN,FLAGGED,2026-03-12T00:00:00Z
+TEST_Q_05,equipment,EXCESSIVE_HOURS_PER_DAY,operational_hours,29.5,FLAGGED,2026-03-14T09:00:00Z

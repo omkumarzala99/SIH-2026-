@@ -1,7 +1,8 @@
 """
 Risk Assessment & Explainability Endpoints.
 """
-from fastapi import APIRouter, Depends
+from typing import Optional
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from backend.app.api.dependencies import get_db
 from ai_ml.risk_prediction.schemas import RiskAssessmentRequest, RiskAssessmentResponse
@@ -11,30 +12,44 @@ router = APIRouter(prefix="/risk", tags=["Risk"])
 
 
 @router.get("", response_model=RiskAssessmentResponse)
-def get_current_risk(db: Session = Depends(get_db)):
+def get_current_risk(
+    mine_id: Optional[str] = Query(None, description="Optional mine ID filter"),
+    db: Session = Depends(get_db)
+):
     """Returns real-time multi-factor risk evaluation and contributing factors."""
-    from database.models import WeatherObservation, EquipmentStatus, ProductionRecord
+    from database.models import WeatherObservation, EquipmentStatus, ProductionRecord, Equipment
 
-    latest_wx = db.query(WeatherObservation).order_by(WeatherObservation.observed_at.desc()).first() if db else None
-    rainfall = float(latest_wx.rainfall_mm) if (latest_wx and latest_wx.rainfall_mm is not None) else 54.2
-    soil_moisture = float(latest_wx.soil_moisture_pct) if (latest_wx and latest_wx.soil_moisture_pct is not None) else None
+    target_mine_id = mine_id or "MINE_BALAGHAT_01"
 
-    eq_list = db.query(EquipmentStatus).all() if db else []
+    latest_wx = db.query(WeatherObservation).filter(
+        WeatherObservation.mine_id == target_mine_id
+    ).order_by(WeatherObservation.observed_at.desc()).first() if db else None
+
+    rainfall = float(latest_wx.rainfall_mm) if (latest_wx and latest_wx.rainfall_mm is not None) else (54.2 if target_mine_id == "MINE_BALAGHAT_01" else 8.5)
+    soil_moisture = float(latest_wx.soil_moisture_pct) if (latest_wx and latest_wx.soil_moisture_pct is not None) else (58.4 if target_mine_id == "MINE_BALAGHAT_01" else 30.0)
+
+    # Equipment telemetry for target mine
+    mine_eq_ids = [e.id for e in db.query(Equipment.id).filter(Equipment.mine_id == target_mine_id).all()] if db else []
+    eq_list = db.query(EquipmentStatus).filter(EquipmentStatus.equipment_id.in_(mine_eq_ids)).all() if (db and mine_eq_ids) else []
+
     if eq_list:
         downtimes = [float(e.downtime_hours) for e in eq_list if e.downtime_hours is not None]
         downtime = max(downtimes) if downtimes else 5.5
         efficiencies = [float(e.efficiency_pct) for e in eq_list if e.efficiency_pct is not None]
         efficiency = round(sum(efficiencies) / len(efficiencies), 1) if efficiencies else None
     else:
-        downtime = 5.5
-        efficiency = None
+        downtime = 5.5 if target_mine_id == "MINE_BALAGHAT_01" else 1.5
+        efficiency = 88.5 if target_mine_id == "MINE_BALAGHAT_01" else 92.0
 
-    latest_prod = db.query(ProductionRecord).order_by(ProductionRecord.date.desc(), ProductionRecord.id.desc()).first() if db else None
-    planned_production = float(latest_prod.planned_tonnage) if (latest_prod and latest_prod.planned_tonnage is not None) else 1000.0
-    blasting_delay = float(latest_prod.blasting_delay_hours) if (latest_prod and latest_prod.blasting_delay_hours is not None) else 2.2
+    latest_prod = db.query(ProductionRecord).filter(
+        ProductionRecord.mine_id == target_mine_id
+    ).order_by(ProductionRecord.date.desc(), ProductionRecord.id.desc()).first() if db else None
+
+    planned_production = float(latest_prod.planned_tonnage) if (latest_prod and latest_prod.planned_tonnage is not None) else (1000.0 if target_mine_id == "MINE_BALAGHAT_01" else 650.0)
+    blasting_delay = float(latest_prod.blasting_delay_hours) if (latest_prod and latest_prod.blasting_delay_hours is not None) else (2.2 if target_mine_id == "MINE_BALAGHAT_01" else 0.5)
 
     req = RiskAssessmentRequest(
-        mine_id="MINE_BALAGHAT_01",
+        mine_id=target_mine_id,
         planned_production=planned_production,
         equipment_downtime_hours=downtime,
         rainfall_mm=rainfall,
