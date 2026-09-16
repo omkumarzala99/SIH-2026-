@@ -188,3 +188,78 @@ export interface DataQualityReport {
   };
   generated_at: string;
 }
+
+export interface PipelineStageResult {
+  id: number;
+  name: string;
+  status: 'COMPLETED' | 'SKIPPED' | 'WARNING' | 'FAILED';
+  duration_ms: number;
+  summary: string;
+  details?: Record<string, any>;
+}
+
+export interface PipelineReserveResult {
+  total_estimated_reserves: number;
+  primary_classification: 'HIGH' | 'MEDIUM' | 'LOW';
+  average_reserve_probability: number;
+  average_mn_grade: number;
+  zones_evaluated: number;
+  zones: Array<{
+    zone_id: string;
+    name: string;
+    classification: string;
+    reserve_probability: number;
+    estimated_tonnage: number;
+    estimated_mn_grade: number;
+    confidence: number;
+  }>;
+}
+
+export interface PipelineProductionResult {
+  target_date: string;
+  planned_production: number;
+  predicted_production: number;
+  confidence: number;
+  contributing_factors?: Record<string, any>;
+}
+
+export interface PipelineShortfallResult {
+  shortfall_tonnes: number;
+  shortfall_percentage: number;
+  is_deficit: boolean;
+  assessment: string;
+}
+
+export interface PipelineRiskResult {
+  mine_id?: string;
+  overall_risk_score: number;
+  risk_tier: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  equipment_risk: number;
+  weather_risk: number;
+  blasting_risk: number;
+  production_risk: number;
+  contributing_factors: RiskFactor[];
+  summary_explanation: string;
+}
+
+export interface PipelineRunResult {
+  analysis_id: string;
+  executed_at: string;
+  mine: {
+    id: string;
+    name: string;
+    concession_code: string;
+    state: string;
+    district: string;
+    latitude: number;
+    longitude: number;
+    mineral_type: string;
+  };
+  stages: PipelineStageResult[];
+  reserve: PipelineReserveResult;
+  production: PipelineProductionResult;
+  shortfall: PipelineShortfallResult;
+  risk: PipelineRiskResult;
+  recommendations: RecommendationItem[];
+}
+

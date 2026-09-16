@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { ProductionChart } from '../charts/ProductionChart';
 import { apiService } from '../../services/api';
-import { DashboardData, ProductionTrendData, RiskData } from '../../types';
+import { DashboardData, ProductionTrendData, RiskData, ReserveZone } from '../../types';
 
 interface MiningResultsViewProps {
   onNavigateTab: (tab: any) => void;
@@ -29,20 +29,23 @@ export const MiningResultsView: React.FC<MiningResultsViewProps> = ({ onNavigate
   const [dashData, setDashData] = useState<DashboardData | null>(null);
   const [prodTrend, setProdTrend] = useState<ProductionTrendData | null>(null);
   const [riskData, setRiskData] = useState<RiskData | null>(null);
+  const [reserves, setReserves] = useState<ReserveZone[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadAll = async () => {
       setLoading(true);
       try {
-        const [dash, prod, r] = await Promise.all([
+        const [dash, prod, r, res] = await Promise.all([
           apiService.getDashboard(selectedMineId),
           apiService.getProduction(selectedMineId),
-          apiService.getRisk(selectedMineId)
+          apiService.getRisk(selectedMineId),
+          apiService.getReserves(selectedMineId).catch(() => [])
         ]);
         setDashData(dash);
         setProdTrend(prod);
         setRiskData(r);
+        setReserves(res || []);
       } catch (err) {
         console.error('Failed to load mining results:', err);
       } finally {
@@ -63,6 +66,23 @@ export const MiningResultsView: React.FC<MiningResultsViewProps> = ({ onNavigate
 
   const { kpis } = dashData;
   const { overall_risk_score, risk_tier, equipment_risk, weather_risk, blasting_risk, production_risk, contributing_factors, summary_explanation } = riskData;
+
+  const avgProb = reserves.length > 0
+    ? Math.round((reserves.reduce((acc, z) => acc + z.reserve_probability, 0) / reserves.length) * 100)
+    : 89;
+  const avgGrade = reserves.length > 0
+    ? (reserves.reduce((acc, z) => acc + z.estimated_mn_grade, 0) / reserves.length).toFixed(1)
+    : '41.8';
+  const primaryClassification = reserves.some(z => z.classification === 'HIGH')
+    ? 'HIGH'
+    : reserves.some(z => z.classification === 'MEDIUM')
+    ? 'MEDIUM'
+    : 'LOW';
+
+  const eqFactor = contributing_factors.find(f => f.name.toLowerCase().includes('equipment')) || contributing_factors[0];
+  const wxFactor = contributing_factors.find(f => f.name.toLowerCase().includes('precipitation') || f.name.toLowerCase().includes('weather')) || contributing_factors[1];
+  const blstFactor = contributing_factors.find(f => f.name.toLowerCase().includes('blasting')) || contributing_factors[2];
+  const prodFactor = contributing_factors.find(f => f.name.toLowerCase().includes('production') || f.name.toLowerCase().includes('deficit')) || contributing_factors[3];
 
   return (
     <div className="space-y-6">
@@ -117,9 +137,9 @@ export const MiningResultsView: React.FC<MiningResultsViewProps> = ({ onNavigate
           </div>
           <div className="mt-2 text-xs flex items-center justify-between text-slate-400">
             <span className="text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded">
-              HIGH Potential (89%)
+              {primaryClassification} Potential ({avgProb}%)
             </span>
-            <span className="font-mono text-slate-200 font-bold">41.8% Mn</span>
+            <span className="font-mono text-slate-200 font-bold">{avgGrade}% Mn</span>
           </div>
         </div>
 
@@ -240,7 +260,9 @@ export const MiningResultsView: React.FC<MiningResultsViewProps> = ({ onNavigate
             <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
               <div className="bg-rose-500 h-full rounded-full" style={{ width: `${equipment_risk}%` }} />
             </div>
-            <p className="text-[11px] text-slate-400">CAT-349 Excavator 6.5h breakdown on Bench 4</p>
+            <p className="text-[11px] text-slate-400 truncate" title={eqFactor?.description}>
+              {eqFactor ? `${eqFactor.observed_value} • ${eqFactor.description}` : 'Optimal equipment availability'}
+            </p>
           </div>
 
           {/* 2. Weather & Inflow */}
@@ -255,7 +277,9 @@ export const MiningResultsView: React.FC<MiningResultsViewProps> = ({ onNavigate
             <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
               <div className="bg-blue-500 h-full rounded-full" style={{ width: `${weather_risk}%` }} />
             </div>
-            <p className="text-[11px] text-slate-400">54.2mm rain + 58.4% saturated pit floor</p>
+            <p className="text-[11px] text-slate-400 truncate" title={wxFactor?.description}>
+              {wxFactor ? `${wxFactor.observed_value} • ${wxFactor.description}` : 'Favorable environmental conditions'}
+            </p>
           </div>
 
           {/* 3. Blasting Delay */}
@@ -270,7 +294,9 @@ export const MiningResultsView: React.FC<MiningResultsViewProps> = ({ onNavigate
             <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
               <div className="bg-amber-500 h-full rounded-full" style={{ width: `${blasting_risk}%` }} />
             </div>
-            <p className="text-[11px] text-slate-400">2.2h safety detonation exclusion delay</p>
+            <p className="text-[11px] text-slate-400 truncate" title={blstFactor?.description}>
+              {blstFactor ? `${blstFactor.observed_value} • ${blstFactor.description}` : 'Blasting operations within schedule'}
+            </p>
           </div>
 
           {/* 4. Production Deficit */}
@@ -285,7 +311,9 @@ export const MiningResultsView: React.FC<MiningResultsViewProps> = ({ onNavigate
             <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
               <div className="bg-orange-500 h-full rounded-full" style={{ width: `${production_risk}%` }} />
             </div>
-            <p className="text-[11px] text-slate-400">23.2% daily production shortfall vs schedule</p>
+            <p className="text-[11px] text-slate-400 truncate" title={prodFactor?.description}>
+              {prodFactor ? `${prodFactor.observed_value} • ${prodFactor.description}` : `${kpis.shortfall_percentage}% daily production shortfall`}
+            </p>
           </div>
         </div>
       </div>
