@@ -109,6 +109,7 @@ def get_production_trends(
 
 
 @router.post("/predict", response_model=ProductionPredictionResponse)
+@router.post("/forecast", response_model=ProductionPredictionResponse)
 def predict_production(req: ProductionPredictionRequest):
     """Executes AI regression forecasting for planned production vs constraints."""
     return predict_production_and_shortfall(req)

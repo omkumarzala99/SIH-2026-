@@ -53,24 +53,26 @@ export const ProductionPage: React.FC<ProductionPageProps> = ({ selectedMineId, 
   const handleRecalculateForecast = async () => {
     setForecasting(true);
     try {
-      // Local or API prediction
-      const lossDowntime = downtimeInput * 28.0;
-      const lossWeather = Math.max(0, (rainfallInput - 15.0) * 1.8);
-      const lossBlast = blastingInput * 35.0;
-      const totalLoss = lossDowntime + lossWeather + lossBlast;
-      const predicted = Math.max(0, Math.round(1000 - totalLoss));
-      const shortfall = 1000 - predicted;
-      const shortfallPct = Math.round((shortfall / 1000) * 100);
+      const planned = prodData?.current_target || (selectedMineId === 'MINE_BALAGHAT_01' ? 1000 : 660);
+      const res = await apiService.forecastProduction({
+        mine_id: selectedMineId,
+        planned_production: planned,
+        equipment_downtime_hours: downtimeInput,
+        rainfall_mm: rainfallInput,
+        blasting_delay_hours: blastingInput
+      });
 
       setForecastResult({
-        planned: 1000,
-        predicted,
-        shortfall,
-        shortfall_pct: shortfallPct,
-        loss_downtime: Math.round(lossDowntime),
-        loss_weather: Math.round(lossWeather),
-        loss_blast: Math.round(lossBlast)
+        planned: res.planned_production || planned,
+        predicted: res.predicted_production,
+        shortfall: res.shortfall_tonnes !== undefined ? res.shortfall_tonnes : res.shortfall,
+        shortfall_pct: res.shortfall_percentage,
+        loss_downtime: res.contributing_factors?.equipment_downtime_loss_tons || Math.round(downtimeInput * 28.0),
+        loss_weather: res.contributing_factors?.weather_rainfall_loss_tons || Math.round(Math.max(0, (rainfallInput - 15.0) * 1.8)),
+        loss_blast: res.contributing_factors?.blasting_delay_loss_tons || Math.round(blastingInput * 35.0)
       });
+    } catch (err) {
+      console.error('Forecast recalculation failed:', err);
     } finally {
       setForecasting(false);
     }

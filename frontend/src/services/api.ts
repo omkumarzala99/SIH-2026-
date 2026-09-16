@@ -389,6 +389,48 @@ export const apiService = {
     }
   },
 
+  async forecastProduction(params: any): Promise<any> {
+    if (this.isDemoMode) {
+      const planned = params.planned_production || params.planned_tonnage || 1000;
+      const downtimeLoss = (params.equipment_downtime_hours || params.excavator_downtime_hours || 0) * 28.0;
+      const weatherLoss = Math.max(0, ((params.rainfall_mm || 0) - 15.0) * 1.8);
+      const blastingLoss = (params.blasting_delay_hours || 0) * 35.0;
+      const predicted = Math.max(0, Math.round(planned - downtimeLoss - weatherLoss - blastingLoss));
+      const shortfall = Math.max(0, planned - predicted);
+      return {
+        planned_production: planned,
+        predicted_production: predicted,
+        shortfall_tonnes: shortfall,
+        shortfall_percentage: Math.round((shortfall / planned) * 100),
+        confidence: 0.85,
+        contributing_factors: {
+          equipment_downtime_loss_tons: Math.round(downtimeLoss),
+          weather_rainfall_loss_tons: Math.round(weatherLoss),
+          blasting_delay_loss_tons: Math.round(blastingLoss)
+        }
+      };
+    }
+    try {
+      const res = await fetch(`${API_BASE}/production/forecast`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(params),
+        signal: AbortSignal.timeout(3000)
+      });
+      if (!res.ok) throw new Error('Forecast API failed');
+      return await res.json();
+    } catch {
+      const planned = params.planned_production || params.planned_tonnage || 1000;
+      return {
+        planned_production: planned,
+        predicted_production: Math.round(planned * 0.82),
+        shortfall_tonnes: Math.round(planned * 0.18),
+        shortfall_percentage: 18.0,
+        confidence: 0.85
+      };
+    }
+  },
+
   async getEquipment(mineId?: string): Promise<EquipmentItem[]> {
     if (this.isDemoMode) return FALLBACK_EQUIPMENT;
     try {
@@ -789,6 +831,15 @@ export const apiService = {
       },
       recommendations: isBalaghat ? localRecommendations : []
     };
+  },
+
+  checkHealth: async (): Promise<boolean> => {
+    try {
+      const res = await fetch(`${API_BASE}/health`, { signal: AbortSignal.timeout(2000) });
+      return res.ok;
+    } catch {
+      return false;
+    }
   }
 };
 

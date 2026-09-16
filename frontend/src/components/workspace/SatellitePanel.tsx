@@ -157,9 +157,9 @@ export const SatellitePanel: React.FC<SatellitePanelProps> = ({
               Scientific Disclosure &amp; Data Provenance
             </h3>
             <p className="text-xs text-slate-300 leading-relaxed">
-              <span className="text-white font-semibold">Important Distinction: </span>
-              Satellite observations provide <span className="text-blue-300 font-medium">indirect surface and environmental telemetry</span> (vegetation clearance indices, surface moisture retention, precipitation run-off, and thermal signatures).
-              Subsurface manganese ore grade and reserve estimations are determined by combining ground-truth geological drillcore assays with spatial geostatistical machine learning models.
+              <span className="text-white font-semibold">Important Scientific Distinction: </span>
+              Satellite-derived surface/environmental indicators provide contextual evidence alongside geological and borehole observations.
+              Space-borne sensors capture surface vegetation density (NDVI/SAVI), moisture pooling (NDWI), and thermal anomalies (LST), while underground manganese ore delineation is proven through subsurface core drilling assays and spatial geostatistical models.
             </p>
           </div>
         </div>

@@ -39,10 +39,10 @@ export const ReservePage: React.FC<ReservePageProps> = ({ selectedMineId, select
     try {
       const res = await apiService.predictReserve({
         zone_id: selectedZone.zone_id,
-        mn_grade_pct: selectedZone.estimated_mn_grade,
         fe_grade_pct: 6.2,
         sio2_pct: 12.5,
         depth_meters: 65.0,
+        phosphorus_pct: 0.15,
         ndvi: selectedZone.ndvi_index
       });
       setPredictionResult(res);

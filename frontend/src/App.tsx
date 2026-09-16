@@ -52,16 +52,8 @@ export const App: React.FC = () => {
   // Check backend health periodically
   useEffect(() => {
     const checkBackend = async () => {
-      try {
-        const res = await fetch('http://localhost:8000/api/health', { signal: AbortSignal.timeout(1500) });
-        if (res.ok) {
-          setApiOnline(true);
-        } else {
-          setApiOnline(false);
-        }
-      } catch {
-        setApiOnline(false);
-      }
+      const isOnline = await apiService.checkHealth();
+      setApiOnline(isOnline);
     };
     checkBackend();
     const interval = setInterval(checkBackend, 10000);

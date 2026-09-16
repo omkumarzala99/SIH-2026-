@@ -14,6 +14,15 @@ def test_health_endpoint():
     data = response.json()
     assert data["status"] == "online"
     assert "version" in data
+    assert "models" in data
+
+
+def test_root_health_endpoint():
+    response = client.get("/health")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "online"
+    assert "version" in data
 
 
 def test_dashboard_endpoint():

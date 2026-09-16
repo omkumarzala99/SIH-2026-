@@ -32,6 +32,7 @@ export const MineMap: React.FC<MineMapProps> = ({
   const [showBoundary, setShowBoundary] = useState(true);
   const [showPits, setShowPits] = useState(true);
   const [showReserves, setShowReserves] = useState(true);
+  const [basemapType, setBasemapType] = useState<'satellite' | 'streets'>('satellite');
   const [loadingLayers, setLoadingLayers] = useState(false);
   const [layerError, setLayerError] = useState<string | null>(null);
 
@@ -42,9 +43,16 @@ export const MineMap: React.FC<MineMapProps> = ({
   const showReservesRef = useRef(showReserves);
   showReservesRef.current = showReserves;
 
+  const tileLayerRef = useRef<L.TileLayer | null>(null);
   const boundaryLayerRef = useRef<L.GeoJSON | null>(null);
   const pitsLayerRef = useRef<L.GeoJSON | null>(null);
   const reservesLayerRef = useRef<L.GeoJSON | null>(null);
+
+  // Basemap Tile Providers (Watermark-free public & configurable)
+  const SATELLITE_TILE_URL = import.meta.env.VITE_MAP_TILE_URL || 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+  const SATELLITE_ATTRIBUTION = import.meta.env.VITE_MAP_ATTRIBUTION || '&copy; Esri &mdash; Earthstar Geographics';
+  const STREETS_TILE_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+  const STREETS_ATTRIBUTION = '&copy; OpenStreetMap contributors';
 
   // Center coordinate primitives to avoid re-renders on new array references
   const centerLat = center?.[0];
@@ -65,10 +73,11 @@ export const MineMap: React.FC<MineMapProps> = ({
       attributionControl: false
     });
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    const initialTile = L.tileLayer(SATELLITE_TILE_URL, {
       maxZoom: 19,
-      subdomains: 'abcd',
+      attribution: SATELLITE_ATTRIBUTION
     }).addTo(map);
+    tileLayerRef.current = initialTile;
 
     mapInstanceRef.current = map;
 
@@ -83,6 +92,28 @@ export const MineMap: React.FC<MineMapProps> = ({
       mapInstanceRef.current = null;
     };
   }, []);
+
+  // Switch Basemap dynamically
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+    if (tileLayerRef.current) {
+      map.removeLayer(tileLayerRef.current);
+    }
+    const isSat = basemapType === 'satellite';
+    const tileUrl = isSat ? SATELLITE_TILE_URL : STREETS_TILE_URL;
+    const tileAttr = isSat ? SATELLITE_ATTRIBUTION : STREETS_ATTRIBUTION;
+    const newTile = L.tileLayer(tileUrl, {
+      maxZoom: 19,
+      attribution: tileAttr
+    }).addTo(map);
+    tileLayerRef.current = newTile;
+
+    // Bring vector layers to front
+    if (boundaryLayerRef.current && showBoundaryRef.current) boundaryLayerRef.current.bringToFront();
+    if (pitsLayerRef.current && showPitsRef.current) pitsLayerRef.current.bringToFront();
+    if (reservesLayerRef.current && showReservesRef.current) reservesLayerRef.current.bringToFront();
+  }, [basemapType]);
 
   // Load and refresh GeoJSON layers whenever selectedMineId changes
   const loadLayersForMine = useCallback(async (mineId: string) => {
@@ -308,6 +339,35 @@ export const MineMap: React.FC<MineMapProps> = ({
           />
           <span>AI Reserve Heatmap</span>
         </label>
+
+        {/* Basemap Style Switcher */}
+        <div className="pt-2 mt-1 border-t border-slate-800 space-y-1">
+          <div className="text-[10px] uppercase font-bold text-slate-400">Basemap View</div>
+          <div className="grid grid-cols-2 gap-1 bg-slate-950/70 p-0.5 rounded border border-slate-800">
+            <button
+              type="button"
+              onClick={() => setBasemapType('satellite')}
+              className={`px-1.5 py-1 text-[10px] font-semibold rounded transition-colors ${
+                basemapType === 'satellite'
+                  ? 'bg-amber-500 text-slate-950 font-bold shadow-sm'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              🛰️ Satellite
+            </button>
+            <button
+              type="button"
+              onClick={() => setBasemapType('streets')}
+              className={`px-1.5 py-1 text-[10px] font-semibold rounded transition-colors ${
+                basemapType === 'streets'
+                  ? 'bg-amber-500 text-slate-950 font-bold shadow-sm'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              🗺️ Streets
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Legend */}
