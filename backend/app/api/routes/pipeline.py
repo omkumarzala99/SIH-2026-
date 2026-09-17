@@ -19,6 +19,7 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel, Field
 
 from backend.app.api.dependencies import get_db
+from backend.app.services.weather_service import get_weather_for_mine
 from database.models import (
     Mine, MineZone, GeologicalObservation, SatelliteObservation,
     WeatherObservation, Equipment, EquipmentStatus, ProductionRecord,
@@ -139,10 +140,6 @@ def execute_ai_pipeline(
         SatelliteObservation.mine_id == target_mine_id
     ).order_by(SatelliteObservation.observed_at.desc()).first()
 
-    latest_wx = db.query(WeatherObservation).filter(
-        WeatherObservation.mine_id == target_mine_id
-    ).order_by(WeatherObservation.observed_at.desc()).first()
-
     sat_count = db.query(SatelliteObservation).filter(
         SatelliteObservation.mine_id == target_mine_id
     ).count()
@@ -151,11 +148,13 @@ def execute_ai_pipeline(
         WeatherObservation.mine_id == target_mine_id
     ).count()
 
-    rainfall = float(latest_wx.rainfall_mm) if (latest_wx and latest_wx.rainfall_mm is not None) else (54.2 if target_mine_id == "MINE_BALAGHAT_01" else 8.5)
-    soil_moisture = float(latest_wx.soil_moisture_pct) if (latest_wx and latest_wx.soil_moisture_pct is not None) else (58.4 if target_mine_id == "MINE_BALAGHAT_01" else 30.0)
-    ambient_temp = float(latest_wx.ambient_temp_c) if (latest_wx and latest_wx.ambient_temp_c is not None) else 32.0
-    humidity = float(latest_wx.humidity_pct) if (latest_wx and latest_wx.humidity_pct is not None) else 75.0
-    wind_speed = float(latest_wx.wind_speed_kmh) if (latest_wx and latest_wx.wind_speed_kmh is not None) else 15.0
+    wx_data = get_weather_for_mine(target_mine_id, db=db)
+
+    rainfall = wx_data.precipitation_mm
+    soil_moisture = wx_data.soil_moisture_pct
+    ambient_temp = wx_data.temperature_c
+    humidity = wx_data.humidity_pct
+    wind_speed = wx_data.wind_speed_kmh
     flood_risk_score = 75.0 if rainfall > 40 else (45.0 if rainfall > 20 else 15.0)
 
     ndvi = float(latest_sat.ndvi) if latest_sat else 0.22
@@ -168,12 +167,18 @@ def execute_ai_pipeline(
         name="Ingesting Multi-Spectral Satellite & Environmental Data",
         status="COMPLETED",
         duration_ms=t0_elapsed,
-        summary=f"Ingested Sentinel-2 MSI (NDVI: {ndvi:.2f}, NDWI: {ndwi:.2f}) and weather telemetry ({rainfall:.1f} mm rain, {soil_moisture:.1f}% soil moisture).",
+        summary=f"Ingested Sentinel-2 MSI (NDVI: {ndvi:.2f}, NDWI: {ndwi:.2f}) and weather telemetry ({rainfall:.1f} mm rain, {soil_moisture:.1f}% soil moisture via {wx_data.data_source_label}).",
         details={
             "satellite_records_found": sat_count,
             "weather_records_found": wx_count,
+            "weather_source": wx_data.source,
+            "data_source_label": wx_data.data_source_label,
+            "is_live_weather": wx_data.is_live,
             "rainfall_mm": rainfall,
             "soil_moisture_pct": soil_moisture,
+            "ambient_temp_c": ambient_temp,
+            "humidity_pct": humidity,
+            "wind_speed_kmh": wind_speed,
             "ndvi": ndvi,
             "ndwi": ndwi,
             "land_surface_temp_c": lst_c

@@ -2,7 +2,7 @@
 import {
   DashboardData, ReserveZone, BoreholeRecord, ProductionTrendData,
   EquipmentItem, RiskData, RecommendationItem, SimulationResult, DataQualityReport,
-  PipelineRunResult
+  PipelineRunResult, LiveWeatherData, FirmsResponse
 } from '../types';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
@@ -26,7 +26,17 @@ const FALLBACK_DASHBOARD: DashboardData = {
     soil_moisture_pct: 58.4,
     ambient_temp_c: 34.2,
     flood_risk_level: 'MODERATE_HIGH',
-    weather_trend: 'Monsoon Front Approaching'
+    weather_trend: 'Monsoon Front Approaching',
+    source: 'FALLBACK — Local Database',
+    data_source_label: 'Data Source: Local Simulation / Offline Fallback',
+    is_live: false,
+    humidity_pct: 72.0,
+    wind_speed_kmh: 16.0,
+    pressure_mb: 1013.0,
+    weather_description: 'Monsoon Front Approaching',
+    weather_icons: [],
+    observation_time: '18:00 UTC',
+    last_updated: '2026-03-14 18:00 UTC'
   },
   recent_alerts: [
     {
@@ -61,6 +71,45 @@ const FALLBACK_DASHBOARD: DashboardData = {
     status: 'PENDING'
   },
   mode: 'demo'
+};
+
+const FALLBACK_WEATHER: LiveWeatherData = {
+  mine_id: 'MINE_BALAGHAT_01',
+  mine_name: 'Balaghat Manganese Concession',
+  latitude: 21.8129,
+  longitude: 80.1835,
+  source: 'FALLBACK — Local Database',
+  data_source_label: 'Data Source: Local Simulation / Offline Fallback',
+  is_live: false,
+  temperature_c: 34.2,
+  humidity_pct: 72.0,
+  precipitation_mm: 54.2,
+  wind_speed_kmh: 16.0,
+  pressure_mb: 1013.0,
+  weather_description: 'Monsoon Front Approaching',
+  weather_icons: [],
+  observation_time: '18:00 UTC',
+  last_updated: new Date().toISOString(),
+  soil_moisture_pct: 58.4,
+  flood_risk_index: 'MODERATE_HIGH',
+  weather_trend: 'Monsoon Front Approaching'
+};
+
+const FALLBACK_FIRMS: FirmsResponse = {
+  mine_id: 'MINE_BALAGHAT_01',
+  mine_name: 'Balaghat Manganese Concession',
+  latitude: 21.8129,
+  longitude: 80.1835,
+  source: 'NASA FIRMS',
+  satellite_source: 'VIIRS_NOAA21_NRT',
+  radius_km: 20.0,
+  bounding_box: { west: 79.9894, south: 21.6327, east: 80.3776, north: 21.9931 },
+  lookback_days: 1,
+  hotspot_count: 0,
+  hotspots: [],
+  status: 'no_observations',
+  message: 'No active surface thermal anomalies / fires detected within 20.0 km radius in the past 1 day(s).',
+  last_updated: new Date().toISOString()
 };
 
 const FALLBACK_RESERVES: ReserveZone[] = [
@@ -326,6 +375,33 @@ export const apiService = {
       return await res.json();
     } catch {
       return FALLBACK_DASHBOARD;
+    }
+  },
+
+  async getWeather(mineId?: string): Promise<LiveWeatherData> {
+    if (this.isDemoMode) return FALLBACK_WEATHER;
+    try {
+      const url = mineId ? `${API_BASE}/weather/${encodeURIComponent(mineId)}` : `${API_BASE}/weather`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(2500) });
+      if (!res.ok) throw new Error('Weather API failed');
+      return await res.json();
+    } catch {
+      return FALLBACK_WEATHER;
+    }
+  },
+
+  async getFirmsHotspots(mineId?: string): Promise<FirmsResponse> {
+    const targetId = mineId || 'MINE_BALAGHAT_01';
+    if (this.isDemoMode) {
+      return { ...FALLBACK_FIRMS, mine_id: targetId };
+    }
+    try {
+      const url = `${API_BASE}/firms/${encodeURIComponent(targetId)}`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(3500) });
+      if (!res.ok) throw new Error('FIRMS API failed');
+      return await res.json();
+    } catch {
+      return { ...FALLBACK_FIRMS, mine_id: targetId };
     }
   },
 

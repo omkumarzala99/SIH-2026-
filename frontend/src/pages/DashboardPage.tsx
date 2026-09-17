@@ -10,7 +10,9 @@ import {
   ArrowUpRight,
   ShieldCheck,
   CheckCircle2,
-  AlertOctagon
+  AlertOctagon,
+  Wind,
+  Droplets
 } from 'lucide-react';
 import { DashboardData, ProductionTrendData } from '../types';
 import { apiService } from '../services/api';
@@ -210,70 +212,116 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigateTab, sel
           {prodTrend && <ProductionChart data={prodTrend.history} height={240} />}
         </div>
 
-        {/* Right Col: Environmental Sensors & Satellite Earth Observation */}
+        {/* Right Col: Environmental Sensors & Real-Time Weather Telemetry */}
         <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-2">
               <h2 className="text-base font-bold text-white flex items-center gap-2">
                 <CloudRain className="w-4 h-4 text-blue-400" />
                 Space & Weather Telemetry
               </h2>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">
-                IMD + Sentinel
+              <div>
+                {environmental_status.is_live ? (
+                  <span className="inline-flex items-center gap-1.5 text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-mono font-semibold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                    LIVE WEATHER
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700 font-mono font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                    OFFLINE FALLBACK
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Weather Source & Freshness */}
+            <div className="flex items-center justify-between text-[11px] text-slate-400 mb-3 px-0.5">
+              <span className="font-mono text-slate-300 text-[11px]">
+                {environmental_status.data_source_label || (environmental_status.is_live ? 'Data Source: Weatherstack' : 'Data Source: Local Simulation / Offline Fallback')}
+              </span>
+              <span className="text-slate-500 text-[10px] font-mono">
+                {environmental_status.observation_time ? `Obs: ${environmental_status.observation_time}` : 'Latest'}
               </span>
             </div>
 
-            <div className="space-y-3">
-              <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800/80 flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 rounded-lg bg-blue-500/10 text-blue-400">
+            <div className="space-y-2.5">
+              {/* Metric 1: Precipitation */}
+              <div className="bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/80 flex items-center justify-between">
+                <div className="flex items-center space-x-2.5">
+                  <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-400">
                     <CloudRain className="w-4 h-4" />
                   </div>
                   <div>
-                    <div className="text-xs text-slate-400">Precipitation (24h)</div>
-                    <div className="text-base font-bold text-white font-mono">{environmental_status.rainfall_mm} mm</div>
+                    <div className="text-[11px] text-slate-400">Precipitation (24h)</div>
+                    <div className="text-sm font-bold text-white font-mono">{environmental_status.rainfall_mm} mm</div>
                   </div>
                 </div>
-                <span className="text-xs font-semibold text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded">
-                  Monsoon Surge
+                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded ${
+                  environmental_status.rainfall_mm >= 40 ? 'text-rose-400 bg-rose-500/10' :
+                  (environmental_status.rainfall_mm >= 15 ? 'text-amber-400 bg-amber-500/10' : 'text-emerald-400 bg-emerald-500/10')
+                }`}>
+                  {environmental_status.weather_description || (environmental_status.rainfall_mm >= 25 ? 'Monsoon Surge' : 'Clear Extraction')}
                 </span>
               </div>
 
-              <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800/80 flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 rounded-lg bg-teal-500/10 text-teal-400">
-                    <Compass className="w-4 h-4" />
+              {/* Metric 2 & 3: Temperature & Humidity */}
+              <div className="grid grid-cols-2 gap-2">
+                <div className="bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/80 flex items-center space-x-2">
+                  <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-400">
+                    <Thermometer className="w-3.5 h-3.5" />
                   </div>
                   <div>
-                    <div className="text-xs text-slate-400">Soil Moisture Index</div>
-                    <div className="text-base font-bold text-white font-mono">{environmental_status.soil_moisture_pct}%</div>
+                    <div className="text-[10px] text-slate-400">Ambient Temp</div>
+                    <div className="text-xs font-bold text-white font-mono">{environmental_status.ambient_temp_c}&deg;C</div>
                   </div>
                 </div>
-                <span className="text-xs font-semibold text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded">
-                  Saturated Pit Floor
-                </span>
+
+                <div className="bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/80 flex items-center space-x-2">
+                  <div className="p-1.5 rounded-lg bg-sky-500/10 text-sky-400">
+                    <Droplets className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <div className="text-[10px] text-slate-400">Humidity</div>
+                    <div className="text-xs font-bold text-white font-mono">{environmental_status.humidity_pct ?? 68}%</div>
+                  </div>
+                </div>
               </div>
 
-              <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800/80 flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400">
-                    <Thermometer className="w-4 h-4" />
+              {/* Metric 4 & 5: Soil Moisture & Wind Speed */}
+              <div className="grid grid-cols-2 gap-2">
+                <div className="bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/80 flex items-center space-x-2">
+                  <div className="p-1.5 rounded-lg bg-teal-500/10 text-teal-400">
+                    <Compass className="w-3.5 h-3.5" />
                   </div>
                   <div>
-                    <div className="text-xs text-slate-400">Land Surface Temp (LST)</div>
-                    <div className="text-base font-bold text-white font-mono">{environmental_status.ambient_temp_c}&deg;C</div>
+                    <div className="text-[10px] text-slate-400">Soil Moisture</div>
+                    <div className="text-xs font-bold text-white font-mono">{environmental_status.soil_moisture_pct}%</div>
                   </div>
                 </div>
-                <span className="text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">
-                  Normal
-                </span>
+
+                <div className="bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/80 flex items-center space-x-2">
+                  <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-400">
+                    <Wind className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <div className="text-[10px] text-slate-400">Wind Speed</div>
+                    <div className="text-xs font-bold text-white font-mono">{environmental_status.wind_speed_kmh ?? 14} km/h</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-slate-800/80 text-xs text-slate-400 flex items-center justify-between">
+          <div className="mt-3 pt-3 border-t border-slate-800/80 text-xs text-slate-400 flex items-center justify-between">
             <span>Flood Risk Index:</span>
-            <span className="font-bold text-orange-400">{environmental_status.flood_risk_level}</span>
+            <span className={`font-bold ${
+              environmental_status.flood_risk_level === 'HIGH' || environmental_status.flood_risk_level === 'MODERATE_HIGH'
+                ? 'text-rose-400'
+                : (environmental_status.flood_risk_level === 'MODERATE' ? 'text-amber-400' : 'text-emerald-400')
+            }`}>
+              {environmental_status.flood_risk_level}
+            </span>
           </div>
         </div>
       </div>

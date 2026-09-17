@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from backend.app.api.dependencies import get_db
 from backend.app.config import settings
+from backend.app.services.weather_service import get_weather_for_mine
 from database.models import Mine, MineZone, Equipment, ProductionRecord, Recommendation, WeatherObservation
 
 router = APIRouter(tags=["Dashboard"])
@@ -18,6 +19,7 @@ def get_dashboard_summary(
 ):
     """Fetches high-level executive summary KPIs, active alerts, and quick actions."""
     target_mine_id = mine_id or "MINE_BALAGHAT_01"
+    wx = get_weather_for_mine(target_mine_id, db=db)
 
     if target_mine_id == "MINE_BALAGHAT_01":
         total_eq = db.query(Equipment).filter(Equipment.mine_id == "MINE_BALAGHAT_01").count() if db else 8
@@ -40,11 +42,21 @@ def get_dashboard_summary(
                 "pending_recommendations_count": pending_recs or 3
             },
             "environmental_status": {
-                "rainfall_mm": 54.2,
-                "soil_moisture_pct": 58.4,
-                "ambient_temp_c": 34.2,
-                "flood_risk_level": "MODERATE_HIGH",
-                "weather_trend": "Monsoon Front Approaching"
+                "rainfall_mm": wx.precipitation_mm,
+                "soil_moisture_pct": wx.soil_moisture_pct,
+                "ambient_temp_c": wx.temperature_c,
+                "flood_risk_level": wx.flood_risk_index,
+                "weather_trend": wx.weather_trend,
+                "source": wx.source,
+                "data_source_label": wx.data_source_label,
+                "is_live": wx.is_live,
+                "humidity_pct": wx.humidity_pct,
+                "wind_speed_kmh": wx.wind_speed_kmh,
+                "pressure_mb": wx.pressure_mb,
+                "weather_description": wx.weather_description,
+                "weather_icons": wx.weather_icons,
+                "observation_time": wx.observation_time,
+                "last_updated": wx.last_updated
             },
             "recent_alerts": [
                 {
@@ -144,11 +156,21 @@ def get_dashboard_summary(
             "pending_recommendations_count": pending_recs
         },
         "environmental_status": {
-            "rainfall_mm": float(latest_wx.rainfall_mm) if (latest_wx and latest_wx.rainfall_mm is not None) else 8.5,
-            "soil_moisture_pct": float(latest_wx.soil_moisture_pct) if (latest_wx and latest_wx.soil_moisture_pct is not None) else 32.0,
-            "ambient_temp_c": float(latest_wx.ambient_temp_c) if (latest_wx and latest_wx.ambient_temp_c is not None) else 29.5,
-            "flood_risk_level": latest_wx.flood_risk_index if latest_wx else "LOW",
-            "weather_trend": "Stable Conditions"
+            "rainfall_mm": wx.precipitation_mm,
+            "soil_moisture_pct": wx.soil_moisture_pct,
+            "ambient_temp_c": wx.temperature_c,
+            "flood_risk_level": wx.flood_risk_index,
+            "weather_trend": wx.weather_trend,
+            "source": wx.source,
+            "data_source_label": wx.data_source_label,
+            "is_live": wx.is_live,
+            "humidity_pct": wx.humidity_pct,
+            "wind_speed_kmh": wx.wind_speed_kmh,
+            "pressure_mb": wx.pressure_mb,
+            "weather_description": wx.weather_description,
+            "weather_icons": wx.weather_icons,
+            "observation_time": wx.observation_time,
+            "last_updated": wx.last_updated
         },
         "recent_alerts": [
             {

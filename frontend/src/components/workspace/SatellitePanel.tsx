@@ -10,9 +10,13 @@ import {
   Activity,
   AlertTriangle,
   Compass,
-  CheckCircle2
+  CheckCircle2,
+  Flame,
+  Radio,
+  ShieldAlert
 } from 'lucide-react';
 import { api } from '../../services/api';
+import { FirmsResponse } from '../../types';
 
 interface ZoneIndicator {
   zone_id: string;
@@ -44,15 +48,30 @@ export const SatellitePanel: React.FC<SatellitePanelProps> = ({
   const [indicators, setIndicators] = useState<ZoneIndicator[]>([]);
   const [selectedZone, setSelectedZone] = useState<ZoneIndicator | null>(null);
   const [topLevelData, setTopLevelData] = useState<any>(null);
+  const [firmsData, setFirmsData] = useState<FirmsResponse | null>(null);
+  const [loadingFirms, setLoadingFirms] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const loadSatelliteData = useCallback(async () => {
     let isMounted = true;
     setLoading(true);
+    setLoadingFirms(true);
     setError(null);
     try {
-      const data = await api.getSatelliteIndices(selectedMineId);
+      // Parallel fetch for Sentinel/Landsat indices and NASA FIRMS
+      const [data, fData] = await Promise.all([
+        api.getSatelliteIndices(selectedMineId),
+        api.getFirmsHotspots(selectedMineId).catch((err) => {
+          console.warn('NASA FIRMS fetch notice:', err);
+          return null;
+        })
+      ]);
+
+      if (isMounted && fData) {
+        setFirmsData(fData);
+      }
+
       if (isMounted && data) {
         setTopLevelData(data);
         const list: ZoneIndicator[] = data.indicators || [];
@@ -83,7 +102,10 @@ export const SatellitePanel: React.FC<SatellitePanelProps> = ({
         setError(err?.message || `Unable to retrieve real-time satellite telemetry for ${mineName}.`);
       }
     } finally {
-      if (isMounted) setLoading(false);
+      if (isMounted) {
+        setLoading(false);
+        setLoadingFirms(false);
+      }
     }
     return () => { isMounted = false; };
   }, [selectedMineId, mineName]);
@@ -335,6 +357,191 @@ export const SatellitePanel: React.FC<SatellitePanelProps> = ({
             <span>Sentinel-2 B3/B8</span>
             <span className="font-mono text-slate-300">Green/NIR</span>
           </div>
+        </div>
+      </div>
+
+      {/* 6. NASA FIRMS Active Fire & Thermal Anomaly Detection Card */}
+      <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4 group hover:border-orange-500/30 transition-all">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center shrink-0">
+              <Flame className="w-5 h-5 text-orange-400" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-base font-bold text-white">
+                  NASA FIRMS — Surface Thermal Anomaly &amp; Wildfire Detection
+                </h2>
+                <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
+                  VIIRS NRT (375m)
+                </span>
+              </div>
+              <p className="text-xs text-slate-400">
+                Near real-time spaceborne thermal radiometry within {firmsData?.radius_km ?? 20} km operational radius of {topLevelData?.mine_name || mineName}
+              </p>
+            </div>
+          </div>
+
+          {/* Status Badge */}
+          <div className="flex items-center space-x-2 shrink-0 text-xs">
+            {loadingFirms ? (
+              <span className="px-3 py-1 rounded-lg bg-amber-500/10 text-amber-300 border border-amber-500/30 flex items-center gap-1.5 font-mono">
+                <div className="animate-spin rounded-full h-2.5 w-2.5 border-b border-amber-400" />
+                Interrogating NASA FIRMS...
+              </span>
+            ) : firmsData?.status === 'live_observations' && (firmsData?.hotspot_count ?? 0) > 0 ? (
+              <span className="px-3 py-1 rounded-lg bg-rose-500/15 text-rose-300 border border-rose-500/40 flex items-center gap-1.5 font-mono font-semibold animate-pulse">
+                <Flame className="w-3.5 h-3.5 text-rose-400" />
+                {firmsData.hotspot_count} Active Anomaly{firmsData.hotspot_count > 1 ? 's' : ''} Detected
+              </span>
+            ) : firmsData?.status === 'no_observations' || (firmsData?.hotspot_count === 0) ? (
+              <span className="px-3 py-1 rounded-lg bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5 font-mono">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                0 Surface Anomalies (Nominal)
+              </span>
+            ) : (
+              <span className="px-3 py-1 rounded-lg bg-slate-800 text-slate-400 border border-slate-700 flex items-center gap-1.5 font-mono">
+                <Radio className="w-3.5 h-3.5 text-slate-400" />
+                Dormant / Key Not Configured
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* 4 Metric Badges */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+            <div className="text-[11px] text-slate-400 font-medium">Concession Center</div>
+            <div className="text-sm font-bold text-white font-mono mt-0.5">
+              {firmsData?.latitude?.toFixed(4) ?? '---'}°, {firmsData?.longitude?.toFixed(4) ?? '---'}°
+            </div>
+            <div className="text-[10px] text-slate-500 mt-0.5">Dynamic Concession Anchor</div>
+          </div>
+
+          <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+            <div className="text-[11px] text-slate-400 font-medium">Detection Buffer</div>
+            <div className="text-sm font-bold text-white font-mono mt-0.5">
+              {firmsData?.radius_km ?? 20.0} km Radius
+            </div>
+            <div className="text-[10px] text-slate-500 mt-0.5 font-mono">
+              W:{firmsData?.bounding_box?.west?.toFixed(2) ?? '-'}° / E:{firmsData?.bounding_box?.east?.toFixed(2) ?? '-'}°
+            </div>
+          </div>
+
+          <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+            <div className="text-[11px] text-slate-400 font-medium">Hotspots Detected</div>
+            <div className="text-sm font-bold text-white font-mono mt-0.5">
+              <span className={(firmsData?.hotspot_count ?? 0) > 0 ? 'text-rose-400' : 'text-emerald-400'}>
+                {firmsData?.hotspot_count ?? 0}
+              </span>
+              <span className="text-xs text-slate-400 font-normal"> in last {firmsData?.lookback_days ?? 1}d</span>
+            </div>
+            <div className="text-[10px] text-slate-500 mt-0.5 font-mono">
+              Sensor: {firmsData?.satellite_source ?? 'VIIRS_NOAA21_NRT'}
+            </div>
+          </div>
+
+          <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+            <div className="text-[11px] text-slate-400 font-medium">Nearest Anomaly</div>
+            <div className="text-sm font-bold text-white font-mono mt-0.5">
+              {firmsData?.hotspots && firmsData.hotspots.length > 0
+                ? `${Math.min(...firmsData.hotspots.map((h) => h.distance_km)).toFixed(2)} km`
+                : 'None within 20km'}
+            </div>
+            <div className="text-[10px] text-slate-500 mt-0.5">
+              {firmsData?.hotspots && firmsData.hotspots.length > 0 ? 'Proximity Alert' : 'Pit Perimeter Clear'}
+            </div>
+          </div>
+        </div>
+
+        {/* Hotspots Table (if any) or Zero-State Notice */}
+        {firmsData?.hotspots && firmsData.hotspots.length > 0 ? (
+          <div className="space-y-2">
+            <div className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+              <ShieldAlert className="w-3.5 h-3.5 text-rose-400" />
+              <span>Detected Surface Thermal Anomalies within Concession Buffer:</span>
+            </div>
+            <div className="overflow-x-auto border border-slate-800 rounded-xl">
+              <table className="w-full text-left text-xs text-slate-300">
+                <thead className="bg-slate-950 text-[11px] uppercase font-mono text-slate-400 border-b border-slate-800">
+                  <tr>
+                    <th className="py-2.5 px-3">Distance</th>
+                    <th className="py-2.5 px-3">Coordinates</th>
+                    <th className="py-2.5 px-3">Brightness (T21)</th>
+                    <th className="py-2.5 px-3">FRP</th>
+                    <th className="py-2.5 px-3">Confidence</th>
+                    <th className="py-2.5 px-3">Satellite / Sensor</th>
+                    <th className="py-2.5 px-3">Observed (UTC)</th>
+                    <th className="py-2.5 px-3">Zone Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-800/60 font-mono text-[11px]">
+                  {firmsData.hotspots.map((h, idx) => (
+                    <tr key={idx} className="hover:bg-slate-800/40 transition-colors">
+                      <td className="py-2 px-3 font-bold text-amber-400">
+                        {h.distance_km.toFixed(2)} km
+                      </td>
+                      <td className="py-2 px-3 text-slate-300">
+                        {h.latitude.toFixed(4)}°, {h.longitude.toFixed(4)}°
+                      </td>
+                      <td className="py-2 px-3 text-slate-200">
+                        {h.brightness_temperature_k ? `${h.brightness_temperature_k.toFixed(1)} K` : 'N/A'}
+                      </td>
+                      <td className="py-2 px-3 text-orange-400 font-semibold">
+                        {h.frp ? `${h.frp.toFixed(1)} MW` : '0.0 MW'}
+                      </td>
+                      <td className="py-2 px-3">
+                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold uppercase ${
+                          h.confidence === 'high' ? 'bg-rose-500/20 text-rose-300' : 'bg-amber-500/20 text-amber-300'
+                        }`}>
+                          {h.confidence}
+                        </span>
+                      </td>
+                      <td className="py-2 px-3 text-slate-400">
+                        {h.satellite} ({h.instrument})
+                      </td>
+                      <td className="py-2 px-3 text-slate-400">
+                        {h.acq_date} {h.acq_time} ({h.daynight === 'D' ? 'Day' : 'Night'})
+                      </td>
+                      <td className="py-2 px-3">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                          h.distance_km <= 5.0
+                            ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                            : 'bg-slate-800 text-slate-300'
+                        }`}>
+                          {h.distance_km <= 5.0 ? 'Near Concession' : 'Buffer Perimeter'}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-slate-950/40 border border-slate-800/80 rounded-xl p-3 text-xs text-slate-400 flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span>
+                {firmsData?.status === 'unavailable'
+                  ? 'NASA FIRMS API integration is configured. To view live VIIRS data, set NASA_FIRMS_MAP_KEY in backend/.env.'
+                  : `Zero thermal anomalies or surface fire events detected within ${firmsData?.radius_km ?? 20}km of this concession during recent VIIRS passes.`}
+              </span>
+            </div>
+            <span className="text-[10px] font-mono text-slate-500 shrink-0">
+              Source: {firmsData?.source ?? 'NASA FIRMS VIIRS'}
+            </span>
+          </div>
+        )}
+
+        {/* Scientific Surface Disclosure Footer */}
+        <div className="pt-2 border-t border-slate-800/80 flex items-start space-x-2 text-[11px] text-slate-400">
+          <Info className="w-3.5 h-3.5 text-blue-400 shrink-0 mt-0.5" />
+          <p>
+            <span className="text-slate-300 font-semibold">NASA FIRMS Operational Scope: </span>
+            Thermal anomalies detected by VIIRS 375m sensors indicate surface high-temperature signatures (e.g. agricultural burning, forest scrub fires, or surface industrial heat). FIRMS data strictly reflects surface earth observations and does not penetrate subsurface geological formations or underground manganese ore seams.
+          </p>
         </div>
       </div>
 

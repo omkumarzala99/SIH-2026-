@@ -19,7 +19,80 @@ export interface EnvironmentalStatus {
   ambient_temp_c: number;
   flood_risk_level: string;
   weather_trend: string;
+  source?: string;
+  data_source_label?: string;
+  is_live?: boolean;
+  humidity_pct?: number;
+  wind_speed_kmh?: number;
+  pressure_mb?: number;
+  weather_description?: string;
+  weather_icons?: string[];
+  observation_time?: string;
+  last_updated?: string;
 }
+
+export interface LiveWeatherData {
+  mine_id: string;
+  mine_name: string;
+  latitude: number;
+  longitude: number;
+  source: string;
+  data_source_label: string;
+  is_live: boolean;
+  temperature_c: number;
+  humidity_pct: number;
+  precipitation_mm: number;
+  wind_speed_kmh: number;
+  pressure_mb: number;
+  weather_description: string;
+  weather_icons: string[];
+  observation_time: string;
+  last_updated: string;
+  soil_moisture_pct: number;
+  flood_risk_index: string;
+  weather_trend: string;
+}
+
+export interface FirmsHotspot {
+  latitude: number;
+  longitude: number;
+  acq_date: string;
+  acq_time: string;
+  satellite: string;
+  instrument: string;
+  confidence: string;
+  frp: number;
+  brightness_temperature_k?: number | null;
+  scan?: number | null;
+  track?: number | null;
+  daynight?: string | null;
+  version?: string | null;
+  distance_km: number;
+}
+
+export interface FirmsResponse {
+  mine_id: string;
+  mine_name: string;
+  latitude: number;
+  longitude: number;
+  source: string;
+  satellite_source: string;
+  radius_km: number;
+  bounding_box: {
+    west: number;
+    south: number;
+    east: number;
+    north: number;
+  };
+  lookback_days: number;
+  hotspot_count: number;
+  hotspots: FirmsHotspot[];
+  status: 'live_observations' | 'no_observations' | 'unavailable';
+  message: string;
+  last_updated: string;
+}
+
+
 
 export interface SystemAlert {
   id: string;

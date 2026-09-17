@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import L from 'leaflet';
 import { api } from '../../services/api';
 import { MOIL_MINES, MoilMineInfo } from '../../data/constants';
-import { Compass, Globe2, Layers, MapPin, Pickaxe } from 'lucide-react';
+import { Compass, Globe2, Layers, MapPin, Pickaxe, Flame } from 'lucide-react';
+import { FirmsResponse } from '../../types';
 
 interface MineMapProps {
   onZoneSelect?: (zoneId: string) => void;
@@ -39,6 +40,8 @@ export const MineMap: React.FC<MineMapProps> = ({
   const [showBoundary, setShowBoundary] = useState(true);
   const [showPits, setShowPits] = useState(true);
   const [showReserves, setShowReserves] = useState(true);
+  const [showFirms, setShowFirms] = useState(true);
+  const [firmsData, setFirmsData] = useState<FirmsResponse | null>(null);
   const [basemapType, setBasemapType] = useState<'satellite' | 'streets'>('satellite');
   const [loadingLayers, setLoadingLayers] = useState(false);
   const [layerError, setLayerError] = useState<string | null>(null);
@@ -51,12 +54,15 @@ export const MineMap: React.FC<MineMapProps> = ({
   showPitsRef.current = showPits;
   const showReservesRef = useRef(showReserves);
   showReservesRef.current = showReserves;
+  const showFirmsRef = useRef(showFirms);
+  showFirmsRef.current = showFirms;
 
   const tileLayerRef = useRef<L.TileLayer | null>(null);
   const boundaryLayerRef = useRef<L.GeoJSON | null>(null);
   const pitsLayerRef = useRef<L.GeoJSON | null>(null);
   const reservesLayerRef = useRef<L.GeoJSON | null>(null);
   const allMinesLayerGroupRef = useRef<L.LayerGroup | null>(null);
+  const firmsLayerGroupRef = useRef<L.LayerGroup | null>(null);
 
   // Basemap Tile Providers
   const SATELLITE_TILE_URL = import.meta.env.VITE_MAP_TILE_URL || 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
@@ -102,6 +108,10 @@ export const MineMap: React.FC<MineMapProps> = ({
     // Create LayerGroup for all MOIL mines markers
     const allMinesGroup = L.layerGroup().addTo(map);
     allMinesLayerGroupRef.current = allMinesGroup;
+
+    // Create LayerGroup for NASA FIRMS Thermal Anomalies
+    const firmsGroup = L.layerGroup().addTo(map);
+    firmsLayerGroupRef.current = firmsGroup;
 
     mapInstanceRef.current = map;
 
@@ -431,6 +441,77 @@ export const MineMap: React.FC<MineMapProps> = ({
     }
   }, [showReserves]);
 
+  // Fetch NASA FIRMS Hotspots for selected mine
+  useEffect(() => {
+    let isCancelled = false;
+    const fetchFirms = async () => {
+      try {
+        const data = await api.getFirmsHotspots(selectedMineId);
+        if (!isCancelled) {
+          setFirmsData(data);
+        }
+      } catch (err) {
+        console.warn('NASA FIRMS fetch notice:', err);
+      }
+    };
+    fetchFirms();
+    return () => {
+      isCancelled = true;
+    };
+  }, [selectedMineId]);
+
+  // Render NASA FIRMS Hotspot CircleMarkers
+  useEffect(() => {
+    const group = firmsLayerGroupRef.current;
+    if (!group) return;
+    group.clearLayers();
+
+    if (firmsData && firmsData.hotspots && firmsData.hotspots.length > 0) {
+      firmsData.hotspots.forEach((h) => {
+        const marker = L.circleMarker([h.latitude, h.longitude], {
+          radius: 8,
+          color: '#ea580c',
+          fillColor: '#ef4444',
+          fillOpacity: 0.85,
+          weight: 2
+        });
+
+        marker.bindPopup(`
+          <div style="font-family: sans-serif; font-size: 12px; color: #0f172a; padding: 4px; min-width: 190px;">
+            <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 4px;">
+              <span style="font-size: 14px;">🔥</span>
+              <strong style="color: #dc2626; font-size: 13px;">NASA FIRMS Anomaly</strong>
+            </div>
+            <b>Distance to Mine:</b> ${h.distance_km.toFixed(2)} km<br/>
+            <b>Brightness (T21):</b> ${h.brightness_temperature_k ? h.brightness_temperature_k.toFixed(1) + ' K' : 'N/A'}<br/>
+            <b>FRP:</b> ${h.frp ? h.frp.toFixed(1) + ' MW' : 'N/A'}<br/>
+            <b>Confidence:</b> <span style="text-transform: capitalize; font-weight: bold; color: ${h.confidence === 'high' ? '#dc2626' : '#ea580c'}">${h.confidence}</span><br/>
+            <b>Satellite:</b> ${h.satellite || 'VIIRS'} (${h.instrument || 'VIIRS'})<br/>
+            <b>Detected:</b> ${h.acq_date} ${h.acq_time} (${h.daynight === 'D' ? 'Day' : 'Night'})<br/>
+            <div style="margin-top: 4px; font-size: 10px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 3px;">
+              NASA FIRMS Surface Observation (${h.distance_km <= 5 ? 'Near Concession' : 'Regional'})
+            </div>
+          </div>
+        `);
+        marker.addTo(group);
+      });
+    }
+  }, [firmsData]);
+
+  // Handle NASA FIRMS Layer Visibility Toggle
+  useEffect(() => {
+    if (!mapInstanceRef.current || !firmsLayerGroupRef.current) return;
+    if (showFirms) {
+      if (!mapInstanceRef.current.hasLayer(firmsLayerGroupRef.current)) {
+        mapInstanceRef.current.addLayer(firmsLayerGroupRef.current);
+      }
+    } else {
+      if (mapInstanceRef.current.hasLayer(firmsLayerGroupRef.current)) {
+        mapInstanceRef.current.removeLayer(firmsLayerGroupRef.current);
+      }
+    }
+  }, [showFirms]);
+
   const activeMineObj = MOIL_MINES.find((m) => m.id === selectedMineId) || MOIL_MINES[0];
 
   return (
@@ -548,6 +629,19 @@ export const MineMap: React.FC<MineMapProps> = ({
             <span>Reserve AI Heatmap</span>
           </label>
 
+          <label className="flex items-center space-x-2 cursor-pointer hover:text-orange-400 text-slate-300">
+            <input
+              type="checkbox"
+              checked={showFirms}
+              onChange={(e) => setShowFirms(e.target.checked)}
+              className="rounded border-slate-700 text-orange-500 focus:ring-0"
+            />
+            <span className="flex items-center gap-1.5">
+              <Flame className="w-3.5 h-3.5 text-orange-500" />
+              <span>NASA FIRMS Hotspots {firmsData?.hotspot_count !== undefined ? `(${firmsData.hotspot_count})` : ''}</span>
+            </span>
+          </label>
+
           {/* Basemap Style Switcher */}
           <div className="pt-2 border-t border-slate-800 space-y-1">
             <div className="text-[10px] uppercase font-bold text-slate-400">Basemap View</div>
@@ -595,6 +689,10 @@ export const MineMap: React.FC<MineMapProps> = ({
           <div className="flex items-center space-x-1.5">
             <span className="w-2.5 h-2.5 rounded bg-rose-500 inline-block"></span>
             <span className="text-slate-300">Low Reserve (&lt;50%)</span>
+          </div>
+          <div className="flex items-center space-x-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-orange-500 inline-block border border-rose-500"></span>
+            <span className="text-slate-300">NASA Thermal Anomaly</span>
           </div>
         </div>
       </div>
