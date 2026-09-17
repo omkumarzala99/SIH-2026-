@@ -100,28 +100,6 @@ export const MOIL_MINES_DATA: MineLocation[] = [
     type: 'Underground',
     status: 'Operational',
     annualCapacity: '240,000 Tonnes/Yr'
-  },
-  {
-    id: 'MINE_SITAPATORE_09',
-    name: 'Sitapatore Mine',
-    state: 'Madhya Pradesh',
-    district: 'Balaghat',
-    lat: 21.7000,
-    lng: 79.6667,
-    type: 'Underground',
-    status: 'Operational',
-    annualCapacity: '120,000 Tonnes/Yr'
-  },
-  {
-    id: 'MINE_BELDONGRI_10',
-    name: 'Beldongri Mine',
-    state: 'Maharashtra',
-    district: 'Nagpur',
-    lat: 21.3833,
-    lng: 79.1500,
-    type: 'Underground',
-    status: 'Operational',
-    annualCapacity: '110,000 Tonnes/Yr'
   }
 ];
 

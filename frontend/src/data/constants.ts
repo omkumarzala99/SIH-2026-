@@ -90,34 +90,12 @@ export const MOIL_MINES: MoilMineInfo[] = [
   },
   {
     id: 'MINE_UKWA_08',
-    name: 'Ukwa Manganese Mine',
+    name: 'Ukwa Mine',
     state: 'Madhya Pradesh',
     district: 'Balaghat',
     lat: 21.9667,
     lon: 80.4667,
     annual_capacity: '260,000 Tonnes/Yr',
-    type: 'Underground',
-    status: 'Operational'
-  },
-  {
-    id: 'MINE_SITAPATORE_09',
-    name: 'Sitapatore Mine',
-    state: 'Madhya Pradesh',
-    district: 'Balaghat',
-    lat: 21.7000,
-    lon: 79.6667,
-    annual_capacity: '120,000 Tonnes/Yr',
-    type: 'Underground',
-    status: 'Operational'
-  },
-  {
-    id: 'MINE_BELDONGRI_10',
-    name: 'Beldongri Mine',
-    state: 'Maharashtra',
-    district: 'Nagpur',
-    lat: 21.3833,
-    lon: 79.1500,
-    annual_capacity: '110,000 Tonnes/Yr',
     type: 'Underground',
     status: 'Operational'
   }

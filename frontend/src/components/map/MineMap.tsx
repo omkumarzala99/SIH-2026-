@@ -21,9 +21,7 @@ const MINE_CENTERS: Record<string, [number, number]> = {
   MINE_KANDRI_05: [21.4167, 79.2667],
   MINE_MANSAR_06: [21.4000, 79.2833],
   MINE_CHIKLA_07: [21.5667, 79.7667],
-  MINE_UKWA_08: [21.9667, 80.4667],
-  MINE_SITAPATORE_09: [21.7000, 79.6667],
-  MINE_BELDONGRI_10: [21.3833, 79.1500]
+  MINE_UKWA_08: [21.9667, 80.4667]
 };
 
 export const MineMap: React.FC<MineMapProps> = ({
