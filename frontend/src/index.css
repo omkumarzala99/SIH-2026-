@@ -4,39 +4,75 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --workspace-bg: #EEF5F9;
+  --sidebar-bg: #F4F9FC;
+  --header-bg: #F8FBFD;
+  --surface: #FFFFFF;
+  --border: #D5E3ED;
+  --text-primary: #123B63;
+  --text-secondary: #55738F;
+  --primary-blue: #1677B8;
+  --light-blue: #E1F1FA;
+  --moil-amber: #E5A000;
+  --success: #159A78;
+  --warning: #D99000;
+  --critical: #D94B4B;
+}
+
 @layer base {
   body {
-    @apply bg-slate-950 text-slate-100 font-sans antialiased selection:bg-amber-500 selection:text-slate-950;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    background-color: #EEF5F9;
+    color: #123B63;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  /* High legibility numbers for stats and coordinates */
   .tabular-nums {
     font-variant-numeric: tabular-nums;
   }
 }
 
-/* Custom mining theme scrollbars */
+/* Industrial Control Room Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #090d16;
+  background: #F4F9FC;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
-  border-radius: 3px;
+  background: #C3D5E2;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #9DB7CB;
 }
 
-/* Leaflet map dark container */
+/* Leaflet map container */
 .leaflet-container {
   width: 100%;
   height: 100%;
-  border-radius: 0.75rem;
-  background-color: #090d16 !important;
+  border-radius: 8px;
+  background-color: #0f172a !important;
   z-index: 10;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.18s ease-out both;
+}
+
+/* Slide-in from right for drawers */
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0);    }
+}
+.animate-slideInRight {
+  animation: slideInRight 0.2s ease-out both;
 }

@@ -5,6 +5,7 @@ Calculates anticipated daily extraction against operational constraints using th
 import os
 import joblib
 import pandas as pd
+import sklearn.ensemble
 from typing import Dict, Any, Optional
 from ai_ml.production_prediction.schemas import ProductionPredictionRequest, ProductionPredictionResponse
 from ai_ml.production_prediction.features import FEATURE_NAMES, extract_production_features

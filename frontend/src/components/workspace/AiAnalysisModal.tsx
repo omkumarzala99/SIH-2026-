@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import {
   Zap,
   CheckCircle2,
@@ -108,11 +108,9 @@ export const AiAnalysisModal: React.FC<AiAnalysisModalProps> = ({
     setLoading(true);
 
     try {
-      // Execute the real backend 7-stage AI pipeline
       const result = await apiService.runPipeline(selectedMineId);
       setPipelineResult(result);
 
-      // Smoothly animate the authentic stages to give clear visual feedback of pipeline execution
       let stageCounter = 0;
       stepTimerRef.current = setInterval(() => {
         if (stageCounter < stagesConfig.length) {
@@ -164,50 +162,52 @@ export const AiAnalysisModal: React.FC<AiAnalysisModalProps> = ({
   const progressPct = Math.round((completedStages.length / stagesConfig.length) * 100);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4 animate-fadeIn">
-      <div className="bg-slate-900 border border-slate-700/80 rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#18324A]/40 backdrop-blur-xs p-4 animate-fadeIn">
+      <div className="bg-[#FAFAF7] border border-[#DDE0DC] rounded-lg max-w-2xl w-full shadow-card overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-950/60">
+        <div className="p-4 border-b border-[#DDE0DC] flex items-center justify-between bg-[#F1F0EB]">
           <div className="flex items-center space-x-3">
-            <div className="p-2.5 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
+            <div className="p-2 rounded-md bg-[#FAFAF7] text-[#C47A00] border border-[#DDE0DC]">
               <Zap className="w-5 h-5 fill-current" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white tracking-tight">
+              <h2 className="text-sm font-bold text-[#18324A] tracking-tight uppercase">
                 Executing MOIL AI Mining Intelligence Pipeline
               </h2>
-              <p className="text-xs text-slate-400">
-                End-to-end multi-source automated execution &amp; inference chain ({selectedMineName})
+              <p className="text-xs text-[#5B6875]">
+                Multi-source automated inference chain &bull; {selectedMineName}
               </p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors"
+            className="text-[#7B8792] hover:text-[#18324A] p-1.5 rounded-md hover:bg-[#FAFAF7] border border-transparent hover:border-[#DDE0DC] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Progress Bar */}
-        <div className="px-6 pt-4 pb-2 bg-slate-900">
+        <div className="px-5 pt-4 pb-2 bg-[#FAFAF7] border-b border-[#DDE0DC]">
           <div className="flex justify-between items-center text-xs mb-1.5 font-mono">
-            <span className="text-slate-400">
+            <span className="text-[#5B6875] font-medium">
               {isFinished
                 ? 'Pipeline Execution Complete'
                 : error
                 ? 'Execution Interrupted'
                 : `Processing Stage ${Math.min(currentStageIndex + 1, stagesConfig.length)} of ${stagesConfig.length}...`}
             </span>
-            <span className="text-amber-400 font-bold">{progressPct}%</span>
+            <span className="text-[#18324A] font-bold">{progressPct}%</span>
           </div>
-          <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+          <div className="w-full bg-[#F1F0EB] h-2 rounded-md overflow-hidden border border-[#DDE0DC]">
             <div
-              className={`h-full transition-all duration-300 rounded-full ${
+              className={`h-full transition-all duration-300 rounded-md ${
                 error
-                  ? 'bg-rose-500'
-                  : 'bg-gradient-to-r from-amber-500 via-amber-400 to-emerald-400'
+                  ? 'bg-[#C94747]'
+                  : isFinished
+                  ? 'bg-[#16866A]'
+                  : 'bg-[#F2A900]'
               }`}
               style={{ width: `${progressPct}%` }}
             />
@@ -216,29 +216,28 @@ export const AiAnalysisModal: React.FC<AiAnalysisModalProps> = ({
 
         {/* Error Banner if Pipeline Failed */}
         {error && (
-          <div className="mx-6 my-3 p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl flex items-center justify-between text-xs text-rose-300">
+          <div className="mx-5 my-3 p-3 bg-[#FDF2F2] border border-[#F5C2C7] rounded-md flex items-center justify-between text-xs text-[#C94747]">
             <div className="flex items-center space-x-2">
-              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+              <AlertCircle className="w-4 h-4 text-[#C94747] shrink-0" />
               <span>{error}</span>
             </div>
             <button
               onClick={startPipelineExecution}
-              className="px-3 py-1 bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 rounded-lg flex items-center space-x-1 font-mono transition-colors"
+              className="px-3 py-1 bg-[#FAFAF7] border border-[#DDE0DC] hover:bg-[#F3F5F7] text-[#18324A] rounded-md flex items-center space-x-1 font-mono transition-colors"
             >
-              <RotateCcw className="w-3.5 h-3.5" />
+              <RotateCcw className="w-3.5 h-3.5 text-[#5B6875]" />
               <span>Retry</span>
             </button>
           </div>
         )}
 
         {/* 7 Stages Checklist */}
-        <div className="p-6 overflow-y-auto space-y-2.5 flex-1">
+        <div className="p-5 overflow-y-auto space-y-2 flex-1 bg-[#FAFAF7]">
           {stagesConfig.map((stage) => {
             const isDone = completedStages.includes(stage.id);
             const isCurrent = currentStageIndex === stage.id && !isDone && !error;
             const Icon = stage.icon;
 
-            // Display authentic backend summary if available once stage completes
             const dynamicSummary =
               isDone && pipelineResult?.stages?.[stage.id]?.summary
                 ? pipelineResult.stages[stage.id].summary
@@ -247,22 +246,22 @@ export const AiAnalysisModal: React.FC<AiAnalysisModalProps> = ({
             return (
               <div
                 key={stage.id}
-                className={`p-3 rounded-xl border transition-all flex items-center justify-between ${
+                className={`p-3 rounded-md border transition-all flex items-center justify-between ${
                   isDone
-                    ? 'bg-emerald-500/5 border-emerald-500/20 text-slate-200'
+                    ? 'bg-[#F4F9F6] border-[#B7DFC9] text-[#18324A]'
                     : isCurrent
-                    ? 'bg-amber-500/10 border-amber-500/40 text-white shadow-sm'
-                    : 'bg-slate-950/40 border-slate-800/60 text-slate-500'
+                    ? 'bg-[#FEF9E7] border-[#FAD79A] text-[#18324A]'
+                    : 'bg-[#F3F5F7] border-[#DDE0DC] text-[#7B8792]'
                 }`}
               >
                 <div className="flex items-center space-x-3">
                   <div
-                    className={`p-2 rounded-lg ${
+                    className={`p-2 rounded-md ${
                       isDone
-                        ? 'bg-emerald-500/20 text-emerald-400'
+                        ? 'bg-[#E3F2E9] text-[#16866A]'
                         : isCurrent
-                        ? 'bg-amber-500/20 text-amber-400'
-                        : 'bg-slate-800 text-slate-500'
+                        ? 'bg-[#FEF3D6] text-[#C47A00]'
+                        : 'bg-[#F1F0EB] text-[#7B8792]'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -270,24 +269,24 @@ export const AiAnalysisModal: React.FC<AiAnalysisModalProps> = ({
 
                   <div>
                     <div className="text-xs font-semibold">{stage.name}</div>
-                    <div className="text-[10px] text-slate-400">{dynamicSummary}</div>
+                    <div className="text-[11px] text-[#5B6875]">{dynamicSummary}</div>
                   </div>
                 </div>
 
                 <div className="shrink-0 pl-2">
                   {isDone ? (
-                    <div className="flex items-center space-x-1 text-emerald-400 text-xs font-mono">
-                      <CheckCircle2 className="w-4 h-4" />
-                      <span className="hidden sm:inline text-[10px]">
+                    <div className="flex items-center space-x-1 text-[#16866A] text-xs font-mono">
+                      <CheckCircle2 className="w-4 h-4 text-[#16866A]" />
+                      <span className="hidden sm:inline text-[10px] font-semibold">
                         {pipelineResult?.stages?.[stage.id]?.duration_ms
                           ? `${pipelineResult.stages[stage.id].duration_ms}ms`
                           : 'DONE'}
                       </span>
                     </div>
                   ) : isCurrent ? (
-                    <Loader2 className="w-4 h-4 text-amber-400 animate-spin" />
+                    <Loader2 className="w-4 h-4 text-[#C47A00] animate-spin" />
                   ) : (
-                    <Clock className="w-3.5 h-3.5 text-slate-600" />
+                    <Clock className="w-3.5 h-3.5 text-[#7B8792]" />
                   )}
                 </div>
               </div>
@@ -297,13 +296,13 @@ export const AiAnalysisModal: React.FC<AiAnalysisModalProps> = ({
 
         {/* Dynamic Completion Summary Card if Finished */}
         {isFinished && (
-          <div className="px-6 py-4 bg-emerald-500/10 border-t border-emerald-500/30 flex flex-col sm:flex-row items-center justify-between gap-3 animate-fadeIn">
+          <div className="px-5 py-3 bg-[#F4F9F6] border-t border-[#B7DFC9] flex flex-col sm:flex-row items-center justify-between gap-3 animate-fadeIn">
             <div className="space-y-0.5 text-center sm:text-left">
-              <div className="text-xs font-bold text-emerald-300 font-mono flex items-center gap-1 justify-center sm:justify-start">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <div className="text-xs font-bold text-[#16866A] font-mono flex items-center gap-1.5 justify-center sm:justify-start">
+                <CheckCircle2 className="w-4 h-4 text-[#16866A]" />
                 PIPELINE INFERENCE COMPLETE
               </div>
-              <div className="text-xs text-slate-300">
+              <div className="text-xs text-[#18324A]">
                 {pipelineResult ? (
                   <span>
                     Reserve ({pipelineResult.reserve.average_mn_grade}% Mn &bull;{' '}
@@ -314,12 +313,12 @@ export const AiAnalysisModal: React.FC<AiAnalysisModalProps> = ({
                       : '0.0t'}{' '}
                     ({pipelineResult.shortfall.shortfall_percentage.toFixed(1)}%) &bull; Risk:{' '}
                     <span
-                      className={`font-bold ${
+                      className={`font-semibold ${
                         pipelineResult.risk.risk_tier === 'CRITICAL'
-                          ? 'text-rose-400'
+                          ? 'text-[#C94747]'
                           : pipelineResult.risk.risk_tier === 'HIGH'
-                          ? 'text-orange-400'
-                          : 'text-emerald-400'
+                          ? 'text-[#C47A00]'
+                          : 'text-[#16866A]'
                       }`}
                     >
                       {pipelineResult.risk.risk_tier}
@@ -337,7 +336,7 @@ export const AiAnalysisModal: React.FC<AiAnalysisModalProps> = ({
                 onClose();
                 onComplete();
               }}
-              className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center space-x-1.5 transition-all shadow-md shrink-0"
+              className="px-4 py-2 rounded-md bg-[#F2A900] hover:bg-[#D99100] text-[#18324A] font-semibold text-xs flex items-center space-x-1.5 transition-colors shadow-card shrink-0"
             >
               <span>View Mining Intelligence Results</span>
               <ArrowRight className="w-4 h-4" />

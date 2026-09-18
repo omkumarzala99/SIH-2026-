@@ -6,6 +6,7 @@ using the trained leakage-free RandomForest model artifact.
 import os
 import joblib
 import pandas as pd
+import sklearn.ensemble
 from typing import Dict, Any, Optional
 from ai_ml.reserve_prediction.schemas import ReservePredictionRequest, ReservePredictionResponse
 from ai_ml.reserve_prediction.features import FEATURE_NAMES
