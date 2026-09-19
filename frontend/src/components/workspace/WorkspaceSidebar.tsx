@@ -7,7 +7,6 @@ import {
   Layers,
   Lightbulb,
   Sliders,
-  Settings,
   ChevronLeft,
   ChevronRight,
   ShieldAlert,
@@ -37,7 +36,7 @@ export const WorkspaceSidebar: React.FC<WorkspaceSidebarProps> = ({
   isMobileOpen = false,
   onCloseMobile
 }) => {
-  // Navigation list containing exactly 8 operational modules (Data Quality removed as requested)
+  // Navigation list containing exactly 7 operational modules (System and Data Quality removed)
   const navItems: {
     id: WorkspaceTab;
     label: string;
@@ -50,8 +49,7 @@ export const WorkspaceSidebar: React.FC<WorkspaceSidebarProps> = ({
     { id: 'satellite',        label: 'Telemetry',        icon: Satellite },
     { id: 'results',          label: 'AI Intelligence',  icon: Layers },
     { id: 'recommendations',  label: 'Decision Support', icon: Lightbulb, badgeCount: pendingRecsCount },
-    { id: 'simulation',       label: 'Simulator',        icon: Sliders },
-    { id: 'system',           label: 'System',           icon: Settings },
+    { id: 'simulation',       label: 'What-If Simulator', icon: Sliders },
   ];
 
   const content = (
